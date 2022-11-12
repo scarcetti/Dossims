@@ -8,7 +8,7 @@
 
         </button>
         <div class="container-fluid d-flex align-items-center">
-            <h2 class="text-primary">Employees</h2>
+            <h2 class="text-primary">Employees Test</h2>
             <!--   <div class="d-flex gap-3 ms-auto">
                             <a href="" class="btn btn-outline-danger h-100 ms-auto">Back</a>
                             <a href="" class="btn btn-outline-success h-100">Add Student</a>
