@@ -1,1 +1,1 @@
-@extends('layout.app')
+@extends('superadmin.index')

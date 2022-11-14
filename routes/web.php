@@ -14,7 +14,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('test.home');
+    return view('superadmin.index');
+});
+Route::get('/superadmin', function () {
+    return view('superadmin.dashboard.index');
 });
 Route::get('/superadmin/employees/add', function () {
     return view('superadmin.employees.add.add');
@@ -24,6 +27,9 @@ Route::get('/superadmin/employees/view', function () {
 });
 Route::get('/superadmin/users/view', function () {
     return view('superadmin.users.view.view');
+});
+Route::get('/superadmin/products/add', function () {
+    return view('superadmin.products.add.add');
 });
 Route::get('/superadmin/products/view', function () {
     return view('superadmin.products.view.view');
