@@ -1,12 +1,6 @@
 @extends('superadmin.index')
 
 @section('section')
-    <div id="content">
-
-        <button type="button" id="sidebarCollapse" class="btn btn-info">
-            <i class="bi bi-list"></i>
-
-        </button>
         <div class="container-fluid d-flex align-items-center">
             <h2 class="text-primary">Products</h2>
             <!--   <div class="d-flex gap-3 ms-auto">
@@ -54,5 +48,4 @@
                 </tbody>
             </table>
         </div>
-    </div>
 @endsection

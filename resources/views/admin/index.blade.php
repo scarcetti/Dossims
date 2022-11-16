@@ -23,7 +23,7 @@
         <nav id="sidebar">
             <div class="sidebar-header ">
                 <!--  <h3>Bootstrap Sidebar</h3> -->
-                <img src="{{ asset('assets/imgs/test.gif') }}" alt="..." class="img-thumbnail"
+                <img src="{{ asset('assets/imgs/moisty.gif') }}" alt="..." class="img-thumbnail"
                     style="max-height: 100px; max-width: 100px;">
             </div>
 
@@ -31,7 +31,7 @@
             <ul class="list-unstyled components">
                 {{-- DASHBOARD --}}
                 <li>
-                    <a href="/superadmin">Dashboard</a>
+                    <a href="/admin">Dashboard</a>
                 </li>
                 {{-- EMPLOYEES --}}
                 <li>
@@ -39,10 +39,10 @@
                         class="dropdown-toggle">Employees</a>
                     <ul class="collapse list-unstyled" id="employeeSubmenu">
                         <li>
-                            <a href="/superadmin/employees/add">Add Employee</a>
+                            <a href="/admin/employees/add">Add Employee</a>
                         </li>
                         <li>
-                            <a href="/superadmin/employees/view">View Employees</a>
+                            <a href="/admin/employees/view">View Employees</a>
                         </li>
                     </ul>
                 </li>
@@ -52,10 +52,10 @@
                         class="dropdown-toggle">Users</a>
                     <ul class="collapse list-unstyled" id="userSubmenu">
                         <li>
-                            <a href="/superadmin/users/add">Add User</a>
+                            <a href="/admin/users/add">Add User</a>
                         </li>
                         <li>
-                            <a href="/superadmin/users/view">View Users</a>
+                            <a href="/admin/users/view">View Users</a>
                         </li>
                     </ul>
                 </li>
@@ -65,10 +65,10 @@
                         class="dropdown-toggle">Customers</a>
                     <ul class="collapse list-unstyled" id="customerSubmenu">
                         <li>
-                            <a href="/superadmin/customers/add">Register Customer</a>
+                            <a href="/admin/customers/add">Register Customer</a>
                         </li>
                         <li>
-                            <a href="/superadmin/customers/view">Manage Customers</a>
+                            <a href="/admin/customers/view">Manage Customers</a>
                         </li>
                     </ul>
                 </li>
@@ -78,23 +78,10 @@
                         class="dropdown-toggle">Products</a>
                     <ul class="collapse list-unstyled" id="productSubmenu">
                         <li>
-                            <a href="/superadmin/products/add">Add Products</a>
+                            <a href="/admin/products/add">Add Products</a>
                         </li>
                         <li>
-                            <a href="/superadmin/products/view">View Products</a>
-                        </li>
-                    </ul>
-                </li>
-                {{-- BRANCHES --}}
-                <li>
-                    <a href="#branchSubmenu" data-toggle="collapse" aria-expanded="false"
-                        class="dropdown-toggle">Branches</a>
-                    <ul class="collapse list-unstyled" id="branchSubmenu">
-                        <li>
-                            <a href="/superadmin/branches/add">Add Branch</a>
-                        </li>
-                        <li>
-                            <a href="/superadmin/branches/view">Manage Branches</a>
+                            <a href="/admin/products/view">View Products</a>
                         </li>
                     </ul>
                 </li>
@@ -104,10 +91,10 @@
                         class="dropdown-toggle">Transactions</a>
                     <ul class="collapse list-unstyled" id="transactionSubmenu">
                         <li>
-                            <a href="/superadmin/transactions/completed">Completed Transactions</a>
+                            <a href="/admin/transactions/completed">Completed Transactions</a>
                         </li>
                         <li>
-                            <a href="/superadmin/transactions/pending">Pending Transactions</a>
+                            <a href="/admin/transactions/pending">Pending Transactions</a>
                         </li>
                     </ul>
                 </li>
@@ -126,6 +113,7 @@
                 </li>
             </ul>
         </nav>
+        
         <div id="content">
             <button type="button" id="sidebarCollapse" class="btn btn-info">
                 <i class="bi bi-list"></i>
