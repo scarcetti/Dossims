@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,7 @@ Route::get('/', function () {
 | SUPERADMIN
 |--------------------------------------------------------------------------
 */
+Route::get('/superadmin/customers/view', [CustomerController::class, 'viewAdminCustomer'])->name('customerview');
 
 Route::get('/superadmin', function () {
     return view('superadmin.dashboard.index');
@@ -100,4 +102,28 @@ Route::get('/admin/transactions/completed', function () {
 });
 Route::get('/admin/transactions/pending', function () {
     return view('admin.transactions/pending.pending');
+});
+
+/*
+|--------------------------------------------------------------------------
+| FRONT DESK
+|--------------------------------------------------------------------------
+*/
+Route::get('/frontdesk', function () {
+    return view('frontdesk.dashboard.index');
+});
+Route::get('/frontdesk/products', function () {
+    return view('frontdesk.products.index');
+});
+Route::get('/frontdesk/job-order/view', function () {
+    return view('frontdesk.joborder.view.view');
+});
+Route::get('/frontdesk/customers/view', function () {
+    return view('frontdesk.customers.view.view');
+});
+Route::get('/frontdesk/transactions/completed', function () {
+    return view('frontdesk.transactions.completed.completed');
+});
+Route::get('/frontdesk/transactions/pending', function () {
+    return view('frontdesk.transactions.pending.pending');
 });

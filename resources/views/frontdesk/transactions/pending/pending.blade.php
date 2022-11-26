@@ -1,8 +1,8 @@
-@extends('admin.index')
+@extends('frontdesk.index')
 
 @section('section')
         <div class="container-fluid d-flex align-items-center">
-            <h2 class="text-primary">Completed Transactions</h2>
+            <h2 class="text-primary">Pending Transactions</h2>
             <!--   <div class="d-flex gap-3 ms-auto">
                             <a href="" class="btn btn-outline-danger h-100 ms-auto">Back</a>
                             <a href="" class="btn btn-outline-success h-100">Add Student</a>
@@ -30,7 +30,7 @@
                         <td>Josh Petty</td>
                         <td>Elon Moist</td>
                         <td>Item1, Item2, Item 3</td>
-                        <td>₱69, 420</td>
+                        <td>₱21,800</td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton"

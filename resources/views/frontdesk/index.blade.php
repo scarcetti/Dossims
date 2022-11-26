@@ -23,7 +23,7 @@
         <nav id="sidebar">
             <div class="sidebar-header ">
                 <!--  <h3>Bootstrap Sidebar</h3> -->
-                <img src="{{ asset('assets/imgs/moisty.gif') }}" alt="..." class="img-thumbnail"
+                <img src="{{ asset('assets/imgs/oni.png') }}" alt="..." class="img-thumbnail"
                     style="max-height: 100px; max-width: 100px;">
             </div>
 
@@ -31,21 +31,52 @@
             <ul class="list-unstyled components">
                 {{-- DASHBOARD --}}
                 <li>
-                    <a href="/admin">Dashboard</a>
+                    <a href="/frontdesk">Dashboard</a>
                 </li>
-                {{-- EMPLOYEES --}}
+                {{-- PRODUCTS --}}
                 <li>
-                    <a href="#employeeSubmenu" data-toggle="collapse" aria-expanded="false"
-                        class="dropdown-toggle">Employees</a>
-                    <ul class="collapse list-unstyled" id="employeeSubmenu">
+                    <a href="/frontdesk/products">Products</a>
+                </li>
+                {{-- JOB ORDERS --}}
+                <li>
+                    <a href="#jobOrderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Job
+                        Orders</a>
+                    <ul class="collapse list-unstyled" id="jobOrderSubmenu">
                         <li>
-                            <a href="/admin/employees/add">Add Employee</a>
+                            <a href="/admin/employees/add">Add Job Order</a>
                         </li>
                         <li>
-                            <a href="/admin/employees/view">View Employees</a>
+                            <a href="/frontdesk/job-order/view">View Job Order</a>
                         </li>
                     </ul>
                 </li>
+                {{-- CUSTOMERS --}}
+                <li>
+                    <a href="#customerSubmenu" data-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle">Customers</a>
+                    <ul class="collapse list-unstyled" id="customerSubmenu">
+                        <li>
+                            <a href="/admin/customers/add">Register Customer</a>
+                        </li>
+                        <li>
+                            <a href="/frontdesk/customers/view">Manage Customers</a>
+                        </li>
+                    </ul>
+                </li>
+                {{-- TRANSACTIONS --}}
+                <li>
+                    <a href="#transactionSubmenu" data-toggle="collapse" aria-expanded="false"
+                        class="dropdown-toggle">Transactions</a>
+                    <ul class="collapse list-unstyled" id="transactionSubmenu">
+                        <li>
+                            <a href="/frontdesk/transactions/completed">Completed Transactions</a>
+                        </li>
+                        <li>
+                            <a href="/frontdesk/transactions/pending">Pending Transactions</a>
+                        </li>
+                    </ul>
+                </li>
+
                 {{-- USERS --}}
                 <li>
                     <a href="#userSubmenu" data-toggle="collapse" aria-expanded="false"
@@ -59,45 +90,8 @@
                         </li>
                     </ul>
                 </li>
-                {{-- CUSTOMERS --}}
-                <li>
-                    <a href="#customerSubmenu" data-toggle="collapse" aria-expanded="false"
-                        class="dropdown-toggle">Customers</a>
-                    <ul class="collapse list-unstyled" id="customerSubmenu">
-                        <li>
-                            <a href="/admin/customers/add">Register Customer</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('customerview') }}">Manage Customers</a>
-                        </li>
-                    </ul>
-                </li>
-                {{-- PRODUCTS --}}
-                <li>
-                    <a href="#productSubmenu" data-toggle="collapse" aria-expanded="false"
-                        class="dropdown-toggle">Products</a>
-                    <ul class="collapse list-unstyled" id="productSubmenu">
-                        <li>
-                            <a href="/admin/products/add">Add Products</a>
-                        </li>
-                        <li>
-                            <a href="/admin/products/view">View Products</a>
-                        </li>
-                    </ul>
-                </li>
-                {{-- TRANSACTIONS --}}
-                <li>
-                    <a href="#transactionSubmenu" data-toggle="collapse" aria-expanded="false"
-                        class="dropdown-toggle">Transactions</a>
-                    <ul class="collapse list-unstyled" id="transactionSubmenu">
-                        <li>
-                            <a href="/admin/transactions/completed">Completed Transactions</a>
-                        </li>
-                        <li>
-                            <a href="/admin/transactions/pending">Pending Transactions</a>
-                        </li>
-                    </ul>
-                </li>
+
+
                 {{-- REPORTS --}}
                 <li>
                     <a href="#">Reports</a>
@@ -105,7 +99,7 @@
             </ul>
             <ul class="list-unstyled components">
                 <!-- <ul class="list-unstyled CTAs"> -->
-               {{--  <li>
+                {{--  <li>
                     <a href="#">Profile</a>
                 </li> --}}
                 <li>
@@ -113,7 +107,7 @@
                 </li>
             </ul>
         </nav>
-        
+
         <div id="content">
             <button type="button" id="sidebarCollapse" class="btn btn-info">
                 <i class="bi bi-list"></i>

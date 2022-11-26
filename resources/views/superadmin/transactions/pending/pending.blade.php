@@ -18,6 +18,7 @@
                         <th scope="col">Customer</th>
                         <th scope="col">Front Desk</th>
                         <th scope="col">Items</th>
+                        <th scope="col">Amount</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -29,6 +30,7 @@
                         <td>Josh Petty</td>
                         <td>Elon Moist</td>
                         <td>Item1, Item2, Item 3</td>
+                        <td>₱21, 800</td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton"

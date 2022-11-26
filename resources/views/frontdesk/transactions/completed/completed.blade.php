@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('frontdesk.index')
 
 @section('section')
         <div class="container-fluid d-flex align-items-center">
