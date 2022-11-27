@@ -39,10 +39,10 @@
                         class="dropdown-toggle">Employees</a>
                     <ul class="collapse list-unstyled" id="employeeSubmenu">
                         <li>
-                            <a href="/superadmin/employees/add">Add Employee</a>
+                            <a href="{{ route('addSuperadminEmployee') }}">Add Employee</a>
                         </li>
                         <li>
-                            <a href="/superadmin/employees/view">View Employees</a>
+                            <a href="{{ route('viewSuperadminEmployee') }}">View Employees</a>
                         </li>
                     </ul>
                 </li>
@@ -52,10 +52,10 @@
                         class="dropdown-toggle">Users</a>
                     <ul class="collapse list-unstyled" id="userSubmenu">
                         <li>
-                            <a href="/superadmin/users/add">Add User</a>
+                            <a href="{{ route('addSuperadminUser') }}">Add User</a>
                         </li>
                         <li>
-                            <a href="/superadmin/users/view">View Users</a>
+                            <a href="{{ route('viewSuperadminUser') }}">View Users</a>
                         </li>
                     </ul>
                 </li>
@@ -65,10 +65,10 @@
                         class="dropdown-toggle">Customers</a>
                     <ul class="collapse list-unstyled" id="customerSubmenu">
                         <li>
-                            <a href="/superadmin/customers/add">Register Customer</a>
+                            <a href="{{ route('addSuperadminCustomer') }}">Register Customer</a>
                         </li>
                         <li>
-                            <a href="/superadmin/customers/view">Manage Customers</a>
+                            <a href="{{ route('viewSuperadminCustomer') }}">Manage Customers</a>
                         </li>
                     </ul>
                 </li>
@@ -78,10 +78,10 @@
                         class="dropdown-toggle">Products</a>
                     <ul class="collapse list-unstyled" id="productSubmenu">
                         <li>
-                            <a href="/superadmin/products/add">Add Products</a>
+                            <a href="{{ route('addSuperadminProduct') }}">Add Products</a>
                         </li>
                         <li>
-                            <a href="/superadmin/products/view">View Products</a>
+                            <a href="{{ route('viewSuperadminProduct') }}">View Products</a>
                         </li>
                     </ul>
                 </li>
@@ -91,10 +91,10 @@
                         class="dropdown-toggle">Branches</a>
                     <ul class="collapse list-unstyled" id="branchSubmenu">
                         <li>
-                            <a href="/superadmin/branches/add">Add Branch</a>
+                            <a href="{{ route('addSuperadminBranch') }}">Add Branch</a>
                         </li>
                         <li>
-                            <a href="/superadmin/branches/view">Manage Branches</a>
+                            <a href="{{ route('viewSuperadminBranch') }}">Manage Branches</a>
                         </li>
                     </ul>
                 </li>
@@ -104,10 +104,10 @@
                         class="dropdown-toggle">Transactions</a>
                     <ul class="collapse list-unstyled" id="transactionSubmenu">
                         <li>
-                            <a href="/superadmin/transactions/completed">Completed Transactions</a>
+                            <a href="{{ route('completedSuperadminTransaction') }}">Completed Transactions</a>
                         </li>
                         <li>
-                            <a href="/superadmin/transactions/pending">Pending Transactions</a>
+                            <a href="{{ route('pendingSuperadminTransaction') }}">Pending Transactions</a>
                         </li>
                     </ul>
                 </li>

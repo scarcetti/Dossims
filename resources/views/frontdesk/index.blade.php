@@ -35,7 +35,7 @@
                 </li>
                 {{-- PRODUCTS --}}
                 <li>
-                    <a href="/frontdesk/products">Products</a>
+                    <a href="{{ route('viewFrontdesktProduct') }}">Products</a>
                 </li>
                 {{-- JOB ORDERS --}}
                 <li>
@@ -46,7 +46,7 @@
                             <a href="/admin/employees/add">Add Job Order</a>
                         </li>
                         <li>
-                            <a href="/frontdesk/job-order/view">View Job Order</a>
+                            <a href="{{route('frontdeskjoborderview')}}">View Job Order</a>
                         </li>
                     </ul>
                 </li>
@@ -56,10 +56,10 @@
                         class="dropdown-toggle">Customers</a>
                     <ul class="collapse list-unstyled" id="customerSubmenu">
                         <li>
-                            <a href="/admin/customers/add">Register Customer</a>
+                            <a href="">Register Customer</a>
                         </li>
                         <li>
-                            <a href="/frontdesk/customers/view">Manage Customers</a>
+                            <a href="{{ route('viewFrontdeskCustomer') }}">Manage Customers</a>
                         </li>
                     </ul>
                 </li>
@@ -69,10 +69,10 @@
                         class="dropdown-toggle">Transactions</a>
                     <ul class="collapse list-unstyled" id="transactionSubmenu">
                         <li>
-                            <a href="/frontdesk/transactions/completed">Completed Transactions</a>
+                            <a href="{{ route('completedFrontdeskTransaction') }}">Completed Transactions</a>
                         </li>
                         <li>
-                            <a href="/frontdesk/transactions/pending">Pending Transactions</a>
+                            <a href="{{ route('pendingFrontdeskTransaction') }}">Pending Transactions</a>
                         </li>
                     </ul>
                 </li>

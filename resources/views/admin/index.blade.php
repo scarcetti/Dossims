@@ -39,10 +39,10 @@
                         class="dropdown-toggle">Employees</a>
                     <ul class="collapse list-unstyled" id="employeeSubmenu">
                         <li>
-                            <a href="/admin/employees/add">Add Employee</a>
+                            <a href="{{ route('addAdminEmployee') }}">Add Employee</a>
                         </li>
                         <li>
-                            <a href="/admin/employees/view">View Employees</a>
+                            <a href="{{ route('viewAdminEmployee') }}">View Employees</a>
                         </li>
                     </ul>
                 </li>
@@ -65,10 +65,10 @@
                         class="dropdown-toggle">Customers</a>
                     <ul class="collapse list-unstyled" id="customerSubmenu">
                         <li>
-                            <a href="/admin/customers/add">Register Customer</a>
+                            <a href="{{ route('addAdminCustomer') }}">Register Customer</a>
                         </li>
                         <li>
-                            <a href="{{ route('customerview') }}">Manage Customers</a>
+                            <a href="{{ route('viewAdminCustomer') }}">Manage Customers</a>
                         </li>
                     </ul>
                 </li>
@@ -78,10 +78,10 @@
                         class="dropdown-toggle">Products</a>
                     <ul class="collapse list-unstyled" id="productSubmenu">
                         <li>
-                            <a href="/admin/products/add">Add Products</a>
+                            <a href="{{ route('addAdminProduct') }}">Add Products</a>
                         </li>
                         <li>
-                            <a href="/admin/products/view">View Products</a>
+                            <a href="{{ route('viewAdminProduct') }}">View Products</a>
                         </li>
                     </ul>
                 </li>
@@ -91,10 +91,10 @@
                         class="dropdown-toggle">Transactions</a>
                     <ul class="collapse list-unstyled" id="transactionSubmenu">
                         <li>
-                            <a href="/admin/transactions/completed">Completed Transactions</a>
+                            <a href="{{ route('completedAdminTransaction') }}">Completed Transactions</a>
                         </li>
                         <li>
-                            <a href="/admin/transactions/pending">Pending Transactions</a>
+                            <a href="{{ route('pendingAdminTransaction') }}">Pending Transactions</a>
                         </li>
                     </ul>
                 </li>

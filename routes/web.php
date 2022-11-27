@@ -1,7 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\JobOrderController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,46 +29,22 @@ Route::get('/', function () {
 | SUPERADMIN
 |--------------------------------------------------------------------------
 */
-Route::get('/superadmin/customers/view', [CustomerController::class, 'viewAdminCustomer'])->name('customerview');
+Route::get('/superadmin/employees/add', [EmployeeController::class, 'addSuperadminEmployee'])->name('addSuperadminEmployee');
+Route::get('/superadmin/employees/view', [EmployeeController::class, 'viewSuperadminEmployee'])->name('viewSuperadminEmployee');
+Route::get('/superadmin/users/add', [UserController::class, 'addSuperadminUser'])->name('addSuperadminUser');
+Route::get('/superadmin/users/view', [UserController::class, 'viewSuperadminUser'])->name('viewSuperadminUser');
+Route::get('/superadmin/customers/add', [CustomerController::class, 'addSuperadminCustomer'])->name('addSuperadminCustomer');
+Route::get('/superadmin/customers/view', [CustomerController::class, 'viewSuperadminCustomer'])->name('viewSuperadminCustomer');
+Route::get('/superadmin/products/add', [ProductController::class, 'addSuperadminProduct'])->name('addSuperadminProduct');
+Route::get('/superadmin/products/view', [ProductController::class, 'viewSuperadminProduct'])->name('viewSuperadminProduct');
+Route::get('/superadmin/branches/add', [BranchController::class, 'addSuperadminBranch'])->name('addSuperadminBranch');
+Route::get('/superadmin/branches/view', [BranchController::class, 'viewSuperadminBranch'])->name('viewSuperadminBranch');
+Route::get('/superadmin/transactions/completed', [TransactionController::class, 'completedSuperadminTransaction'])->name('completedSuperadminTransaction');
+Route::get('/superadmin/transactions/pending', [TransactionController::class, 'pendingSuperadminTransaction'])->name('pendingSuperadminTransaction');
+
 
 Route::get('/superadmin', function () {
     return view('superadmin.dashboard.index');
-});
-Route::get('/superadmin/employees/add', function () {
-    return view('superadmin.employees.add.add');
-});
-Route::get('/superadmin/employees/view', function () {
-    return view('superadmin.employees.view.view');
-});
-Route::get('/superadmin/users/add', function () {
-    return view('superadmin.users.add.add');
-});
-Route::get('/superadmin/users/view', function () {
-    return view('superadmin.users.view.view');
-});
-Route::get('/superadmin/customers/add', function () {
-    return view('superadmin.customers.add.add');
-});
-Route::get('/superadmin/customers/view', function () {
-    return view('superadmin.customers.view.view');
-});
-Route::get('/superadmin/products/add', function () {
-    return view('superadmin.products.add.add');
-});
-Route::get('/superadmin/products/view', function () {
-    return view('superadmin.products.view.view');
-});
-Route::get('/superadmin/branches/add', function () {
-    return view('superadmin.branches.add.add');
-});
-Route::get('/superadmin/branches/view', function () {
-    return view('superadmin.branches.view.view');
-});
-Route::get('/superadmin/transactions/completed', function () {
-    return view('superadmin.transactions.completed.completed');
-});
-Route::get('/superadmin/transactions/pending', function () {
-    return view('superadmin.transactions.pending.pending');
 });
 
 /*
@@ -70,38 +52,21 @@ Route::get('/superadmin/transactions/pending', function () {
 | ADMIN
 |--------------------------------------------------------------------------
 */
+
+Route::get('/admin/employees/add', [EmployeeController::class, 'addAdminEmployee'])->name('addAdminEmployee');
+Route::get('/admin/employees/view', [EmployeeController::class, 'viewAdminEmployee'])->name('viewAdminEmployee');
+Route::get('/admin/users/add', [UserController::class, 'addAdminUser'])->name('addAdminUser');
+Route::get('/admin/users/view', [UserController::class, 'viewAdminUser'])->name('viewAdminUser');
+Route::get('/admin/products/add', [ProductController::class, 'addAdminProduct'])->name('addAdminProduct');
+Route::get('/admin/products/view', [ProductController::class, 'viewAdminProduct'])->name('viewAdminProduct');
+Route::get('/admin/customers/add', [CustomerController::class, 'addAdminCustomer'])->name('addAdminCustomer');
+Route::get('/admin/customers/view', [CustomerController::class, 'viewAdminCustomer'])->name('viewAdminCustomer');
+Route::get('/admin/transactions/completed', [TransactionController::class, 'completedAdminTransaction'])->name('completedAdminTransaction');
+Route::get('/admin/transactions/pending', [TransactionController::class, 'pendingAdminTransaction'])->name('pendingAdminTransaction');
+
+
 Route::get('/admin', function () {
     return view('admin.dashboard.index');
-});
-Route::get('/admin/employees/add', function () {
-    return view('admin.employees/add.add');
-});
-Route::get('/admin/employees/view', function () {
-    return view('admin.employees/view.view');
-});
-Route::get('/admin/users/add', function () {
-    return view('admin.users/add.add');
-});
-Route::get('/admin/users/view', function () {
-    return view('admin.users/view.view');
-});
-Route::get('/admin/customers/add', function () {
-    return view('admin.customers/add.add');
-});
-Route::get('/admin/customers/view', function () {
-    return view('admin.customers/view.view');
-});
-Route::get('/admin/products/add', function () {
-    return view('admin.products/add.add');
-});
-Route::get('/admin/products/view', function () {
-    return view('admin.products/view.view');
-});
-Route::get('/admin/transactions/completed', function () {
-    return view('admin.transactions/completed.completed');
-});
-Route::get('/admin/transactions/pending', function () {
-    return view('admin.transactions/pending.pending');
 });
 
 /*
@@ -109,21 +74,13 @@ Route::get('/admin/transactions/pending', function () {
 | FRONT DESK
 |--------------------------------------------------------------------------
 */
+Route::get('/front-desk/products', [ProductController::class, 'viewFrontdesktProduct'])->name('viewFrontdesktProduct');
+Route::get('/front-desk/job-orders/view', [JobOrderController::class, 'viewFrontDeskJobOrder'])->name('frontdeskjoborderview');
+/* Route::get('/frontdesk/customers/add', [CustomerController::class, 'addFrontdeskCustomer'])->name('addFrontdeskCustomer'); */
+Route::get('/frontdesk/customers/view', [CustomerController::class, 'viewFrontdeskCustomer'])->name('viewFrontdeskCustomer');
+Route::get('/front-desk/transactions/completed', [TransactionController::class, 'completedFrontdeskTransaction'])->name('completedFrontdeskTransaction');
+Route::get('/front-desk/transactions/pending', [TransactionController::class, 'pendingFrontdeskTransaction'])->name('pendingFrontdeskTransaction');
+
 Route::get('/frontdesk', function () {
     return view('frontdesk.dashboard.index');
-});
-Route::get('/frontdesk/products', function () {
-    return view('frontdesk.products.index');
-});
-Route::get('/frontdesk/job-order/view', function () {
-    return view('frontdesk.joborder.view.view');
-});
-Route::get('/frontdesk/customers/view', function () {
-    return view('frontdesk.customers.view.view');
-});
-Route::get('/frontdesk/transactions/completed', function () {
-    return view('frontdesk.transactions.completed.completed');
-});
-Route::get('/frontdesk/transactions/pending', function () {
-    return view('frontdesk.transactions.pending.pending');
 });
