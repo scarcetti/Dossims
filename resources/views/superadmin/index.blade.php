@@ -31,7 +31,7 @@
             <ul class="list-unstyled components">
                 {{-- DASHBOARD --}}
                 <li>
-                    <a href="#">Dashboard</a>
+                    <a href="/superadmin">Dashboard</a>
                 </li>
                 {{-- EMPLOYEES --}}
                 <li>
@@ -39,10 +39,10 @@
                         class="dropdown-toggle">Employees</a>
                     <ul class="collapse list-unstyled" id="employeeSubmenu">
                         <li>
-                            <a href="/superadmin/employees/add">Add Employee</a>
+                            <a href="{{ route('addSuperadminEmployee') }}">Add Employee</a>
                         </li>
                         <li>
-                            <a href="/superadmin/employees/view">View Employees</a>
+                            <a href="{{ route('viewSuperadminEmployee') }}">View Employees</a>
                         </li>
                     </ul>
                 </li>
@@ -52,23 +52,23 @@
                         class="dropdown-toggle">Users</a>
                     <ul class="collapse list-unstyled" id="userSubmenu">
                         <li>
-                            <a href="#">Add User</a>
+                            <a href="{{ route('addSuperadminUser') }}">Add User</a>
                         </li>
                         <li>
-                            <a href="/superadmin/users/view">View Users</a>
+                            <a href="{{ route('viewSuperadminUser') }}">View Users</a>
                         </li>
                     </ul>
                 </li>
                 {{-- CUSTOMERS --}}
                 <li>
                     <a href="#customerSubmenu" data-toggle="collapse" aria-expanded="false"
-                        class="dropdown-toggle">Customer</a>
+                        class="dropdown-toggle">Customers</a>
                     <ul class="collapse list-unstyled" id="customerSubmenu">
                         <li>
-                            <a href="#">Register Customer</a>
+                            <a href="{{ route('addSuperadminCustomer') }}">Register Customer</a>
                         </li>
                         <li>
-                            <a href="#">Manage Customers</a>
+                            <a href="{{ route('viewSuperadminCustomer') }}">Manage Customers</a>
                         </li>
                     </ul>
                 </li>
@@ -78,10 +78,10 @@
                         class="dropdown-toggle">Products</a>
                     <ul class="collapse list-unstyled" id="productSubmenu">
                         <li>
-                            <a href="#">Add Products</a>
+                            <a href="{{ route('addSuperadminProduct') }}">Add Products</a>
                         </li>
                         <li>
-                            <a href="/superadmin/products/view">View Products</a>
+                            <a href="{{ route('viewSuperadminProduct') }}">View Products</a>
                         </li>
                     </ul>
                 </li>
@@ -91,10 +91,10 @@
                         class="dropdown-toggle">Branches</a>
                     <ul class="collapse list-unstyled" id="branchSubmenu">
                         <li>
-                            <a href="#">Add Branch</a>
+                            <a href="{{ route('addSuperadminBranch') }}">Add Branch</a>
                         </li>
                         <li>
-                            <a href="/superadmin/branches/view">Manage Branches</a>
+                            <a href="{{ route('viewSuperadminBranch') }}">Manage Branches</a>
                         </li>
                     </ul>
                 </li>
@@ -104,10 +104,10 @@
                         class="dropdown-toggle">Transactions</a>
                     <ul class="collapse list-unstyled" id="transactionSubmenu">
                         <li>
-                            <a href="/superadmin/transactions/completed">Completed Transactions</a>
+                            <a href="{{ route('completedSuperadminTransaction') }}">Completed Transactions</a>
                         </li>
                         <li>
-                            <a href="/superadmin/transactions/pending">Pending Transactions</a>
+                            <a href="{{ route('pendingSuperadminTransaction') }}">Pending Transactions</a>
                         </li>
                     </ul>
                 </li>
@@ -116,20 +116,51 @@
                     <a href="#">Reports</a>
                 </li>
             </ul>
-
             <ul class="list-unstyled components">
                 <!-- <ul class="list-unstyled CTAs"> -->
-                <li>
+               {{--  <li>
                     <a href="#">Profile</a>
-                </li>
+                </li> --}}
                 <li>
-                    <a href="#">Logout</a>
+                    <a href="/">Logout</a>
                 </li>
             </ul>
         </nav>
-        @yield('section')
+        <div id="content">
+            <button type="button" id="sidebarCollapse" class="btn btn-info">
+                <i class="bi bi-list"></i>
+            </button>
+            @yield('section')
+        </div>
 
-        @yield('script')
+        <!-- Font Awesome JS -->
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"
+            integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous">
+        </script>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"
+            integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous">
+        </script>
+
+        <!-- jQuery CDN - Slim version (=without AJAX) -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+        </script>
+        <!-- Popper.JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+            integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous">
+        </script>
+        <!-- Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"
+            integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous">
+        </script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#sidebarCollapse').on('click', function() {
+                    $('#sidebar').toggleClass('active');
+                });
+            });
+        </script>
 </body>
 
 </html>
