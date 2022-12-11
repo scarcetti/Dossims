@@ -13,13 +13,14 @@ class CreateTransactionItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('transaction__items', function (Blueprint $table) {
+        Schema::create('transaction_items', function (Blueprint $table) {
             $table->id();
-            $table->integer('transaction_id');
-            $table->integer('product_id');
-            $table->double('price_at_purchase');
+            $table->unsignedBigInteger('transaction_id');
+            $table->unsignedBigInteger('product_id');
+            $table->double('price_at_purchase')->default(0.00);
             $table->integer('quantity');
             $table->timestamps();
+
         });
     }
 
@@ -30,6 +31,6 @@ class CreateTransactionItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('transaction__items');
+        Schema::dropIfExists('transaction_items');
     }
 }

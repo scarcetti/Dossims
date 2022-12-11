@@ -15,10 +15,12 @@ class CreateCustomProductDescriptionsTable extends Migration
     {
         Schema::create('custom_product_descriptions', function (Blueprint $table) {
             $table->id();
-            $table->integer('product_id');
+            $table->unsignedBigInteger('product_id');
             $table->string('label');
             $table->string('value');
             $table->timestamps();
+
+            $table->foreign('product_id')->references('id')->on('products');
         });
     }
 

@@ -15,11 +15,13 @@ class CreateTransactionPaymentsTable extends Migration
     {
         Schema::create('transaction_payments', function (Blueprint $table) {
             $table->id();
-            $table->integer('transaction_id');
-            $table->double('outstanding_balance');
-            $table->double('amount_paid');
+            $table->unsignedBigInteger('transaction_id');
+            $table->double('outstanding_balance')->default(0.00);
+            $table->double('amount_paid')->default(0.00);
             $table->string('remarks');
             $table->timestamps();
+
+          
         });
     }
 

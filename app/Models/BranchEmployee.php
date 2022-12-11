@@ -5,15 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class job_order extends Model
+class BranchEmployee extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'contract_start',
-        'contract_end',
-        'time_in',
-        'time_out',
-        'daily_rate',
-        'currency',
+        'employee_id',
+        'branch_id',
+        'job_order_id',
     ];
 }
