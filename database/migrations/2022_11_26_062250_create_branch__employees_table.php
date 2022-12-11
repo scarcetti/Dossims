@@ -13,12 +13,14 @@ class CreateBranchEmployeesTable extends Migration
      */
     public function up()
     {
-        Schema::create('branch__employees', function (Blueprint $table) {
+        Schema::create('branch_employees', function (Blueprint $table) {
             $table->id();
-            $table->integer('employee_id');
-            $table->integer('branch_id');
-            $table->integer('job_order_id');
+            $table->unsignedBigInteger('employee_id');
+            $table->unsignedBigInteger('branch_id');
+            $table->unsignedBigInteger('job_order_id');
             $table->timestamps();
+
+            
         });
     }
 
@@ -29,6 +31,6 @@ class CreateBranchEmployeesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('branch__employees');
+        Schema::dropIfExists('branch_employees');
     }
 }
