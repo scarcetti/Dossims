@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\JobOrder;
+use Illuminate\Queue\Jobs\JobName;
 
 class JobOrderController extends Controller
 {
@@ -16,10 +17,23 @@ class JobOrderController extends Controller
             'time_out'=>$jobOrder->time_out,
             'daily_rate'=>$jobOrder->daily_rate,
             'currency'=>$jobOrder->currency,
-
         ]);
     }
-    public function getJobOrders()
+
+    public function updateJobOrder(Request $request)
+    {
+        $jobOrder_data = $request->all();
+        $jobOrder = JobOrder::where('id',$request->id)->first();
+        $jobOrder->update($jobOrder_data);
+        return $jobOrder;
+    }
+
+    public function deleteJobOrder($id)
+    {
+        return JobOrder::where('id',$id)->delete();
+    }
+
+    public function fetchAllJobOrders()
     {
         return JobOrder::get();
     }

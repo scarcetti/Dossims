@@ -35,22 +35,23 @@ Route::post('createJobOrder', [JobOrderController::class,'createJobOrder']);
 Route::post('createProduct', [ProductController::class,'createProduct']);
 Route::post('createProductCategory', [ProductController::class,'createProductCategory']);
 Route::post('createRole', [RoleController::class,'createRole']);
+Route::post('createTransaction', [TransactionController::class,'createTransaction']);
 Route::post('createTransactionItem', [TransactionController::class,'createTransactionItem']);
 Route::post('createTransactionPayment', [TransactionController::class,'createTransactionPayment']);
-Route::post('createTransactions', [TransactionController::class,'createTransactions']);
 Route::post('createUser', [UserController::class,'createUser']);
 
 
-Route::get('getBranches', [BranchController::class,'getBranches']);
+Route::get('fetchAllBranches', [BranchController::class,'fetchAllBranches']);
 Route::get('getBranchEmployees', [BranchController::class,'getBranchEmployees']);
-Route::get('getCustomers', [CustomerController::class,'getCustomers']);
-Route::get('getEmployees', [EmployeeController::class,'getEmployees']);
-Route::get('getJobOrders', [JobOrderController::class,'getJobOrders']);
+Route::get('fetchAllCustomers', [CustomerController::class,'fetchAllCustomers']);
+Route::get('fetchAllEmployees', [EmployeeController::class,'fetchAllEmployees']);
+Route::get('fetchAllJobOrders', [JobOrderController::class,'fetchAllJobOrders']);
 Route::get('getProductCategories', [ProductController::class,'getProductCategories']);
-Route::get('getProducts', [ProductController::class,'getProducts']);
-Route::get('getRoles', [ProductController::class,'getRoles']);
-Route::get('getTransactionItems', [TransactionController::class,'getTransactionItems']);
-Route::get('getTransactionPayments', [TransactionController::class,'getTransactionPayments']);
-Route::get('getTransactions', [TransactionController::class,'getTransactions']);
-Route::get('getUsers', [UserController::class,'getUsers']);
+Route::get('fetchAllProducts', [ProductController::class,'fetchAllProducts']);
+Route::get('fetchAllRoles', [ProductController::class,'fetchAllRoles']);
+Route::get('fetchAllTransactionItems', [TransactionController::class,'fetchAllTransactionItems']);
+Route::get('fetchAllTransactionPayments', [TransactionController::class,'fetchAllTransactionPayments']);
+Route::get('fetchAllTransactions', [TransactionController::class,'fetchAllTransactions']);
+Route::get('fetchAllUsers', [UserController::class,'fetchAllUsers']);
+Route::get('test', [UserController::class,'test']);
 

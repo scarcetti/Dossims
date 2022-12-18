@@ -16,5 +16,8 @@ class Employee extends Model
         'birthdate',
         'contact_no',
         'address',
+        'city',
+        'province',
+        'zipcode'
     ];
 }

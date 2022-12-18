@@ -16,10 +16,24 @@ class ProductController extends Controller
             'name'=>$product->name,
             'product_category_id'=>$product->product_category_id,
             'price'=>$product->price,
-            'remaining_quantity'=>$product->quantity,
+            'quantity'=>$product->quantity,
         ]);
     }
-    public function getProducts()
+
+    public function updateProduct(Request $request)
+    {
+        $product_data = $request->all();
+        $product = Product::where('id',$request->id)->first();
+        $product->update($product_data);
+        return $product;
+    }
+
+    public function deleteProduct($id)
+    {
+        return Product::where('id',$id)->delete();
+    }
+
+    public function fetchAllProducts()
     {
         return Product::get();
     }

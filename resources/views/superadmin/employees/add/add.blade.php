@@ -41,7 +41,7 @@
                                     <option value="Female">Female</option>
                                 </select>
                             </div>
-                            <label>Gender</label>
+                            <label>Gender <span class="text-danger">*</span></label>
                         </div>
                     </div>
                     <div class="col">
@@ -80,6 +80,8 @@
                             <label>Address <span class="text-danger">*</span></label>
                         </div>
                     </div>
+                </div>
+                <div class="row row-cols-1 row-cols-md-3">
                     <div class="col">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="city" placeholder="" required>
@@ -90,6 +92,12 @@
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="province" placeholder="">
                             <label>Province <span class="text-danger">*</span></label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="zipcode" placeholder="">
+                            <label>Zipcode <span class="text-danger">*</span></label>
                         </div>
                     </div>
                 </div>

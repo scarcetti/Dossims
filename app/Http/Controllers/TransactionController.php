@@ -18,7 +18,21 @@ class TransactionController extends Controller
             'status'=>$transaction->status,
         ]);
     }
-    public function getTransactions()
+
+    public function updateTransaction(Request $request)
+    {
+        $transaction_data = $request->all();
+        $transaction = Transaction::where('id',$request->id)->first();
+        $transaction->update($transaction_data);
+        return $transaction;
+    }
+
+    public function deleteTransaction($id)
+    {
+        return Transaction::where('id',$id)->delete();
+    }
+
+    public function fetchAllTransactions()
     {
         return Transaction::get();
     }
@@ -32,7 +46,21 @@ class TransactionController extends Controller
             'quantity'=>$item->quantity,
         ]);
     }
-    public function getTransactionItems()
+
+    public function updateTransactionItem(Request $request)
+    {
+        $transactionItem_data = $request->all();
+        $transactionItem = TransactionItem::where('id',$request->id)->first();
+        $transactionItem->update($transactionItem_data);
+        return $transactionItem;
+    }
+
+    public function deleteTransactionItem($id)
+    {
+        return TransactionItem::where('id',$id)->delete();
+    }
+
+    public function fetchAllTransactionItems()
     {
         return TransactionItem::get();
     }
@@ -45,7 +73,21 @@ class TransactionController extends Controller
             'remarks'=>$payment->remarks,
         ]);
     }
-    public function getTransactionPayments()
+
+    public function updateTransactionPayment(Request $request)
+    {
+        $transactionPayment_data = $request->all();
+        $transactionPayment = TransactionPayment::where('id',$request->id)->first();
+        $transactionPayment->update($transactionPayment_data);
+        return $transactionPayment;
+    }
+
+    public function deleteTransactionPayment($id)
+    {
+        return TransactionPayment::where('id',$id)->delete();
+    }
+
+    public function fetchAllTransactionPayments()
     {
         return TransactionPayment::get();
     }
