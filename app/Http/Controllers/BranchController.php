@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\Models\Branch;
+
 use App\Models\BranchEmployee;
+
+
 
 class BranchController extends Controller
 {
@@ -45,7 +49,6 @@ class BranchController extends Controller
         return Branch::where('id',$id)->first();
     }
 
-
     public function createBranchEmployee(Request $branchEmp)
     {
         return BranchEmployee::create([
@@ -72,6 +75,9 @@ class BranchController extends Controller
     {
         return BranchEmployee::get();
     }
+
+
+    
 
     public function addSuperadminBranch(){
         return view('superadmin.branches.add.add');
