@@ -23,7 +23,21 @@ class EmployeeController extends Controller
 
         ]);
     }
-    public function getEmployees()
+
+    public function updateEmployee(Request $request)
+    {
+        $employee_data = $request->all();
+        $employee = Employee::where('id',$request->id)->first();
+        $employee->update($employee_data);
+        return $employee;
+    }
+
+    public function deleteEmployee($id)
+    {
+        return Employee::where('id',$id)->delete();
+    }
+
+    public function fetchAllEmployees()
     {
         return Employee::get();
     }

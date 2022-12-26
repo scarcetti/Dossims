@@ -15,6 +15,7 @@ class AddForeignKeyUser extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreign('employee_id')->references('id')->on('employees');
+            $table->foreign('role_id')->references('id')->on('roles');
         });
     }
 
@@ -27,6 +28,7 @@ class AddForeignKeyUser extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign('employee_id');
+            $table->dropForeign('role_id');
         });
     }
 }

@@ -21,10 +21,23 @@ class CustomerController extends Controller
             'contact_no'=>$customer->contact_no,
             'email'=>$customer->email,
             'type'=>$customer->type,
-
         ]);
     }
-    public function getCustomers()
+
+    public function updateCustomer(Request $request)
+    {
+        $customer_data = $request->all();
+        $customer = Customer::where('id',$request->id)->first();
+        $customer->update($customer_data);
+        return $customer;
+    }
+
+    public function deleteCustomer($id)
+    {
+        return Customer::where('id',$id)->delete();
+    }
+
+    public function fetchAllCustomers()
     {
         return Customer::get();
     }
