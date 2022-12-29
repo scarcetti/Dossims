@@ -44,9 +44,14 @@ class ProductController extends Controller
             'name'=>$prd->name,
         ]);
     }
-    public function getProductCategories(Request $prd)
+    public function fetchAllProductCategories(Request $prd)
     {
         return ProductCategory::get();
+    }
+
+    public function fetchProductCategoryById($id)
+    {
+        return ProductCategory::where('id',$id)->first();
     }
 
     public function addSuperadminProduct(){

@@ -43,7 +43,7 @@ class UserController extends Controller
         return User::get();
         
     }
-
+    
     public function test()
     {
         return DB::select('select * from branches');

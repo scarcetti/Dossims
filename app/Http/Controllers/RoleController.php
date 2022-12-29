@@ -32,4 +32,9 @@ class RoleController extends Controller
     {
         return Role::get();
     }
+
+    public function fetchRoleById($id)
+    {
+        return Role::where('id',$id)->first();
+    }
 }

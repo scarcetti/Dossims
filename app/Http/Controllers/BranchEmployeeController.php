@@ -30,8 +30,13 @@ class BranchEmployeeController extends Controller
         return BranchEmployee::where('id',$id)->delete();
     }
 
-    public function getBranchEmployees()
+    public function fetchBranchEmployees()
     {
         return BranchEmployee::get();
+    }
+
+    public function fetchBranchEmployeeById($branch_id)
+    {
+        return BranchEmployee::where('branch_id',$branch_id)->get();
     }
 }
