@@ -25,7 +25,7 @@ class BranchEmployeeController extends Controller
         return $branchEmp;
     }
 
-    public function deleteBranchEmp($id)
+    public function deleteBranchEmployee($id)
     {
         return BranchEmployee::where('id',$id)->delete();
     }
@@ -35,7 +35,12 @@ class BranchEmployeeController extends Controller
         return BranchEmployee::get();
     }
 
-    public function fetchBranchEmployeeById($branch_id)
+    public function fetchBranchEmployeeById($id)
+    {
+        return BranchEmployee::where('id',$id)->get();
+    }
+    
+    public function fetchBranchEmployeeByBranchId($branch_id)
     {
         return BranchEmployee::where('branch_id',$branch_id)->get();
     }

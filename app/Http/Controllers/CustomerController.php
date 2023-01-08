@@ -39,7 +39,13 @@ class CustomerController extends Controller
 
     public function fetchAllCustomers()
     {
+        $customer = Customer::get();
         return Customer::get();
+    }
+
+    public function fetchCustomerById($id)
+    {
+        return Customer::where('id',$id)->get();
     }
 
     public function viewSuperadminCustomer(){

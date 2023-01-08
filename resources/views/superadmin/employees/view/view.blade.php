@@ -14,23 +14,23 @@
                 <thead id="mainBG" style="color: white">
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Gender</th>
                         <th scope="col">Birthdate</th>
                         <th scope="col">Contact #</th>
-                        <th scope="col">Email</th>
+                        <th scope="col">Address</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php for ($x = 1; $x <=5; $x+=1) { ?>
+                    @foreach($employees as $employee)
                     <tr>
-                        <th scope="row">{{ $x }}</th>
-                        <td>Chen</td>
-                        <td>Scarcetti</td>
-                        <td>09458125746</td>
-                        <td>02/18/1995</td>
-                        <td>fronk@testemail.com</td>
+                        <th scope="row">{{ $employee->id}}</th>
+                        <td>{{ $employee->first_name }} {{ $employee->last_name }}</td>
+                        <td>{{ $employee->gender }}</td>
+                        <td>{{ $employee->birthdate }}</td>
+                        <td>{{ $employee->contact_no }}</td>
+                        <td>{{ $employee->address }}, {{ $employee->city }}, {{ $employee->province }} {{ $employee->zipcode }}</td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -44,7 +44,7 @@
                             </div>
                         </td>
                     </tr>
-                    <?php }?>
+                    @endforeach
                 </tbody>
             </table>
         </div>

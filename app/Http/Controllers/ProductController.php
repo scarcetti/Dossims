@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Product;
-use App\Models\ProductCategory;
 
 class ProductController extends Controller
 {
@@ -37,23 +36,12 @@ class ProductController extends Controller
     {
         return Product::get();
     }
-
-    public function createProductCategory(Request $prd)
+    public function fetchProductById($id)
     {
-        return ProductCategory::create([
-            'name'=>$prd->name,
-        ]);
-    }
-    public function fetchAllProductCategories(Request $prd)
-    {
-        return ProductCategory::get();
+        return Product::where('id',$id)->get();
     }
 
-    public function fetchProductCategoryById($id)
-    {
-        return ProductCategory::where('id',$id)->first();
-    }
-
+    
     public function addSuperadminProduct(){
         return view('superadmin.products.add.add');
     }

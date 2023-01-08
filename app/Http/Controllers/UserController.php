@@ -43,6 +43,11 @@ class UserController extends Controller
         return User::get();
         
     }
+
+    public function fetchUserById($id)
+    {
+        return User::where('id',$id)->first();
+    }
     
     public function test()
     {
