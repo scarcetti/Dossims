@@ -39,7 +39,15 @@ class EmployeeController extends Controller
 
     public function fetchAllEmployees()
     {
-        return Employee::get();
+        $employees = Employee::get();
+        $display = 'superadmin.employees.view.view';
+        return view($display, compact('employees'));
+        // return Employee::get();
+    }
+
+    public function fetchEmployeeById($id)
+    {
+        return Employee::where('id',$id)->get();
     }
 
     public function addSuperadminEmployee(){

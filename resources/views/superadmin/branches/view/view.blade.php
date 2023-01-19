@@ -23,14 +23,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php for ($x = 1; $x <=5; $x+=1) { ?>
+                    @foreach($branches as $branch)
                     <tr>
-                        <th scope="row">{{ $x }}</th>
-                        <td>Domings Steel 21e8</td>
-                        <td>09478513685</td>
-                        <td>Unahan sa Tumoy</td>
-                        <td>Planta? idk</td>
-                        <td>420</td>
+                        <th scope="row">{{ $branch->id }}</th>
+                        <td>{{ $branch->name }}</td>
+                        <td>{{ $branch->contact_no }}</td>
+                        <td>{{ $branch->address }}, {{ $branch->city }}, {{ $branch->province }}</td>
+                        <td>{{ $branch->type }}</td>
+                        <td>{{ $branch->employee_count }}</td>
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton"
@@ -44,7 +44,7 @@
                             </div>
                         </td>
                     </tr>
-                    <?php }?>
+                    @endforeach
                 </tbody>
             </table>
         </div>

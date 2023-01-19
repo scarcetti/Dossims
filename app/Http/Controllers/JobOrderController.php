@@ -37,6 +37,11 @@ class JobOrderController extends Controller
     {
         return JobOrder::get();
     }
+
+    public function fetchJobOrderById($id)
+    {
+        return JobOrder::where('id',$id)->first();
+    }
     public function viewFrontDeskJobOrder(){
         return view('frontdesk.joborder.view.view');
     }

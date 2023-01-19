@@ -6,13 +6,19 @@
         </div>
 
         <div class="w-md-50 p-md-3 m-auto">
-            <form method="post">
+            <form action="{{ route('createBranch') }}" method="post">
                 <h4>Branch Information</h4>
                 <div class="row row-cols-1 row-cols-md-3">
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="branch" placeholder="" required>
+                            <input type="text" class="form-control" name="name" placeholder="" required>
                             <label>Branch name<span class="text-danger">*</span></label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" name="contact_no" placeholder="" required>
+                            <label>Contact Number<span class="text-danger">*</span></label>
                         </div>
                     </div>
                     <div class="col">
@@ -51,7 +57,7 @@
                     </div>
                     <div class="col">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="zip" placeholder="" required>
+                            <input type="text" class="form-control" name="zipcode" placeholder="" required>
                             <label>Zip<span class="text-danger">*</span></label>
                         </div>
                     </div>
@@ -62,3 +68,13 @@
             </form>
         </div>
 @endsection
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js"></script>
+<script>
+    function createBranch(){
+       /*  axios.post(`branches/create`).then(response => {
+            const angTubag = response
+            console.log(response)
+        }); */
+        console.log('TEST')
+    }
+</script>

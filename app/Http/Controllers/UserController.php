@@ -44,6 +44,11 @@ class UserController extends Controller
         
     }
 
+    public function fetchUserById($id)
+    {
+        return User::where('id',$id)->first();
+    }
+    
     public function test()
     {
         return DB::select('select * from branches');

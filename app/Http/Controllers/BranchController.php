@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Branch;
 
+use Illuminate\Support\Facades\DB;
 use App\Models\BranchEmployee;
 
 
@@ -15,7 +16,8 @@ class BranchController extends Controller
 
     public function createBranch(Request $branch)
     {
-        return Branch::create([
+        $display = 'superadmin.branches.add.add';
+        $createBranch = Branch::create([
             'name'=>$branch->name,
             'contact_no'=>$branch->contact_no,
             'address'=>$branch->address,
@@ -24,6 +26,7 @@ class BranchController extends Controller
             'zipcode'=>$branch->zipcode,
             'type'=>$branch->type,
         ]);
+        return view($display, compact('createBranch'));
     }
 
     public function updateBranch(Request $request)
@@ -41,15 +44,56 @@ class BranchController extends Controller
 
     public function fetchAllBranches()
     {
-        return Branch::get();
+        $branches = Branch::select(DB::raw(
+                'branches.*,
+                count(branch_employees.id) as employee_count'
+            ))
+            ->leftJoin('branch_employees', 'branch_employees.branch_id', '=', 'branches.id')
+            ->groupBy(
+                'branches.id',
+                'branches.name',
+                'branches.contact_no',
+                'branches.city',
+                'branches.type',
+                'branches.province',
+                'branches.address',
+                'branches.zipcode',
+                'branches.created_at',
+                'branches.updated_at',
+            )
+            ->get();
+
+        $display = 'superadmin.branches.view.view';
+
+        return view($display, compact('branches'));
+        // return $branches;
     }
     
     public function fetchBranchById($id)
     {
-        return Branch::where('id',$id)->first();
+        $branches = Branch::select(DB::raw(
+            'branches.*,
+            count(branch_employees.id) as employee_count'
+        ))
+        ->leftJoin('branch_employees', 'branch_employees.branch_id', '=', 'branches.id')
+        ->groupBy(
+            'branches.id',
+            'branches.name',
+            'branches.contact_no',
+            'branches.city',
+            'branches.type',
+            'branches.province',
+            'branches.address',
+            'branches.zipcode',
+            'branches.created_at',
+            'branches.updated_at',
+        )
+        ->where('branches.id',$id)->first();
+        return $branches;
+        // return Branch::where('id',$id)->first();
     }
 
-    public function createBranchEmployee(Request $branchEmp)
+    /* public function createBranchEmployee(Request $branchEmp)
     {
         return BranchEmployee::create([
             'employee_id'=>$branchEmp->employee_id,
@@ -66,23 +110,27 @@ class BranchController extends Controller
         return $branchEmp;
     }
 
-    public function deleteBranchEmp($id)
+    public function deleteBranchEmployee($id)
     {
         return BranchEmployee::where('id',$id)->delete();
     }
 
-    public function getBranchEmployees()
+    public function fetchBranchEmployees()
     {
         return BranchEmployee::get();
     }
 
-
+    public function fetchBranchEmployeeById($branch_id)
+    {
+        return BranchEmployee::where('branch_id',$branch_id)->get();
+    }
+ */
     
 
     public function addSuperadminBranch(){
         return view('superadmin.branches.add.add');
     }
-    public function viewSuperadminBranch(){
+   /*  public function viewSuperadminBranch(){
         return view('superadmin.branches.view.view');
-    }
+    } */
 }

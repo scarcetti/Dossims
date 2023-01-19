@@ -42,7 +42,7 @@
                             <a href="{{ route('addSuperadminEmployee') }}">Add Employee</a>
                         </li>
                         <li>
-                            <a href="{{ route('viewSuperadminEmployee') }}">View Employees</a>
+                            <a href="{{ route('fetchAllEmployees') }}">View Employees</a>
                         </li>
                     </ul>
                 </li>
@@ -94,7 +94,7 @@
                             <a href="{{ route('addSuperadminBranch') }}">Add Branch</a>
                         </li>
                         <li>
-                            <a href="{{ route('viewSuperadminBranch') }}">Manage Branches</a>
+                            <a href="{{ route('fetchAllBranches') }}">Manage Branches</a>
                         </li>
                     </ul>
                 </li>
