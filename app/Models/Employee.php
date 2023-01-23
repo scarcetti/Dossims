@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Employee extends Model
 {
     use HasFactory;
+    public $additional_attributes = ['full_name'];
     protected $fillable = [
         'first_name',
         'middle_name',
@@ -20,4 +21,9 @@ class Employee extends Model
         'province',
         'zipcode'
     ];
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 }
