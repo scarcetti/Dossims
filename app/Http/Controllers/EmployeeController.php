@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Employee;
 
-class EmployeeController extends Controller
+class EmployeeController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 {
     public function createEmployee(Request $employee)
     {
