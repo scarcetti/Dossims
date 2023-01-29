@@ -27,8 +27,8 @@ class AddForeignKeyTransactionItems extends Migration
     public function down()
     {
         Schema::table('transaction_items', function (Blueprint $table) {
-            $table->dropForeign('transaction_id');
-            $table->dropForeign('product_id');
+            $table->dropForeign(['transaction_id']);
+            $table->dropForeign(['product_id']);
         });
     }
 }
