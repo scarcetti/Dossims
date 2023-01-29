@@ -28,9 +28,9 @@ class AddForeignKeyBranchEmployees extends Migration
     public function down()
     {
         Schema::table('branch_employees', function (Blueprint $table) {
-            $table->dropForeign('employee_id');
-            $table->dropForeign('branch_id');
-            $table->dropForeign('job_order_id');
+            $table->dropForeign(['employee_id']);
+            $table->dropForeign(['branch_id']);
+            $table->dropForeign(['job_order_id']);
         });
     }
 }
