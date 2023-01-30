@@ -20,6 +20,10 @@ use App\Http\Controllers\UserController;
 |
 */
 
+Route::get('/', function () {
+    return view('voyager::login');
+});
+
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
 });
