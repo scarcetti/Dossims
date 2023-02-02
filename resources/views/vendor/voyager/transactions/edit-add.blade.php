@@ -1,5 +1,21 @@
 @extends('voyager::bread.edit-add')
 @section('submit-buttons')
+    @parent
+    <style>
+        .cartContainer {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+
+        .cartContainer > div > div{
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+@endsection
+@section('submit-buttons')
+    @include('common.alert')
     <div id="app" style="margin: 0 15px;">
        {{--  <div>
             {{ $branches }}
@@ -34,14 +50,27 @@
                     "
                 >
                     {{-- @{{ item }} --}}
-                    <div >
+                    <div class="cartContainer">
                         <div>
-                            <small>Product name: </small>
-                            <h4 style="margin: 0 0 10px 0">@{{ item.product_name }}</h4>
+                            <div>
+                                <small>Product name: </small>
+                                <h4 style="margin: 0 0 10px 0">@{{ item.product_name }}</h4>
+                            </div>
+                            <div>
+                                <small>Item price: </small>
+                                <h4 style="margin: 0">@{{ item.product.price }}</h4>
+                            </div>
                         </div>
                         <div>
-                            <small>Item price: </small>
-                            <h4 style="margin: 0">@{{ item.product.price }}</h4>
+                            <div>
+                                <small>Quantity: </small>
+                                {{-- <h4 style="margin: 0">@{{ item.product.price }}</h4> --}}
+                                <input :v-model="`${item.product_id}-quantityCount`" value="1" type="number" :name="`item-${item.product_id}-quantity`">
+                            </div>
+                            <div>
+                                <small>Subtotal: </small>
+                                <h4 style="margin: 0">@{{ [item.product.id]-quantityCount }}</h4>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -70,6 +99,7 @@
             data () {
                 return {
                     value: [],
+                    cart: [],
                 }
             },
             created() {}

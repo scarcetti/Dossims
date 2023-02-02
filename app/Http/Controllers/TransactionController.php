@@ -345,11 +345,26 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return $branch_products;
         }
 
+        function addTransactionItems($data)
+        {
+            foreach( $data as $item ) {
+                
+            }
+        }
+
     public function store(Request $request)
     {
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+
+
+
+
+        // return redirect()->route("voyager.transactions.index")->with('success', 'User Deleted successfully.');
+        // return redirect()->intended('/admin/transactions/create')->with('success', 'User Deleted successfully.');
+
+
 
         // Check permission
         $this->authorize('add', app($dataType->model_name));
@@ -357,6 +372,8 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         // Validate fields with ajax
         $val = $this->validateBread($request->all(), $dataType->addRows)->validate();
         $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
+
+        $this->addTransactionItems($data);
 
         event(new BreadDataAdded($dataType, $data));
 
