@@ -5,6 +5,7 @@
         .cartContainer {
             display: flex;
             flex-wrap: nowrap;
+            align-items: center;
         }
 
         .cartContainer > div > div{
@@ -50,7 +51,7 @@
                     "
                 >
                     {{-- @{{ item }} --}}
-                    <div class="cartContainer">
+                    <div :class="`cartContainer item-${item.product_id}`">
                         <div>
                             <div>
                                 <small>Product name: </small>
@@ -58,19 +59,31 @@
                             </div>
                             <div>
                                 <small>Item price: </small>
-                                <h4 style="margin: 0">@{{ item.product.price }}</h4>
+                                <h4 style="margin: 0">₱ @{{ item.product.price }}</h4>
                             </div>
                         </div>
                         <div>
                             <div>
                                 <small>Quantity: </small>
                                 {{-- <h4 style="margin: 0">@{{ item.product.price }}</h4> --}}
-                                <input :v-model="`${item.product_id}-quantityCount`" value="1" type="number" :name="`item-${item.product_id}-quantity`">
+                                <input
+                                    :v-model="`cart.${item.product_id}-quantityCount`"
+                                    value="1"
+                                    type="number"
+                                    :name="`item-${item.product_id}-quantity`"
+                                    min="0"
+                                    :max="item.quantity"
+                                    v-on:change="valueChanged(`item-${item.product_id}`, item.product.price, index)"
+                                >
                             </div>
                             <div>
                                 <small>Subtotal: </small>
-                                <h4 style="margin: 0">@{{ [item.product.id]-quantityCount }}</h4>
+                                <h4 class="subtotal" style="margin: 0">₱ @{{ item.product.price }}</h4>
                             </div>
+                        </div>
+                        <div style="margin-left: auto;">
+                            <h5>Stock: </h5>
+                            <h4> @{{ item.quantity }} </h4>
                         </div>
                     </div>
                 </div>
@@ -100,6 +113,23 @@
                 return {
                     value: [],
                     cart: [],
+                }
+            },
+            methods: {
+                valueChanged(qtyQuery, price, index) {
+                    const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value
+                    if(Number(qtyVal) < 1) {
+                        if(window.confirm('Remove item from list?')) {
+                            // alert(1)
+                            this.value.splice(index, 1)
+                        }
+                        else {
+                            const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
+                        }
+                    }
+                    else {
+                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + String(Number(qtyVal) * Number(price))
+                    }
                 }
             },
             created() {}

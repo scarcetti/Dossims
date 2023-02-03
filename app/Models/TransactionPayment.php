@@ -12,6 +12,7 @@ class TransactionPayment extends Model
         'transaction_id',
         'outstanding_balance',
         'amount_paid',
+        'payment_type_id',
         'remarks',
         'created_at',
     ];
