@@ -18,19 +18,14 @@
 @section('submit-buttons')
     @include('common.alert')
     <div id="app" style="margin: 0 15px;">
-       {{--  <div>
-            {{ $branches }}
-        </div> --}}
-        {{-- <div>
-            {{ $branch_products ?? '' }}
-        </div> --}}
+       {{-- {!! $transaction_item ?? '' !!} --}}
         <div>
             <multiselect
                 v-model="value"
                 placeholder="Select Products"
                 label="product_name"
                 track-by="id"
-                :options={!! $branch_products ?? '' !!}
+                :options="branchProducts"
                 :multiple="true"
                 {{-- :taggable="true" --}}
             ></multiselect>
@@ -51,6 +46,7 @@
                     "
                 >
                     {{-- @{{ item }} --}}
+                    <input :name="`item-${item.product_id}-price`" :value="item.product.price" hidden />
                     <div :class="`cartContainer item-${item.product_id}`">
                         <div>
                             <div>
@@ -89,6 +85,19 @@
                 </div>
             </div>
         </div>
+        <div>
+            <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden />
+            <multiselect
+                v-model="paymentType"
+                deselect-label="Can't remove this value"
+                track-by="name"
+                label="name"
+                placeholder="Payment type"
+                :options="paymentTypes"
+                :searchable="false"
+                :allow-empty="false"
+            />
+        </div>
     </div>
     <br>
     @parent
@@ -113,6 +122,10 @@
                 return {
                     value: [],
                     cart: [],
+                    transactionItem: `{!! $transaction_item ?? '' !!}`,
+                    branchProducts: {!! $branch_products ?? '' !!},
+                    paymentType: null,
+                    paymentTypes: {!! $payment_types ?? '' !!},
                 }
             },
             methods: {
@@ -125,14 +138,24 @@
                         }
                         else {
                             const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
+                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + String(Number(qtyVal) * Number(price))
                         }
                     }
                     else {
                         document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + String(Number(qtyVal) * Number(price))
                     }
+                },
+                getUpdateValue() {
+                    if(this.transactionItem) {
+                        console.log(this.value)
+                        console.log(JSON.parse(this.transactionItem))
+                        // this.value = JSON.parse(this.transactionItem)
+                    }
                 }
             },
-            created() {}
+            created() {
+                this.getUpdateValue()
+            }
         })
     </script>
 @endsection

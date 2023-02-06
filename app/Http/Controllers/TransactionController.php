@@ -287,9 +287,67 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         // fetch extra form fields 
         $branches = $this->fetchBranches();
         $branch_products = $this->fetchBranchProducts();
+        $payment_types = $this->fetchPaymentTypes();
+        $transaction_item = $this->allTransactionItems($id);
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'transaction_item'));
     }
+
+    public function update(Request $request, $id)
+    {
+        $slug = $this->getSlug($request);
+
+        $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+
+        // Compatibility with Model binding.
+        $id = $id instanceof \Illuminate\Database\Eloquent\Model ? $id->{$id->getKeyName()} : $id;
+
+        $model = app($dataType->model_name);
+        $query = $model->query();
+        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
+            $query = $query->{$dataType->scope}();
+        }
+        if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
+            $query = $query->withTrashed();
+        }
+
+        $data = $query->findOrFail($id);
+
+        // Check permission
+        $this->authorize('edit', $data);
+
+        // Validate fields with ajax
+        $val = $this->validateBread($request->all(), $dataType->editRows, $dataType->name, $id)->validate();
+
+        // Get fields with images to remove before updating and make a copy of $data
+        $to_remove = $dataType->editRows->where('type', 'image')
+            ->filter(function ($item, $key) use ($request) {
+                return $request->hasFile($item->field);
+            });
+        $original_data = clone($data);
+
+        $this->insertUpdateData($request, $slug, $dataType->editRows, $data);
+
+        // update items
+        $this->saveProducts($request, $id);
+
+        // Delete Images
+        $this->deleteBreadImages($original_data, $to_remove);
+
+        event(new BreadDataUpdated($dataType, $data));
+
+        if (auth()->user()->can('browse', app($dataType->model_name))) {
+            $redirect = redirect()->route("voyager.{$dataType->slug}.index");
+        } else {
+            $redirect = redirect()->back();
+        }
+
+        return $redirect->with([
+            'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
+            'alert-type' => 'success',
+        ]);
+    }
+
 
     public function create(Request $request)
     {
@@ -327,13 +385,19 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         // fetch extra form fields 
         $branches = $this->fetchBranches();
         $branch_products = $this->fetchBranchProducts();
+        $payment_types = $this->fetchPaymentTypes();
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types'));
     }
 
         function fetchBranches()
         {
             return \App\Models\Branch::get();
+        }
+
+        function fetchPaymentTypes()
+        {
+            return \App\Models\PaymentType::get();
         }
 
         function fetchBranchProducts()
@@ -345,25 +409,64 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return $branch_products;
         }
 
-        function addTransactionItems($data)
+        function allTransactionItems($transaction_id)
         {
-            foreach( $data as $item ) {
-                
+            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct')->get();
+            foreach ($transaction_items as $key => $value) {
+                $transaction_items[$key]->product_name = $value->branchProduct->product->name;
+                $transaction_items[$key]->price = $value->branchProduct->product->price;
             }
+            return $transaction_items;
+        }
+
+        // CHANCE OF ERROR WHEN SAVING SEQUENCE IS MODIFIED
+        function saveProducts($request, $transaction_id)
+        {
+            $qty_pattern = '/(item-)(\d*)(-quantity)/';
+            $price_pattern = '/(item-)(\d*)(-price)/';
+
+            foreach ( $request->all() as $key => $value ) {
+                if( preg_match($price_pattern, $key) ) {
+                    $branch_product_id = intval( explode('-', $key)[1] );
+
+                    $products[$branch_product_id] = (object) [ 
+                        'price_at_purchase' => doubleval($value),
+                        'branch_product_id' => $branch_product_id,
+                        'transaction_id' => $transaction_id,
+                    ];
+                }
+                if( preg_match($qty_pattern, $key) ) {
+                    $branch_product_id = intval( explode('-', $key)[1] );
+
+                    $products[$branch_product_id]->quantity = intval( $value );
+                }
+            }
+            $products = json_decode( json_encode($products), true);
+
+            foreach($products as $item) {
+                // \App\Models\TransactionItem::insert( $products );
+                \App\Models\TransactionItem::
+                    updateOrInsert(
+                        [
+                            'transaction_id' => $transaction_id,
+                            'branch_product_id' => $item['branch_product_id'],
+                        ],
+                        [
+                            'price_at_purchase' => $item['price_at_purchase'],
+                            'quantity' => $item['quantity'],
+                        ]
+                    );
+            }
+            // return $products;
+            // code...
         }
 
     public function store(Request $request)
     {
+        return $request;
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
-
-
-
-
-        // return redirect()->route("voyager.transactions.index")->with('success', 'User Deleted successfully.');
-        // return redirect()->intended('/admin/transactions/create')->with('success', 'User Deleted successfully.');
-
 
 
         // Check permission
@@ -373,7 +476,8 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $val = $this->validateBread($request->all(), $dataType->addRows)->validate();
         $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
 
-        $this->addTransactionItems($data);
+        // save items
+        $this->saveProducts($request, $data->id);
 
         event(new BreadDataAdded($dataType, $data));
 
