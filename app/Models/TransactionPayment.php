@@ -9,7 +9,6 @@ class TransactionPayment extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'transaction_id',
         'outstanding_balance',
         'amount_paid',
         'payment_type_id',
