@@ -4,14 +4,19 @@
     <style>
         .cartContainer {
             display: flex;
-            flex-wrap: nowrap;
             align-items: center;
+            justify-content: space-around;
+            flex-wrap: nowrap;
         }
 
         .cartContainer > div > div{
             margin: 10px;
             display: flex;
             flex-direction: column;
+        }
+
+        .b_ * {
+            border: solid 1px red;
         }
     </style>
 @endsection
@@ -69,6 +74,7 @@
                                     :name="`item-${item.product_id}-quantity`"
                                     min="0"
                                     :max="item.quantity"
+                                    style="margin: 0 0 6px 0"
                                     v-on:change="valueChanged(`item-${item.product_id}`, item.product.price, index)"
                                 >
                             </div>
@@ -77,7 +83,13 @@
                                 <h4 class="subtotal" style="margin: 0">₱ @{{ item.product.price }}</h4>
                             </div>
                         </div>
-                        <div style="margin-left: auto;">
+                        <div>
+                            <div>
+                                <small>Order note: </small>
+                                <textarea :name="`item-${item.product_id}-note`" rows="4" cols="50" placeholder="Write note here."></textarea>
+                            </div>
+                        </div>
+                        <div {{-- style="margin-left: auto;" --}}>
                             <h5>Stock: </h5>
                             <h4> @{{ item.quantity }} </h4>
                         </div>
