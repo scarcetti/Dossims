@@ -329,7 +329,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $this->insertUpdateData($request, $slug, $dataType->editRows, $data);
 
         // update items
-        $this->saveProducts($request, $id);
+        // $this->saveProducts($request, $id);
 
         // Delete Images
         $this->deleteBreadImages($original_data, $to_remove);
@@ -411,7 +411,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         function allTransactionItems($transaction_id)
         {
-            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct')->get();
+            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct', 'jobOrder')->get();
             foreach ($transaction_items as $key => $value) {
                 $transaction_items[$key]->product_name = $value->branchProduct->product->name;
                 $transaction_items[$key]->price = $value->branchProduct->product->price;

@@ -24,15 +24,26 @@
     @include('common.alert')
     <div id="app" style="margin: 0 15px;">
        {{-- {!! $transaction_item ?? '' !!} --}}
+       {{-- @{{ branchProducts }} --}}
         <div>
             <multiselect
+                v-if="!transactionItem"
                 v-model="value"
                 placeholder="Select Products"
                 label="product_name"
                 track-by="id"
                 :options="branchProducts"
                 :multiple="true"
-                {{-- :taggable="true" --}}
+            ></multiselect>
+            <multiselect
+                v-else
+                disabled
+                v-model="value"
+                placeholder="Select Products"
+                label="product_name"
+                track-by="id"
+                :options="branchProducts"
+                :multiple="true"
             ></multiselect>
 
             <div style="
@@ -51,8 +62,10 @@
                     "
                 >
                     {{-- @{{ item }} --}}
-                    <input :name="`item-${item.product_id}-price`" :value="item.product.price" hidden />
-                    <div :class="`cartContainer item-${item.product_id}`">
+                    <input v-if="item.product" :name="`item-${item.product_id}-price`" :value="item.product.price" hidden />
+                    <input v-else :name="`item-${item.branch_product_id}-price`" :value="item.price_at_purchase" hidden />
+
+                    <div v-if="item.product" :class="`cartContainer item-${item.product_id}`">
                         <div>
                             <div>
                                 <small>Product name: </small>
@@ -66,7 +79,6 @@
                         <div>
                             <div>
                                 <small>Quantity: </small>
-                                {{-- <h4 style="margin: 0">@{{ item.product.price }}</h4> --}}
                                 <input
                                     :v-model="`cart.${item.product_id}-quantityCount`"
                                     value="1"
@@ -94,10 +106,55 @@
                             <h4> @{{ item.quantity }} </h4>
                         </div>
                     </div>
+
+{{--  UP module for create =============================== DOWN module for edit  --}}
+
+                    <div v-else :class="`cartContainer item-${item.branch_product_id}`">
+                        <div>
+                            <div>
+                                <small>Product name: </small>
+                                <h4 style="margin: 0 0 10px 0">@{{ item.product_name }}</h4>
+                            </div>
+                            <div>
+                                <small>Item price: </small>
+                                <h4 style="margin: 0">₱ @{{ item.price_at_purchase }}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <small>Quantity: </small>
+                                <input
+                                    readonly
+                                    :value="item.quantity"
+                                    type="number"
+                                    {{-- :name="`item-${item.branch_product_id}-quantity`" --}}
+                                    min="0"
+                                    {{-- :max="item.quantity" --}}
+                                    style="margin: 0 0 6px 0"
+                                    {{-- v-on:change="valueChanged(`item-${item.branch_product_id}`, item.price_at_purchase, index)" --}}
+                                >
+                            </div>
+                            <div>
+                                <small>Subtotal: </small>
+                                <h4 class="subtotal" style="margin: 0">₱ @{{ item.price_at_purchase * item.quantity }}</h4>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <small>Order note: </small>
+                                <textarea readonly :name="`item-${item.branch_product_id}-note`" rows="4" cols="50" placeholder="Write note here.">@{{item.job_order.note}}</textarea>
+                            </div>
+                        </div>
+                        {{-- <div>
+                            <h5>Stock: </h5>
+                            <h4> @{{ item.quantity }} </h4>
+                        </div> --}}
+                    </div>
+
                 </div>
             </div>
         </div>
-        <div>
+        <div v-if="transactionItem">
             <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden />
             <multiselect
                 v-model="paymentType"
@@ -161,12 +218,14 @@
                     if(this.transactionItem) {
                         console.log(this.value)
                         console.log(JSON.parse(this.transactionItem))
-                        // this.value = JSON.parse(this.transactionItem)
+                        this.value = JSON.parse(this.transactionItem)
                     }
                 }
             },
             created() {
-                this.getUpdateValue()
+                // setTimeout(() => {
+                    this.getUpdateValue()
+                // }, 1000)
             }
         })
     </script>

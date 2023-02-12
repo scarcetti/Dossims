@@ -19,4 +19,9 @@ class TransactionItem extends Model
     {
         return $this->belongsTo(BranchProduct::class);
     }
+
+    public function jobOrder()
+    {
+        return $this->hasOne(JobOrder::class);
+    }
 }
