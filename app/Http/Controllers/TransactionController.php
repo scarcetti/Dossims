@@ -329,7 +329,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $this->insertUpdateData($request, $slug, $dataType->editRows, $data);
 
         // update items
-        $this->saveProducts($request, $id);
+        // $this->saveProducts($request, $id);
 
         // Delete Images
         $this->deleteBreadImages($original_data, $to_remove);
@@ -411,7 +411,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         function allTransactionItems($transaction_id)
         {
-            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct')->get();
+            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct', 'jobOrder')->get();
             foreach ($transaction_items as $key => $value) {
                 $transaction_items[$key]->product_name = $value->branchProduct->product->name;
                 $transaction_items[$key]->price = $value->branchProduct->product->price;
@@ -424,6 +424,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         {
             $qty_pattern = '/(item-)(\d*)(-quantity)/';
             $price_pattern = '/(item-)(\d*)(-price)/';
+            $note_pattern = '/(item-)(\d*)(-note)/';
 
             foreach ( $request->all() as $key => $value ) {
                 if( preg_match($price_pattern, $key) ) {
@@ -432,7 +433,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                     $products[$branch_product_id] = (object) [ 
                         'price_at_purchase' => doubleval($value),
                         'branch_product_id' => $branch_product_id,
-                        'transaction_id' => $transaction_id,
+                        'transaction_id'    => $transaction_id,
                     ];
                 }
                 if( preg_match($qty_pattern, $key) ) {
@@ -440,22 +441,32 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
                     $products[$branch_product_id]->quantity = intval( $value );
                 }
+                if( preg_match($note_pattern, $key) ) {
+                    $branch_product_id = intval( explode('-', $key)[1] );
+
+                    $products[$branch_product_id]->note = $value;
+                }
             }
             $products = json_decode( json_encode($products), true);
 
             foreach($products as $item) {
                 // \App\Models\TransactionItem::insert( $products );
-                \App\Models\TransactionItem::
-                    updateOrInsert(
+                $transaction_item = \App\Models\TransactionItem::
+                    updateOrCreate(
                         [
-                            'transaction_id' => $transaction_id,
+                            'transaction_id'    => $transaction_id,
                             'branch_product_id' => $item['branch_product_id'],
                         ],
                         [
                             'price_at_purchase' => $item['price_at_purchase'],
-                            'quantity' => $item['quantity'],
+                            'quantity'          => $item['quantity'],
                         ]
                     );
+
+                    \App\Models\JobOrder::create([
+                        'transaction_item_id' => $transaction_item['id'],
+                        'note'                => $item['note'],
+                    ]);
             }
             // return $products;
             // code...
@@ -463,7 +474,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
     public function store(Request $request)
     {
-        return $request;
+        // return $request;
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
