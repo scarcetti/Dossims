@@ -23,8 +23,9 @@
 @section('submit-buttons')
     @include('common.alert')
     <div id="app" style="margin: 0 15px;">
-       {{-- {!! $transaction_item ?? '' !!} --}}
-       {{-- @{{ branchProducts }} --}}
+        <span class="txns_" hidden>
+            {!! $transaction_item ?? '' !!}
+        </span>
         <div>
             <multiselect
                 v-if="!transactionItem"
@@ -191,7 +192,7 @@
                 return {
                     value: [],
                     cart: [],
-                    transactionItem: `{!! $transaction_item ?? '' !!}`,
+                    transactionItem: [],
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
                     paymentTypes: {!! $payment_types ?? '' !!},
@@ -215,17 +216,14 @@
                     }
                 },
                 getUpdateValue() {
-                    if(this.transactionItem) {
-                        console.log(this.value)
-                        console.log(JSON.parse(this.transactionItem))
-                        this.value = JSON.parse(this.transactionItem)
+                    const txnItems = document.querySelector('span.txns_').innerHTML
+                    if(txnItems) {
+                        this.value = JSON.parse(txnItems)
                     }
                 }
             },
             created() {
-                // setTimeout(() => {
-                    this.getUpdateValue()
-                // }, 1000)
+                this.getUpdateValue()
             }
         })
     </script>
