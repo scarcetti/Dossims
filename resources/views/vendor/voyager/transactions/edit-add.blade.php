@@ -192,7 +192,7 @@
                 return {
                     value: [],
                     cart: [],
-                    transactionItem: [],
+                    transactionItem: false,
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
                     paymentTypes: {!! $payment_types ?? '' !!},
@@ -217,8 +217,11 @@
                 },
                 getUpdateValue() {
                     const txnItems = document.querySelector('span.txns_').innerHTML
-                    if(txnItems) {
-                        this.value = JSON.parse(txnItems)
+                    const pattern = /^\s*$/g;
+
+                    if(!pattern.test(txnItems)) {
+                        this.transactionItem = JSON.parse(txnItems)
+                        this.value = this.transactionItem
                     }
                 }
             },
