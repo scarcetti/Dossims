@@ -81,6 +81,7 @@
                             <div>
                                 <small>Quantity: </small>
                                 <input
+                                    class="form-control"
                                     :v-model="`cart.${item.product_id}-quantityCount`"
                                     value="1"
                                     type="number"
@@ -99,7 +100,7 @@
                         <div>
                             <div>
                                 <small>Order note: </small>
-                                <textarea :name="`item-${item.product_id}-note`" rows="4" cols="50" placeholder="Write note here."></textarea>
+                                <textarea class="form-control" :name="`item-${item.product_id}-note`" rows="4" cols="50" placeholder="Write note here."></textarea>
                             </div>
                         </div>
                         <div {{-- style="margin-left: auto;" --}}>
@@ -125,14 +126,12 @@
                             <div>
                                 <small>Quantity: </small>
                                 <input
+                                    class="form-control"
                                     readonly
                                     :value="item.quantity"
                                     type="number"
-                                    {{-- :name="`item-${item.branch_product_id}-quantity`" --}}
                                     min="0"
-                                    {{-- :max="item.quantity" --}}
                                     style="margin: 0 0 6px 0"
-                                    {{-- v-on:change="valueChanged(`item-${item.branch_product_id}`, item.price_at_purchase, index)" --}}
                                 >
                             </div>
                             <div>
@@ -143,7 +142,7 @@
                         <div>
                             <div>
                                 <small>Order note: </small>
-                                <textarea readonly :name="`item-${item.branch_product_id}-note`" rows="4" cols="50" placeholder="Write note here.">@{{item.job_order.note}}</textarea>
+                                <textarea readonly class="form-control" :name="`item-${item.branch_product_id}-note`" rows="4" cols="50" placeholder="Write note here.">@{{item.job_order.note}}</textarea>
                             </div>
                         </div>
                         {{-- <div>
@@ -155,8 +154,8 @@
                 </div>
             </div>
         </div>
-        <div v-if="transactionItem">
-            <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden />
+        <div v-if="transactionItem" style="margin: 30px 0 15px 0;">
+            <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden/>
             <multiselect
                 v-model="paymentType"
                 deselect-label="Can't remove this value"
@@ -167,7 +166,18 @@
                 :searchable="false"
                 :allow-empty="false"
             />
+
         </div>
+            <div class="form-group  col-md-12" style="padding: 0;">
+
+                <label class="control-label" for="name">Amount tendered</label>
+                <input
+                    class="form-control"
+                    type="number"
+                    min="0"
+                    style="margin: 0 0 6px 0"
+                >
+            </div>
     </div>
     <br>
     @parent
@@ -223,10 +233,23 @@
                         this.transactionItem = JSON.parse(txnItems)
                         this.value = this.transactionItem
                     }
+                },
+                hideElements() {
+                    // Hide Status field
+                    const element = document.querySelector('input.form-control[name="status"]').parentNode
+                    element.style.display = 'none'
+                },
+                disableElements() {
+                    if(this.transactionItem) {
+                        document.querySelector('input.form-control[name="created_at"]').setAttribute("readonly", "readonly");
+                    }
                 }
             },
             created() {
                 this.getUpdateValue()
+
+                this.hideElements()
+                this.disableElements()
             }
         })
     </script>
