@@ -1,24 +1,6 @@
 @extends('voyager::bread.edit-add')
 @section('submit-buttons')
     @parent
-    <style>
-        .cartContainer {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            flex-wrap: nowrap;
-        }
-
-        .cartContainer > div > div{
-            margin: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .b_ * {
-            border: solid 1px red;
-        }
-    </style>
 @endsection
 @section('submit-buttons')
     @include('common.alert')
@@ -145,10 +127,55 @@
                                 <textarea readonly class="form-control" :name="`item-${item.branch_product_id}-note`" rows="4" cols="50" placeholder="Write note here.">@{{item.job_order.note}}</textarea>
                             </div>
                         </div>
-                        {{-- <div>
-                            <h5>Stock: </h5>
-                            <h4> @{{ item.quantity }} </h4>
-                        </div> --}}
+                        <div>
+                            <span v-on:click="discountDialogShow(item.branch_product_id)" class="btn btn-primary save">Add discount</span>
+                        </div>
+                        <div class="modal fade" :id="`discountDialog${item.branch_product_id}`" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
+                            <div class="modal-success-dialog modal-dialog" role="document" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="display: flex; align-items: center;">
+                                        <h5 class="modal-title" id="dialogLabel">Set discounts for @{{ item.product_name }}</h5>
+                                        <button type="button" {{-- @click="closeImage" --}} class="close" data-dismiss="modal" aria-label="Close" style="margin-left: auto;">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <hr style="margin: 0">
+                                    <div class="modal-body" style="padding-top: 0px !important; padding-left: 5%; padding-right: 5%; max-height: 70vh;">
+                                        <div class="form-group  col-md-12" style="padding: 0;">
+                                            <label class="control-label" for="name">Discount value</label>
+                                            <input
+                                                :name="`item-${item.branch_product_id}-discount-value`"
+                                                class="form-control"
+                                                type="number"
+                                                min="0"
+                                                style="margin: 0 0 6px 0"
+                                            >
+                                        </div>
+                                        <div style="margin: 0 10px">
+                                            <h5>Fixed amount</h5>
+                                            <label class="switch">
+                                                <input :name="`item-${item.branch_product_id}-discount-type-fixed-amount`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
+                                                <div class="slider round"></div>
+                                            </label>
+                                        </div>
+                                        <div style="margin: 0 10px">
+                                            <h5>Percentage</h5>
+                                            <label class="switch">
+                                                <input :name="`item-${item.branch_product_id}-discount-type-percentage`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
+                                                <div class="slider round"></div>
+                                            </label>
+                                        </div>
+                                        <div style="margin: 0 10px">
+                                            <h5>Per item <small><br>@{{ cbNote3 }}</small></h5>
+                                            <label class="switch">
+                                                <input :name="`item-${item.branch_product_id}-discount-type-per-item`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
+                                                <div class="slider round"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -168,16 +195,17 @@
             />
 
         </div>
-            <div class="form-group  col-md-12" style="padding: 0;">
+        <div v-if="transactionItem" class="form-group  col-md-12" style="padding: 0;">
 
-                <label class="control-label" for="name">Amount tendered</label>
-                <input
-                    class="form-control"
-                    type="number"
-                    min="0"
-                    style="margin: 0 0 6px 0"
-                >
-            </div>
+            <label class="control-label" for="name">Amount tendered</label>
+            <input
+                name="amount-tendered"
+                class="form-control"
+                type="number"
+                min="0"
+                style="margin: 0 0 6px 0"
+            >
+        </div>
     </div>
     <br>
     @parent
@@ -188,6 +216,7 @@
     <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/transactions.css') }}">
 
     <script type="module">
         // import VueNumberInput from '@chenfengyuan/vue-number-input';
@@ -206,6 +235,7 @@
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
                     paymentTypes: {!! $payment_types ?? '' !!},
+                    cbNote3: 'When switch is green, discounts are applied per item. Otherwise, discount is applied on the subtotal',
                 }
             },
             methods: {
@@ -243,7 +273,10 @@
                     if(this.transactionItem) {
                         document.querySelector('input.form-control[name="created_at"]').setAttribute("readonly", "readonly");
                     }
-                }
+                },
+                discountDialogShow(id) {
+                    $(`#discountDialog${id}`).modal({backdrop: 'static', keyboard: false});
+                },
             },
             created() {
                 this.getUpdateValue()

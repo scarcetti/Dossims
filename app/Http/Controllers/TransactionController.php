@@ -295,6 +295,9 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
     public function update(Request $request, $id)
     {
+        // return $request;
+        // return $this->saveDiscounts($request, null);
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -347,7 +350,35 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             'alert-type' => 'success',
         ]);
     }
+        function fetchPaymentTypes()
+        {
+            return \App\Models\PaymentType::get();
+        }
 
+        function allTransactionItems($transaction_id)
+        {
+            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct', 'jobOrder')->get();
+            foreach ($transaction_items as $key => $value) {
+                $transaction_items[$key]->product_name = $value->branchProduct->product->name;
+                $transaction_items[$key]->price = $value->branchProduct->product->price;
+            }
+            return $transaction_items;
+        }
+
+        function saveDiscounts($request, $transaction_id)
+        {
+            # regex patterns
+            $value_ = '/(item-)(\d*)(-discount-value)/';
+            $fixed_ = '/(item-)(\d*)(-discount-type-fixed-amount)/';
+            $percentage_ = '/(item-)(\d*)(-discount-type-percentage)/';
+            $per_item_ = '/(item-)(\d*)(-discount-type-per-item)/';
+
+            foreach( $request->all() as $key => $value ) {
+                if(preg_match($value_, $key)) {
+                    // return [$key, $value];
+                }
+            }
+        }
 
     public function create(Request $request)
     {
@@ -395,11 +426,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return \App\Models\Branch::get();
         }
 
-        function fetchPaymentTypes()
-        {
-            return \App\Models\PaymentType::get();
-        }
-
         function fetchBranchProducts()
         {
             $branch_products = \App\Models\BranchProduct::with('product')->get();
@@ -407,16 +433,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                 $branch_products[$key]->product_name = $value->product->name;
             }
             return $branch_products;
-        }
-
-        function allTransactionItems($transaction_id)
-        {
-            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct', 'jobOrder')->get();
-            foreach ($transaction_items as $key => $value) {
-                $transaction_items[$key]->product_name = $value->branchProduct->product->name;
-                $transaction_items[$key]->price = $value->branchProduct->product->price;
-            }
-            return $transaction_items;
         }
 
         // CHANCE OF ERROR WHEN SAVING SEQUENCE IS MODIFIED
