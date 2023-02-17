@@ -295,8 +295,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
     public function update(Request $request, $id)
     {
-        // return $request;
-        // return $this->saveDiscounts($request, null);
+        $this->saveDiscounts($request);
 
         $slug = $this->getSlug($request);
 
@@ -365,7 +364,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return $transaction_items;
         }
 
-        function saveDiscounts($request, $transaction_id)
+        function saveDiscounts($request)
         {
             # regex patterns
             $value_ = '/(item-)(\d*)(-discount-value)/';
@@ -375,8 +374,47 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
             foreach( $request->all() as $key => $value ) {
                 if(preg_match($value_, $key)) {
-                    // return [$key, $value];
+                    $transaction_item_id = intval( explode('-', $key)[1] );
+
+                    if(intval($value) > 0) {
+                        $transaction_item_discounts[$transaction_item_id] = (object) [
+                            'transaction_item_id' => $transaction_item_id,
+                            'value' => intval($value),
+                        ];
+                    }
                 }
+                if( preg_match($fixed_, $key) ) {
+                    $transaction_item_id = intval( explode('-', $key)[1] );
+
+                    $transaction_item_discounts[$transaction_item_id]->fixed_amount = boolval($value);
+                }
+                if( preg_match($percentage_, $key) ) {
+                    $transaction_item_id = intval( explode('-', $key)[1] );
+
+                    $transaction_item_discounts[$transaction_item_id]->percentage = boolval($value);
+                }
+                if( preg_match($per_item_, $key) ) {
+                    $transaction_item_id = intval( explode('-', $key)[1] );
+
+                    $transaction_item_discounts[$transaction_item_id]->per_item = boolval($value);
+                }
+
+            }
+            $transaction_item_discounts = json_decode( json_encode($transaction_item_discounts), true);
+
+            foreach($transaction_item_discounts as $item) {
+                $transaction_item = \App\Models\Discount::
+                    updateOrCreate(
+                        [
+                            'transaction_item_id' => $item['transaction_item_id'],
+                        ],
+                        [
+                            'value'               => isset($item['value']) ? $item['value'] : null,
+                            'per_item'            => isset($item['per_item']) ? $item['per_item'] : null,
+                            'fixed_amount'        => isset($item['fixed_amount']) ? $item['fixed_amount'] : null,
+                            'percentage'          => isset($item['percentage']) ? $item['percentage'] : null,
+                        ]
+                    );
             }
         }
 
@@ -466,7 +504,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $products = json_decode( json_encode($products), true);
 
             foreach($products as $item) {
-                // \App\Models\TransactionItem::insert( $products );
                 $transaction_item = \App\Models\TransactionItem::
                     updateOrCreate(
                         [
@@ -484,8 +521,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                         'note'                => $item['note'],
                     ]);
             }
-            // return $products;
-            // code...
         }
 
     public function store(Request $request)

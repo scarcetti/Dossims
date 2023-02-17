@@ -46,7 +46,7 @@
                 >
                     {{-- @{{ item }} --}}
                     <input v-if="item.product" :name="`item-${item.product_id}-price`" :value="item.product.price" hidden />
-                    <input v-else :name="`item-${item.branch_product_id}-price`" :value="item.price_at_purchase" hidden />
+                    <input v-else :name="`item-${item.id}-price`" :value="item.price_at_purchase" hidden />
 
                     <div v-if="item.product" :class="`cartContainer item-${item.product_id}`">
                         <div>
@@ -93,7 +93,13 @@
 
 {{--  UP module for create =============================== DOWN module for edit  --}}
 
-                    <div v-else :class="`cartContainer item-${item.branch_product_id}`">
+{{-- 
+        !!! NOTE FOR FUTURE SELF ON EDIT !!!
+        
+        module for create using branch_products.id while on update mode using transaction_items.id for reference
+ --}}
+
+                    <div v-else :class="`cartContainer item-${item.id}`">
                         <div>
                             <div>
                                 <small>Product name: </small>
@@ -124,13 +130,13 @@
                         <div>
                             <div>
                                 <small>Order note: </small>
-                                <textarea readonly class="form-control" :name="`item-${item.branch_product_id}-note`" rows="4" cols="50" placeholder="Write note here.">@{{item.job_order.note}}</textarea>
+                                <textarea readonly class="form-control" :name="`item-${item.id}-note`" rows="4" cols="50" placeholder="Write note here.">@{{item.job_order.note}}</textarea>
                             </div>
                         </div>
                         <div>
-                            <span v-on:click="discountDialogShow(item.branch_product_id)" class="btn btn-primary save">Add discount</span>
+                            <span v-on:click="discountDialogShow(item.id)" class="btn btn-primary save">Add discount</span>
                         </div>
-                        <div class="modal fade" :id="`discountDialog${item.branch_product_id}`" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
+                        <div class="modal fade" :id="`discountDialog${item.id}`" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
                             <div class="modal-success-dialog modal-dialog" role="document" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
                                 <div class="modal-content">
                                     <div class="modal-header" style="display: flex; align-items: center;">
@@ -144,7 +150,7 @@
                                         <div class="form-group  col-md-12" style="padding: 0;">
                                             <label class="control-label" for="name">Discount value</label>
                                             <input
-                                                :name="`item-${item.branch_product_id}-discount-value`"
+                                                :name="`item-${item.id}-discount-value`"
                                                 class="form-control"
                                                 type="number"
                                                 min="0"
@@ -154,21 +160,21 @@
                                         <div style="margin: 0 10px">
                                             <h5>Fixed amount</h5>
                                             <label class="switch">
-                                                <input :name="`item-${item.branch_product_id}-discount-type-fixed-amount`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
+                                                <input :name="`item-${item.id}-discount-type-fixed-amount`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
                                                 <div class="slider round"></div>
                                             </label>
                                         </div>
                                         <div style="margin: 0 10px">
                                             <h5>Percentage</h5>
                                             <label class="switch">
-                                                <input :name="`item-${item.branch_product_id}-discount-type-percentage`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
+                                                <input :name="`item-${item.id}-discount-type-percentage`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
                                                 <div class="slider round"></div>
                                             </label>
                                         </div>
                                         <div style="margin: 0 10px">
                                             <h5>Per item <small><br>@{{ cbNote3 }}</small></h5>
                                             <label class="switch">
-                                                <input :name="`item-${item.branch_product_id}-discount-type-per-item`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
+                                                <input :name="`item-${item.id}-discount-type-per-item`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
                                                 <div class="slider round"></div>
                                             </label>
                                         </div>
