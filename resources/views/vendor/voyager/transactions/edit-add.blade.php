@@ -61,7 +61,7 @@
                         </div>
                         <div>
                             <div>
-                                <small>Quantity: </small>
+                                <small>@{{ item.product.measurement_unit.name }}: </small>
                                 <input
                                     class="form-control"
                                     :v-model="`cart.${item.product_id}-quantityCount`"
@@ -87,7 +87,7 @@
                         </div>
                         <div {{-- style="margin-left: auto;" --}}>
                             <h5>Stock: </h5>
-                            <h4> @{{ item.quantity }} </h4>
+                            <h4> @{{ item.quantity }} @{{ item.product.measurement_unit.name }}</h4>
                         </div>
                     </div>
 
@@ -112,7 +112,7 @@
                         </div>
                         <div>
                             <div>
-                                <small>Quantity: </small>
+                                <small>@{{ item.branch_product.product.measurement_unit.name }}: </small>
                                 <input
                                     class="form-control"
                                     readonly
@@ -134,8 +134,12 @@
                             </div>
                         </div>
                         <div>
-                            <span v-on:click="discountDialogShow(item.id)" class="btn btn-primary save">Add discount</span>
+                            <span v-if="item.transaction.status == 'pending' && !item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">Add discount</span>
+                            <span v-if="item.transaction.status == 'pending' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>
+                            <span v-if="item.transaction.status == 'procuring' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>
+                            <span v-if="item.transaction.status == 'procuring' && !item.discount" class="btn" readonly style="background: #cbc0b3; color: white;">Not discounted</span>
                         </div>
+                        {{-- @{{item.discount}} --}}
                         <div class="modal fade" :id="`discountDialog${item.id}`" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
                             <div class="modal-success-dialog modal-dialog" role="document" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
                                 <div class="modal-content">
@@ -150,6 +154,16 @@
                                         <div class="form-group  col-md-12" style="padding: 0;">
                                             <label class="control-label" for="name">Discount value</label>
                                             <input
+                                                v-if="item.discount"
+                                                :name="`item-${item.id}-discount-value`"
+                                                class="form-control"
+                                                type="number"
+                                                min="0"
+                                                v-model="item.discount.value"
+                                                style="margin: 0 0 6px 0"
+                                            >
+                                            <input
+                                                v-else
                                                 :name="`item-${item.id}-discount-value`"
                                                 class="form-control"
                                                 type="number"
@@ -157,21 +171,27 @@
                                                 style="margin: 0 0 6px 0"
                                             >
                                         </div>
-                                        <div style="margin: 0 10px">
-                                            <h5>Fixed amount</h5>
-                                            <label class="switch">
-                                                <input :name="`item-${item.id}-discount-type-fixed-amount`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
-                                                <div class="slider round"></div>
-                                            </label>
+
+                                        <div class="form-group  col-md-12 ">
+                                            <h5>Type of discount</h5>
+                                            <ul v-if="item.transaction.status == 'pending'" class="radio">
+                                                <li>
+                                                    <input type="radio" :id="`item-${item.id}-option-type-fixed`" :name="`item-${item.id}-discount-type`" value="fixed">
+                                                    <label :for="`item-${item.id}-option-type-fixed`">Fixed amount</label>
+                                                    <div class="check"></div>
+                                                </li>
+                                                <li>
+                                                    <input type="radio" :id="`item-${item.id}-option-type-percentage`" :name="`item-${item.id}-discount-type`" value="percentage">
+                                                    <label :for="`item-${item.id}-option-type-percentage`">Percentage</label>
+                                                    <div class="check"></div>
+                                                </li>
+                                            </ul>
+                                            <ul v-if="item.transaction.status == 'procuring' && item.discount">
+                                                <li><label>@{{ item.discount.fixed_amount ? 'Fixed amount' : 'By percentage' }}</label></li>
+                                                <li><label>@{{ item.discount.per_item ? `Applied per ${item.branch_product.product.measurement_unit.name}` : 'Applied on the subtotal' }}</label></li>
+                                            </ul>
                                         </div>
-                                        <div style="margin: 0 10px">
-                                            <h5>Percentage</h5>
-                                            <label class="switch">
-                                                <input :name="`item-${item.id}-discount-type-percentage`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
-                                                <div class="slider round"></div>
-                                            </label>
-                                        </div>
-                                        <div style="margin: 0 10px">
+                                        <div v-if="item.transaction.status == 'pending'" style="margin: 0 10px">
                                             <h5>Per item <small><br>@{{ cbNote3 }}</small></h5>
                                             <label class="switch">
                                                 <input :name="`item-${item.id}-discount-type-per-item`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
@@ -205,7 +225,7 @@
 
             <label class="control-label" for="name">Amount tendered</label>
             <input
-                name="amount-tendered"
+                name="amount_tendered"
                 class="form-control"
                 type="number"
                 min="0"
@@ -237,6 +257,7 @@
                 return {
                     value: [],
                     cart: [],
+                    discount: [],
                     transactionItem: false,
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
@@ -288,7 +309,7 @@
                 this.getUpdateValue()
 
                 this.hideElements()
-                this.disableElements()
+                // this.disableElements()
             }
         })
     </script>

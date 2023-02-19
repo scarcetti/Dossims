@@ -295,6 +295,8 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
     public function update(Request $request, $id)
     {
+        // return $request;
+
         $this->saveDiscounts($request);
 
         $slug = $this->getSlug($request);
@@ -344,6 +346,8 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $redirect = redirect()->back();
         }
 
+        $this->updateTransactionStatus($id);
+
         return $redirect->with([
             'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
             'alert-type' => 'success',
@@ -356,7 +360,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         function allTransactionItems($transaction_id)
         {
-            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct', 'jobOrder')->get();
+            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct.product.measurementUnit', 'jobOrder', 'discount', 'transaction')->get();
             foreach ($transaction_items as $key => $value) {
                 $transaction_items[$key]->product_name = $value->branchProduct->product->name;
                 $transaction_items[$key]->price = $value->branchProduct->product->price;
@@ -364,12 +368,16 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return $transaction_items;
         }
 
+        function updateTransactionStatus($id)
+        {
+            return \App\Models\Transaction::where('id', $id)->update(['status' => 'procuring']);
+        }
+
         function saveDiscounts($request)
         {
             # regex patterns
             $value_ = '/(item-)(\d*)(-discount-value)/';
-            $fixed_ = '/(item-)(\d*)(-discount-type-fixed-amount)/';
-            $percentage_ = '/(item-)(\d*)(-discount-type-percentage)/';
+            $discount_type_ = '/(item-)(\d*)(-discount-type)/';
             $per_item_ = '/(item-)(\d*)(-discount-type-per-item)/';
 
             foreach( $request->all() as $key => $value ) {
@@ -383,39 +391,76 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                         ];
                     }
                 }
-                if( preg_match($fixed_, $key) ) {
+                if( preg_match($discount_type_, $key) ) {
                     $transaction_item_id = intval( explode('-', $key)[1] );
 
-                    $transaction_item_discounts[$transaction_item_id]->fixed_amount = boolval($value);
-                }
-                if( preg_match($percentage_, $key) ) {
-                    $transaction_item_id = intval( explode('-', $key)[1] );
+                    $fixed = $value == 'fixed';
+                    $percentage = $value == 'percentage';
 
-                    $transaction_item_discounts[$transaction_item_id]->percentage = boolval($value);
+                    if(isset($transaction_item_discounts[$transaction_item_id])) {
+                        $transaction_item_discounts[$transaction_item_id]->fixed_amount = $fixed;
+                        $transaction_item_discounts[$transaction_item_id]->percentage = $percentage;
+                    }
                 }
                 if( preg_match($per_item_, $key) ) {
                     $transaction_item_id = intval( explode('-', $key)[1] );
 
-                    $transaction_item_discounts[$transaction_item_id]->per_item = boolval($value);
+                    if(isset($transaction_item_discounts[$transaction_item_id])) {
+                        $transaction_item_discounts[$transaction_item_id]->per_item = boolval($value);
+                    }
                 }
 
             }
-            $transaction_item_discounts = json_decode( json_encode($transaction_item_discounts), true);
 
-            foreach($transaction_item_discounts as $item) {
-                $transaction_item = \App\Models\Discount::
-                    updateOrCreate(
-                        [
-                            'transaction_item_id' => $item['transaction_item_id'],
-                        ],
-                        [
-                            'value'               => isset($item['value']) ? $item['value'] : null,
-                            'per_item'            => isset($item['per_item']) ? $item['per_item'] : null,
-                            'fixed_amount'        => isset($item['fixed_amount']) ? $item['fixed_amount'] : null,
-                            'percentage'          => isset($item['percentage']) ? $item['percentage'] : null,
-                        ]
-                    );
+            if(isset($transaction_item_discounts)) {
+                $transaction_item_discounts = json_decode( json_encode($transaction_item_discounts), true);
+
+                foreach($transaction_item_discounts as $item) {
+                    $transaction_item = \App\Models\Discount::
+                        updateOrCreate(
+                            [
+                                'transaction_item_id' => $item['transaction_item_id'],
+                            ],
+                            [
+                                'value'               => isset($item['value']) ? $item['value'] : null,
+                                'per_item'            => isset($item['per_item']) ? $item['per_item'] : null,
+                                'fixed_amount'        => isset($item['fixed_amount']) ? $item['fixed_amount'] : null,
+                                'percentage'          => isset($item['percentage']) ? $item['percentage'] : null,
+                            ]
+                        );
+                }
             }
+        }
+
+        function saveTransactionPayments($request)
+        {
+            #    Payment types value:
+            #       1 Downpayment
+            #       2 Full payment
+            #       3 Periodic payment
+            #       4 Final payment
+
+            if(intval($request->payment_type_id) == 1) {
+
+            }
+            elseif(intval($request->payment_type_id) == 2) {
+
+            }
+            elseif(intval($request->payment_type_id) == 3) {
+
+            }
+            elseif(intval($request->payment_type_id) == 4) {
+
+            }
+
+            $transaction_payment = \App\Models\TransactionPayment::create([
+                'outstanding_balance'   => null,
+                'amount_paid'           => $request->amount_tendered,
+                'payment_type_id'       => intval($request->payment_type_id),
+                'remarks'               => null,
+            ]);
+
+            // return $transaction_payment;
         }
 
     public function create(Request $request)
@@ -466,7 +511,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         function fetchBranchProducts()
         {
-            $branch_products = \App\Models\BranchProduct::with('product')->get();
+            $branch_products = \App\Models\BranchProduct::with('product.measurementUnit')->get();
             foreach ($branch_products as $key => $value) {
                 $branch_products[$key]->product_name = $value->product->name;
             }
