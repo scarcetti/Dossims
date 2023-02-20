@@ -5,13 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TransactionPayment extends Model
+class Discount extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'outstanding_balance',
-        'amount_paid',
-        'payment_type_id',
-        'remarks',
+        'transaction_item_id',
+        'value',
+        'per_item',
+        'fixed_amount',
+        'percentage',
     ];
 }

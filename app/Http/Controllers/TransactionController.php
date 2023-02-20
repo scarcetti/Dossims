@@ -295,6 +295,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
     public function update(Request $request, $id)
     {
+        // return $request;
+
+        $this->saveDiscounts($request);
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -342,12 +346,122 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $redirect = redirect()->back();
         }
 
+        $this->updateTransactionStatus($id);
+
         return $redirect->with([
             'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
             'alert-type' => 'success',
         ]);
     }
+        function fetchPaymentTypes()
+        {
+            return \App\Models\PaymentType::get();
+        }
 
+        function allTransactionItems($transaction_id)
+        {
+            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct.product.measurementUnit', 'jobOrder', 'discount', 'transaction')->get();
+            foreach ($transaction_items as $key => $value) {
+                $transaction_items[$key]->product_name = $value->branchProduct->product->name;
+                $transaction_items[$key]->price = $value->branchProduct->product->price;
+            }
+            return $transaction_items;
+        }
+
+        function updateTransactionStatus($id)
+        {
+            return \App\Models\Transaction::where('id', $id)->update(['status' => 'procuring']);
+        }
+
+        function saveDiscounts($request)
+        {
+            # regex patterns
+            $value_ = '/(item-)(\d*)(-discount-value)/';
+            $discount_type_ = '/(item-)(\d*)(-discount-type)/';
+            $per_item_ = '/(item-)(\d*)(-discount-type-per-item)/';
+
+            foreach( $request->all() as $key => $value ) {
+                if(preg_match($value_, $key)) {
+                    $transaction_item_id = intval( explode('-', $key)[1] );
+
+                    if(intval($value) > 0) {
+                        $transaction_item_discounts[$transaction_item_id] = (object) [
+                            'transaction_item_id' => $transaction_item_id,
+                            'value' => intval($value),
+                        ];
+                    }
+                }
+                if( preg_match($discount_type_, $key) ) {
+                    $transaction_item_id = intval( explode('-', $key)[1] );
+
+                    $fixed = $value == 'fixed';
+                    $percentage = $value == 'percentage';
+
+                    if(isset($transaction_item_discounts[$transaction_item_id])) {
+                        $transaction_item_discounts[$transaction_item_id]->fixed_amount = $fixed;
+                        $transaction_item_discounts[$transaction_item_id]->percentage = $percentage;
+                    }
+                }
+                if( preg_match($per_item_, $key) ) {
+                    $transaction_item_id = intval( explode('-', $key)[1] );
+
+                    if(isset($transaction_item_discounts[$transaction_item_id])) {
+                        $transaction_item_discounts[$transaction_item_id]->per_item = boolval($value);
+                    }
+                }
+
+            }
+
+            if(isset($transaction_item_discounts)) {
+                $transaction_item_discounts = json_decode( json_encode($transaction_item_discounts), true);
+
+                foreach($transaction_item_discounts as $item) {
+                    $transaction_item = \App\Models\Discount::
+                        updateOrCreate(
+                            [
+                                'transaction_item_id' => $item['transaction_item_id'],
+                            ],
+                            [
+                                'value'               => isset($item['value']) ? $item['value'] : null,
+                                'per_item'            => isset($item['per_item']) ? $item['per_item'] : null,
+                                'fixed_amount'        => isset($item['fixed_amount']) ? $item['fixed_amount'] : null,
+                                'percentage'          => isset($item['percentage']) ? $item['percentage'] : null,
+                            ]
+                        );
+                }
+            }
+        }
+
+        function saveTransactionPayments($request)
+        {
+            #    Payment types value:
+            #       1 Downpayment
+            #       2 Full payment
+            #       3 Periodic payment
+            #       4 Final payment
+
+            if(intval($request->payment_type_id) == 1) {
+
+            }
+            elseif(intval($request->payment_type_id) == 2) {
+
+            }
+            elseif(intval($request->payment_type_id) == 3) {
+
+            }
+            elseif(intval($request->payment_type_id) == 4) {
+
+            }
+
+            $transaction_payment = \App\Models\TransactionPayment::create([
+                'outstanding_balance'   => null,
+                'amount_paid'           => $request->amount_tendered,
+                'payment_type_id'       => intval($request->payment_type_id),
+                'remarks'               => null,
+            ]);
+
+            // return $transaction_payment;
+        }
 
     public function create(Request $request)
     {
@@ -395,28 +509,13 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return \App\Models\Branch::get();
         }
 
-        function fetchPaymentTypes()
-        {
-            return \App\Models\PaymentType::get();
-        }
-
         function fetchBranchProducts()
         {
-            $branch_products = \App\Models\BranchProduct::with('product')->get();
+            $branch_products = \App\Models\BranchProduct::with('product.measurementUnit')->get();
             foreach ($branch_products as $key => $value) {
                 $branch_products[$key]->product_name = $value->product->name;
             }
             return $branch_products;
-        }
-
-        function allTransactionItems($transaction_id)
-        {
-            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct', 'jobOrder')->get();
-            foreach ($transaction_items as $key => $value) {
-                $transaction_items[$key]->product_name = $value->branchProduct->product->name;
-                $transaction_items[$key]->price = $value->branchProduct->product->price;
-            }
-            return $transaction_items;
         }
 
         // CHANCE OF ERROR WHEN SAVING SEQUENCE IS MODIFIED
@@ -450,7 +549,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $products = json_decode( json_encode($products), true);
 
             foreach($products as $item) {
-                // \App\Models\TransactionItem::insert( $products );
                 $transaction_item = \App\Models\TransactionItem::
                     updateOrCreate(
                         [
@@ -468,8 +566,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                         'note'                => $item['note'],
                     ]);
             }
-            // return $products;
-            // code...
         }
 
     public function store(Request $request)

@@ -12,5 +12,11 @@ class Product extends Model
         'name',
         'product_category_id',
         'price',
+        'measurement_unit_id',
     ];
+
+    public function measurementUnit()
+    {
+        return $this->belongsTo(MeasurementUnit::class);
+    }
 }

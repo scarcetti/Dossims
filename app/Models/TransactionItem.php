@@ -20,8 +20,18 @@ class TransactionItem extends Model
         return $this->belongsTo(BranchProduct::class);
     }
 
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class);
+    }
+
     public function jobOrder()
     {
         return $this->hasOne(JobOrder::class);
+    }
+
+    public function discount()
+    {
+        return $this->hasOne(Discount::class);
     }
 }
