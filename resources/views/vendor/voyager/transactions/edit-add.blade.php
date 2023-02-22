@@ -126,11 +126,11 @@
                             <div>
                                 <small>Subtotal: </small>
                                 <span v-if="item.discount_value" style="display: flex;">
-                                    <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>₱ @{{ item.price_at_purchase * item.quantity }}</s></h4>&nbsp;&nbsp;&nbsp;
+                                    <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</s></h4>&nbsp;&nbsp;&nbsp;
                                     <h4 class="subtotal" style="margin: 0">₱ @{{ item.discount_value }}</h4>
                                 </span>
                                 <span v-else style="display: flex;">
-                                    <h4 class="subtotal" style="margin: 0">₱ @{{ item.price_at_purchase * item.quantity }}</h4>
+                                    <h4 class="subtotal" style="margin: 0">₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</h4>
                                 </span>
                             </div>
                         </div>
@@ -226,7 +226,7 @@
                 <h4>Grand total</h4>
                 <h2 style="font-weight: bold;">@{{ grandTotal }}</h2>
             </div>
-            <div class="dropdowns">
+            <div v-if="value[0].transaction.status != 'procuring'" class="dropdowns">
                 <div style="margin: 30px 0 15px 0;">
                     <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden/>
                     <multiselect
@@ -298,11 +298,11 @@
                         }
                         else {
                             const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
-                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + String(Number(qtyVal) * Number(price))
+                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price)).toFixed(2)
                         }
                     }
                     else {
-                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + String(Number(qtyVal) * Number(price))
+                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price)).toFixed(2)
                     }
                 },
                 getUpdateValue() {
@@ -312,6 +312,7 @@
                     if(!pattern.test(txnItems)) {
                         this.transactionItem = JSON.parse(txnItems)
                         this.value = this.transactionItem
+                        this.getTotalValue()
                     }
                 },
                 hideElements() {
@@ -331,9 +332,9 @@
                     const elements = document.querySelectorAll(`[name*="${item_id}-discount"]`)
                     elements[0].value = null
 
-                    const index = this.discounts.findIndex(item => item.id === item_id)
-                    this.discounts.splice(index, 1)
                     this.value[cardIndex].discount_value = null
+
+                    this.getTotalValue()
                 },
                 discountsModified(cardValues, cardIndex) {
                     const elements = document.querySelectorAll(`[name*="${cardValues.id}-discount"]`)
@@ -345,33 +346,40 @@
                         isPerItem: elements[3].checked,
                     }
 
-                    console.log('fields', fields)
-
                     if(fields.value && fields.isFixed || fields.isPercentage) {
                         this.$set(this.value[cardIndex], 'discount_value', this.getDiscountedSubtotal(cardValues, fields))
                     }
+
+                    this.getTotalValue()
                 },
                 getDiscountedSubtotal(cardValues, fields) {
+                    let x = 0
                     if(fields.isFixed && fields.isPerItem) {
-                        return ((cardValues.price_at_purchase - fields.value) * cardValues.quantity)/* - (fields.value * cardValues.quantity)*/
+                        x = ((parseFloat(cardValues.price_at_purchase) - fields.value) * cardValues.quantity)/* - (fields.value * cardValues.quantity)*/
                     }
                     else if(fields.isFixed && !fields.isPerItem) {
-                        return (cardValues.price_at_purchase * cardValues.quantity) - fields.value
+                        x = (parseFloat(cardValues.price_at_purchase) * cardValues.quantity) - fields.value
                     }
                     else if(fields.isPercentage && fields.isPerItem) {
-                        return (cardValues.price_at_purchase * cardValues.quantity) - ((fields.value / 100) * (cardValues.price_at_purchase * cardValues.quantity))
+                        x = (parseFloat(cardValues.price_at_purchase) * cardValues.quantity) - ((fields.value / 100) * (parseFloat(cardValues.price_at_purchase) * cardValues.quantity))
                     }
                     else if(fields.isPercentage && !fields.isPerItem) {
-                        return (cardValues.price_at_purchase * cardValues.quantity) - ((fields.value / 100) * (cardValues.price_at_purchase * cardValues.quantity))
+                        x = (parseFloat(cardValues.price_at_purchase) * cardValues.quantity) - ((fields.value / 100) * (parseFloat(cardValues.price_at_purchase) * cardValues.quantity))
                     }
+                    return x.toFixed(2)
                 },
                 getTotalValue() {
-                    
+                    let total = 0
+                    this.value.forEach(item => {
+                        item.discount_value ?
+                            total += parseFloat(item.discount_value) :
+                            total += (parseFloat(item.price_at_purchase) * item.quantity)
+                    })
+                    this.grandTotal = `₱ ${total.toFixed(2)}`
                 }
             },
             created() {
                 this.getUpdateValue()
-                this.getTotalValue()
 
                 this.hideElements()
                 // this.disableElements()

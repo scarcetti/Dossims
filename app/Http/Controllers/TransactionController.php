@@ -287,7 +287,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         // fetch extra form fields 
         $branches = $this->fetchBranches();
         $branch_products = $this->fetchBranchProducts();
-        $payment_types = $this->fetchPaymentTypes();
+        $payment_types = $this->fetchPaymentTypes(true);
         $transaction_item = $this->allTransactionItems($id);
 
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'transaction_item'));
@@ -353,9 +353,13 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             'alert-type' => 'success',
         ]);
     }
-        function fetchPaymentTypes()
+        function fetchPaymentTypes($create=false)
         {
-            return \App\Models\PaymentType::get();
+            return \App\Models\PaymentType::
+                when($create, function($q) {
+                    $q->whereIn('id', [1,2]); # Full payment & Downpayment
+                })
+                ->get();
         }
 
         function allTransactionItems($transaction_id)
