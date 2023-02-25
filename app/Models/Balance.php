@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class JobOrder extends Model
+class Balance extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'transaction_item_id',
-        'note',
-        'status',
+        'customer_id',
+        'updated_at_payment_id',
+        'outstanding_balance',
     ];
 }

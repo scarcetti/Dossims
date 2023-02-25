@@ -34,6 +34,7 @@
                 overflow: auto;
                 margin-top: 20px;
             ">
+                {{-- @{{ discountKey }} --}}
                 <div
                     v-for="(item, index) in value"
                     :key="index"
@@ -124,7 +125,13 @@
                             </div>
                             <div>
                                 <small>Subtotal: </small>
-                                <h4 class="subtotal" style="margin: 0">₱ @{{ item.price_at_purchase * item.quantity }}</h4>
+                                <span v-if="item.discount_value" style="display: flex;">
+                                    <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</s></h4>&nbsp;&nbsp;&nbsp;
+                                    <h4 class="subtotal" style="margin: 0">₱ @{{ item.discount_value }}</h4>
+                                </span>
+                                <span v-else style="display: flex;">
+                                    <h4 class="subtotal" style="margin: 0">₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</h4>
+                                </span>
                             </div>
                         </div>
                         <div>
@@ -152,7 +159,7 @@
                                     <hr style="margin: 0">
                                     <div class="modal-body" style="padding-top: 0px !important; padding-left: 5%; padding-right: 5%; max-height: 70vh;">
                                         <div class="form-group  col-md-12" style="padding: 0;">
-                                            <label class="control-label" for="name">Discount value</label>
+                                            <label class="control-label" for="name">Discount value <i style="color:red;">&nbsp;&nbsp;&nbsp;Discount has no effect when discount value is empty</i></label>
                                             <input
                                                 v-if="item.discount"
                                                 :name="`item-${item.id}-discount-value`"
@@ -161,9 +168,12 @@
                                                 min="0"
                                                 v-model="item.discount.value"
                                                 style="margin: 0 0 6px 0"
+                                                readonly
                                             >
                                             <input
                                                 v-else
+                                                v-on:change="discountsModified(item, index)"
+                                                v-on:input="discountsModified(item, index)"
                                                 :name="`item-${item.id}-discount-value`"
                                                 class="form-control"
                                                 type="number"
@@ -174,7 +184,7 @@
 
                                         <div class="form-group  col-md-12 ">
                                             <h5>Type of discount</h5>
-                                            <ul v-if="item.transaction.status == 'pending'" class="radio">
+                                            <ul v-if="item.transaction.status == 'pending'" class="radio" v-on:click="discountsModified(item, index)">
                                                 <li>
                                                     <input type="radio" :id="`item-${item.id}-option-type-fixed`" :name="`item-${item.id}-discount-type`" value="fixed">
                                                     <label :for="`item-${item.id}-option-type-fixed`">Fixed amount</label>
@@ -194,9 +204,12 @@
                                         <div v-if="item.transaction.status == 'pending'" style="margin: 0 10px">
                                             <h5>Per item <small><br>@{{ cbNote3 }}</small></h5>
                                             <label class="switch">
-                                                <input :name="`item-${item.id}-discount-type-per-item`" type="checkbox" {{-- v-on:click="searchFilterToggled(0)" --}}>
+                                                <input :name="`item-${item.id}-discount-type-per-item`" type="checkbox" v-on:click="discountsModified(item, index)">
                                                 <div class="slider round"></div>
                                             </label>
+                                        </div>
+                                        <div v-if="item.transaction.status == 'pending' && !item.discount" style="text-align-last: right;">
+                                            <span v-on:click="removeDiscount(item.id, index)" class="btn btn-danger edit">Remove discount</span>
                                         </div>
                                     </div>
                                 </div>
@@ -207,30 +220,39 @@
                 </div>
             </div>
         </div>
-        <div v-if="transactionItem" style="margin: 30px 0 15px 0;">
-            <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden/>
-            <multiselect
-                v-model="paymentType"
-                deselect-label="Can't remove this value"
-                track-by="name"
-                label="name"
-                placeholder="Payment type"
-                :options="paymentTypes"
-                :searchable="false"
-                :allow-empty="false"
-            />
 
-        </div>
-        <div v-if="transactionItem" class="form-group  col-md-12" style="padding: 0;">
+        <div v-if="transactionItem" class="payment_container">
+            <div class="total_contaienr">
+                <h4>Grand total</h4>
+                <h2 style="font-weight: bold;">@{{ grandTotal }}</h2>
+            </div>
+            <div v-if="value[0].transaction.status != 'procuring'" class="dropdowns">
+                <div style="margin: 30px 0 15px 0;">
+                    <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden/>
+                    <multiselect
+                        v-model="paymentType"
+                        deselect-label="Can't remove this value"
+                        track-by="name"
+                        label="name"
+                        placeholder="Payment type"
+                        :options="paymentTypes"
+                        :searchable="false"
+                        :allow-empty="false"
+                    />
 
-            <label class="control-label" for="name">Amount tendered</label>
-            <input
-                name="amount_tendered"
-                class="form-control"
-                type="number"
-                min="0"
-                style="margin: 0 0 6px 0"
-            >
+                </div>
+                <div class="form-group  col-md-12" style="padding: 0;">
+
+                    <label class="control-label" for="name">Amount tendered</label>
+                    <input
+                        name="amount_tendered"
+                        class="form-control"
+                        type="number"
+                        min="0"
+                        style="margin: 0 0 6px 0"
+                    >
+                </div>
+            </div>
         </div>
     </div>
     <br>
@@ -257,11 +279,12 @@
                 return {
                     value: [],
                     cart: [],
-                    discount: [],
+                    grandTotal: '----',
                     transactionItem: false,
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
                     paymentTypes: {!! $payment_types ?? '' !!},
+                    cartSubtotals: [],
                     cbNote3: 'When switch is green, discounts are applied per item. Otherwise, discount is applied on the subtotal',
                 }
             },
@@ -275,11 +298,11 @@
                         }
                         else {
                             const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
-                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + String(Number(qtyVal) * Number(price))
+                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price)).toFixed(2)
                         }
                     }
                     else {
-                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + String(Number(qtyVal) * Number(price))
+                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price)).toFixed(2)
                     }
                 },
                 getUpdateValue() {
@@ -289,6 +312,7 @@
                     if(!pattern.test(txnItems)) {
                         this.transactionItem = JSON.parse(txnItems)
                         this.value = this.transactionItem
+                        this.getTotalValue()
                     }
                 },
                 hideElements() {
@@ -304,8 +328,66 @@
                 discountDialogShow(id) {
                     $(`#discountDialog${id}`).modal({backdrop: 'static', keyboard: false});
                 },
+                removeDiscount(item_id, cardIndex) {
+                    const elements = document.querySelectorAll(`[name*="${item_id}-discount"]`)
+                    elements[0].value = null
+
+                    this.value[cardIndex].discount_value = null
+
+                    this.getTotalValue()
+                },
+                discountsModified(cardValues, cardIndex) {
+                    const elements = document.querySelectorAll(`[name*="${cardValues.id}-discount"]`)
+
+                    let fields = {
+                        value: parseFloat(elements[0].value),
+                        isFixed: elements[1].checked,
+                        isPercentage: elements[2].checked,
+                        isPerItem: elements[3].checked,
+                    }
+
+                    if(fields.value && fields.isFixed || fields.isPercentage) {
+                        this.$set(this.value[cardIndex], 'discount_value', this.getDiscountedSubtotal(cardValues, fields))
+                    }
+
+                    this.getTotalValue()
+                },
+                getDiscountedSubtotal(cardValues, fields) {
+                    let x = 0
+                    if(fields.isFixed && fields.isPerItem) {
+                        x = ((parseFloat(cardValues.price_at_purchase) - fields.value) * cardValues.quantity)/* - (fields.value * cardValues.quantity)*/
+                    }
+                    else if(fields.isFixed && !fields.isPerItem) {
+                        x = (parseFloat(cardValues.price_at_purchase) * cardValues.quantity) - fields.value
+                    }
+                    else if(fields.isPercentage && fields.isPerItem) {
+                        x = (parseFloat(cardValues.price_at_purchase) * cardValues.quantity) - ((fields.value / 100) * (parseFloat(cardValues.price_at_purchase) * cardValues.quantity))
+                    }
+                    else if(fields.isPercentage && !fields.isPerItem) {
+                        x = (parseFloat(cardValues.price_at_purchase) * cardValues.quantity) - ((fields.value / 100) * (parseFloat(cardValues.price_at_purchase) * cardValues.quantity))
+                    }
+                    return x.toFixed(2)
+                },
+                getTotalValue() {
+                    let total = 0
+                    this.value.forEach(item => {
+                        item.discount_value ?
+                            total += parseFloat(item.discount_value) :
+                            total += (parseFloat(item.price_at_purchase) * item.quantity)
+                    })
+                    this.grandTotal = `₱ ${total.toFixed(2)}`
+                },
+                disableSubmitOnFieldsEnter() {
+                    $('form.form-edit-add').keypress(
+                      function(event){
+                        if (event.which == '13') {
+                          event.preventDefault();
+                        }
+                    })
+                },
             },
             created() {
+                this.disableSubmitOnFieldsEnter()
                 this.getUpdateValue()
 
                 this.hideElements()
