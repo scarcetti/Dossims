@@ -99,3 +99,7 @@ input:checked + .slider:before {
 .payment_container .dropdowns {
     flex-grow: 7;
 }
+
+ul.radio li {
+    z-index: 0 !important;
+}

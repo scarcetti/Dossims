@@ -13,14 +13,7 @@ class Customer extends Model
         'id',
         'first_name',
         'last_name',
-        'birthdate',
-        'address',
-        'city',
-        'province',
-        'zipcode',
         'contact_no',
-        'email',
-        'type'
     ];
 
     public function getFullNameAttribute()

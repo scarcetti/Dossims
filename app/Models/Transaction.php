@@ -13,5 +13,6 @@ class Transaction extends Model
         'employee_id',
         'transaction_id',
         'status',
+        'walk_in',
     ];
 }

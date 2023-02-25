@@ -65,7 +65,6 @@
                                 <small>@{{ item.product.measurement_unit.name }}: </small>
                                 <input
                                     class="form-control"
-                                    :v-model="`cart.${item.product_id}-quantityCount`"
                                     value="1"
                                     type="number"
                                     :name="`item-${item.product_id}-quantity`"
@@ -73,6 +72,7 @@
                                     :max="item.quantity"
                                     style="margin: 0 0 6px 0"
                                     v-on:change="valueChanged(`item-${item.product_id}`, item.product.price, index)"
+                                    v-on:input="valueChanged(`item-${item.product_id}`, item.product.price, index)"
                                 >
                             </div>
                             <div>
@@ -80,11 +80,17 @@
                                 <h4 class="subtotal" style="margin: 0">₱ @{{ item.product.price }}</h4>
                             </div>
                         </div>
-                        <div>
-                            <div>
-                                <small>Order note: </small>
-                                <textarea class="form-control" :name="`item-${item.product_id}-note`" rows="4" cols="50" placeholder="Write note here."></textarea>
-                            </div>
+                        <div style="align-self: self-start; margin-top: 7px;">
+                            <small>TBD field: </small>
+                            <input
+                                class="form-control"
+                                value="1"
+                                :name="`item-${item.product_id}-tbd`"
+                                min="0.01"
+                                style="margin: 0 0 6px 0"
+                                v-on:change="valueChanged(`item-${item.product_id}`, item.product.price, index)"
+                                v-on:input="valueChanged(`item-${item.product_id}`, item.product.price, index)"
+                            >
                         </div>
                         <div {{-- style="margin-left: auto;" --}}>
                             <h5>Stock: </h5>
@@ -134,11 +140,15 @@
                                 </span>
                             </div>
                         </div>
-                        <div>
-                            <div>
-                                <small>Order note: </small>
-                                <textarea readonly class="form-control" :name="`item-${item.id}-note`" rows="4" cols="50" placeholder="Write note here.">@{{item.job_order.note}}</textarea>
-                            </div>
+                        <div style="align-self: self-start; margin-top: 7px;">
+                            <small>TBD field: </small>
+                            <input
+                                class="form-control"
+                                readonly
+                                :value="item.tbd"
+                                type="number"
+                                style="margin: 0 0 6px 0"
+                            >
                         </div>
                         <div>
                             <span v-if="item.transaction.status == 'pending' && !item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">Add discount</span>
@@ -291,18 +301,19 @@
             methods: {
                 valueChanged(qtyQuery, price, index) {
                     const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value
+                    const tbdVal = document.querySelector(`[name=${qtyQuery}-tbd]`).value
+
                     if(Number(qtyVal) < 1) {
                         if(window.confirm('Remove item from list?')) {
-                            // alert(1)
                             this.value.splice(index, 1)
                         }
                         else {
                             const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
-                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price)).toFixed(2)
+                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
                         }
                     }
                     else {
-                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price)).toFixed(2)
+                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
                     }
                 },
                 getUpdateValue() {

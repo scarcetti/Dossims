@@ -527,7 +527,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         {
             $qty_pattern = '/(item-)(\d*)(-quantity)/';
             $price_pattern = '/(item-)(\d*)(-price)/';
-            $note_pattern = '/(item-)(\d*)(-note)/';
+            $tbd_pattern = '/(item-)(\d*)(-tbd)/';
 
             foreach ( $request->all() as $key => $value ) {
                 if( preg_match($price_pattern, $key) ) {
@@ -544,10 +544,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
                     $products[$branch_product_id]->quantity = intval( $value );
                 }
-                if( preg_match($note_pattern, $key) ) {
+                if( preg_match($tbd_pattern, $key) ) {
                     $branch_product_id = intval( explode('-', $key)[1] );
 
-                    $products[$branch_product_id]->note = $value;
+                    $products[$branch_product_id]->tbd = doubleval( $value );
                 }
             }
             $products = json_decode( json_encode($products), true);
@@ -562,12 +562,12 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                         [
                             'price_at_purchase' => $item['price_at_purchase'],
                             'quantity'          => $item['quantity'],
+                            'tbd'               => $item['tbd'],
                         ]
                     );
 
                     \App\Models\JobOrder::create([
                         'transaction_item_id' => $transaction_item['id'],
-                        'note'                => $item['note'],
                     ]);
             }
         }
