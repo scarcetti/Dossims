@@ -24,7 +24,7 @@ class RemoveExtraCustomerColumns extends Migration
         });
 
         Schema::table('transactions', function (Blueprint $table) {
-            $table->boolean('walk_in')->nullable();
+            $table->string('transaction_placement')->nullable();
         });
     }
 
@@ -46,7 +46,7 @@ class RemoveExtraCustomerColumns extends Migration
         });
 
         Schema::table('transactions', function (Blueprint $table) {
-            $table->dropColumn('walk_in');
+            $table->dropColumn('transaction_placement');
         });
     }
 }
