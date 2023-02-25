@@ -376,9 +376,18 @@
                             total += (parseFloat(item.price_at_purchase) * item.quantity)
                     })
                     this.grandTotal = `₱ ${total.toFixed(2)}`
-                }
+                },
+                disableSubmitOnFieldsEnter() {
+                    $('form.form-edit-add').keypress(
+                      function(event){
+                        if (event.which == '13') {
+                          event.preventDefault();
+                        }
+                    })
+                },
             },
             created() {
+                this.disableSubmitOnFieldsEnter()
                 this.getUpdateValue()
 
                 this.hideElements()
