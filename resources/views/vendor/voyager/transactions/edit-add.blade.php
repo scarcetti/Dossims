@@ -85,7 +85,9 @@
                             <input
                                 class="form-control"
                                 value="1"
+                                type="number"
                                 :name="`item-${item.product_id}-tbd`"
+                                step="0.01"
                                 min="0.01"
                                 style="margin: 0 0 6px 0"
                                 v-on:change="valueChanged(`item-${item.product_id}`, item.product.price, index)"
