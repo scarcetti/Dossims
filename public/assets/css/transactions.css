@@ -15,7 +15,7 @@
     border: solid 1px red;
 }
 
-[id*="discountDialog"].modal.fade.in {
+[id*="discountDialog"].modal.fade.in, #discountDialog.modal.fade.in {
     overflow-y: hidden !important;
     display: flex !important;
     align-items: center;
@@ -86,14 +86,35 @@ input:checked + .slider:before {
 
 .payment_container {
     display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
-.payment_container .total_contaienr {
-    flex-grow: 5;
+.payment_container > div {
+    padding: 0 35px;
+}
+
+.payment_container .total_container {
+/*    flex-grow: 5;*/
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.payment_container .total_container > div {
+    display: flex;
+    width: 50%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.total_container h2 {
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    border-top: #76838F 3px solid;
 }
 
 .payment_container .dropdowns {
