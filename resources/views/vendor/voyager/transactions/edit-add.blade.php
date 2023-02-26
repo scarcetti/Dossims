@@ -296,7 +296,7 @@
                                     </div>
                                 </div>
                                 <div v-if="paymentType" style="text-align-last: end;">
-                                    <span class="btn btn-primary" @click="paymentType.id === 2 ? alert(2) : alert(1)" readonly>
+                                    <span class="btn btn-primary" @click="submitForm(paymentType.id)" readonly>
                                         @{{ paymentType.id === 2 ? 'Print Official Receipt' : 'Print Charge Invoice' }}
                                     </span>
                                 </div>
@@ -463,6 +463,10 @@
                 paymentButtonClicked() {
                     $(`#paymentDialog`).modal({backdrop: 'static', keyboard: false});
                 },
+                submitForm(submitType) {
+                    // submitType: 1 = downpayment, 2 = full
+                    $('form').submit()
+                }
             },
             created() {
                 this.disableSubmitOnFieldsEnter()

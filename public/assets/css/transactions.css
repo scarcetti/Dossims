@@ -104,7 +104,7 @@ input:checked + .slider:before {
 
 .payment_container .total_container > div {
     display: flex;
-    width: 50%;
+    width: 70%;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
