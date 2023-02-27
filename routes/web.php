@@ -1,13 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BranchController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\EmployeeController;
-use App\Http\Controllers\JobOrderController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,4 +20,8 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
+
+    Route::group(['prefix' => 'transactions'], function () {
+        Route::get('/cutting-list/{id}', [TransactionController::class,'cuttingList']);
+    });
 });

@@ -281,7 +281,20 @@
                                             :searchable="false"
                                             :allow-empty="false"
                                         />
-
+                                    </div>
+                                    <div style="margin: 30px 0 15px 0;">
+                                        <input v-if="paymentMethod" name="payment_type_id" :value="paymentMethod.id" hidden/>
+                                        <multiselect
+                                            v-model="paymentMethod"
+                                            @input="paymentTypeChanged()"
+                                            deselect-label="Can't remove this value"
+                                            track-by="name"
+                                            label="name"
+                                            placeholder="Payment type"
+                                            :options="paymentMethods"
+                                            :searchable="false"
+                                            :allow-empty="false"
+                                        />
                                     </div>
                                     <div class="form-group  col-md-12" style="padding: 0;">
 
@@ -309,7 +322,9 @@
         </div>
     </div>
     <br>
-    {{-- @parent --}}
+    @if( count($dataTypeContent->toArray()) == 0 )
+        @parent
+    @endif
 @endsection
 @section('javascript')
     @parent
@@ -339,6 +354,8 @@
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
                     paymentTypes: {!! $payment_types ?? '' !!},
+                    paymentMethod: null,
+                    paymentMethods: {!! $payment_methods ?? '' !!},
                     cartSubtotals: [],
                     cbNote3: 'When switch is green, discounts are applied per item. Otherwise, discount is applied on the subtotal',
                 }

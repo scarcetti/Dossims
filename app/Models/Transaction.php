@@ -16,4 +16,9 @@ class Transaction extends Model
         'status',
         'transaction_placement',
     ];
+
+    public function transactionItems()
+    {
+        return $this->hasMany(TransactionItem::class);
+    }
 }

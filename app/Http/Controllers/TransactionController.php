@@ -288,9 +288,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $branches = $this->fetchBranches();
         $branch_products = $this->fetchBranchProducts();
         $payment_types = $this->fetchPaymentTypes(true);
+        $payment_methods = $this->fetchPaymentMethods();
         $transaction_item = $this->allTransactionItems($id);
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'transaction_item'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction_item'));
     }
 
     public function update(Request $request, $id)
@@ -360,6 +361,11 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                     $q->whereIn('id', [1,2]); # Full payment & Downpayment
                 })
                 ->get();
+        }
+
+        function fetchPaymentMethods()
+        {
+            return \App\Models\PaymentMethod::get();
         }
 
         function allTransactionItems($transaction_id)
@@ -503,9 +509,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         // fetch extra form fields 
         $branches = $this->fetchBranches();
         $branch_products = $this->fetchBranchProducts();
+        $payment_methods = json_encode('[]');
         $payment_types = $this->fetchPaymentTypes();
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_methods', 'payment_types'));
     }
 
         function fetchBranches()
@@ -606,5 +613,11 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         } else {
             return response()->json(['success' => true, 'data' => $data]);
         }
+    }
+
+    public function cuttingList($id)
+    {
+        $txns = \App\Models\Transaction::where('id', $id)->with('transactionItems.jobOrder', 'transactionItems.branchProduct.product.measurementUnit')->first();
+        return view('voyager::transactions.cutting-list', compact('txns'));
     }
 }
