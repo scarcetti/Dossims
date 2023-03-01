@@ -614,10 +614,4 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return response()->json(['success' => true, 'data' => $data]);
         }
     }
-
-    public function cuttingList($id)
-    {
-        $txns = \App\Models\Transaction::where('id', $id)->with('transactionItems.jobOrder', 'transactionItems.branchProduct.product.measurementUnit')->first();
-        return view('voyager::transactions.cutting-list', compact('txns'));
-    }
 }
