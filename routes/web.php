@@ -24,6 +24,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['prefix' => 'cutting-list'], function () {
         Route::get('/', [CuttingListController::class,'getOrders']);
         Route::get('/{id}', [CuttingListController::class,'cuttingList']);
-        Route::post('/update-status', [CuttingListController::class,'updateStatus']);
+        Route::patch('/update-status/{id}', [CuttingListController::class,'updateStatus']);
     });
 });

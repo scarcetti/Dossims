@@ -17,6 +17,9 @@
                         Additional Note
                     </th>
                     <th style="padding: 10px 10px; white-space: nowrap;">
+                        Status
+                    </th>
+                    <th class="text-right" style="padding: 10px 10px; white-space: nowrap;">
                         Action
                     </th>
                 </tr>
@@ -34,7 +37,14 @@
                             {{ $item->jobOrder->note }}
                         </td>
                         <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
-                            <span class="btn btn-primary" @click="updateItemStatus()" readonly>Item prepared</span>
+                            {{ $item->jobOrder->status }}
+                        </td>
+                        <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
+                            @if( $item->jobOrder->status == 'completed' )
+                                <span class="btn btn-success pull-right" readonly>Completed</span>
+                            @else
+                                <span class="btn btn-primary pull-right" @click="updateItemStatus({{$item}})" readonly>Progress status</span>
+                            @endif
                         </td>
                     </tr>
                 @empty
@@ -51,6 +61,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/cutting-list.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js" integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script type="module">
     var app = new Vue({
@@ -62,9 +73,19 @@
             return {}
         },
         methods: {
-        	updateItemStatus() {
-        		console.log('btn clicked')
-        	}
+        	updateItemStatus(item) {
+                // console.log(item.job_order.status)
+                let next = ''
+                if(item.job_order.status == 'pending') next = `In progress`
+                if(item.job_order.status == 'in progress') next = `Completed`
+
+                let text = `Update status of "${item.branch_product.product.name}" to "${next}"?`;
+                if (confirm(text) == true) {
+                    // update query here
+                    axios.patch(`${window.location.origin}/admin/cutting-list/update-status/${item.job_order.id}`)
+                    .then(() => window.location.reload())
+                }
+        	},
         },
     })
 </script>

@@ -575,6 +575,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
                     \App\Models\JobOrder::create([
                         'transaction_item_id' => $transaction_item['id'],
+                        'status'              => 'pending',
                     ]);
             }
         }
