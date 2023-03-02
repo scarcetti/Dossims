@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
+use App\Models\JobOrder;
 
 class CuttingListController extends Controller
 {
@@ -23,8 +24,14 @@ class CuttingListController extends Controller
         return view('voyager::cutting-list.actions', compact('txns'));
     }
 
-    public function updateStatus(Request $request)
+    public function updateStatus($id)
     {
-        return 123;
+        $job_order = JobOrder::find($id);
+
+        $status = $job_order->status;
+
+        return $job_order->update([
+            'status' => $status == 'pending' ? 'in progress' : 'completed',
+        ]);
     }
 }
