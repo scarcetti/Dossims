@@ -43,10 +43,10 @@
                     "
                 >
                     {{-- @{{ item }} --}}
-                    <input v-if="item.product" :name="`item-${item.product_id}-price`" :value="item.product.price" hidden />
+                    <input v-if="item.product" :name="`item-${item.id}-price`" :value="item.price" hidden />
                     <input v-else :name="`item-${item.id}-price`" :value="item.price_at_purchase" hidden />
 
-                    <div v-if="item.product" :class="`cartContainer item-${item.product_id}`">
+                    <div v-if="item.product" :class="`cartContainer item-${item.id}`">
                         <div>
                             <div>
                                 <small>Product name: </small>
@@ -54,7 +54,7 @@
                             </div>
                             <div>
                                 <small>Item price: </small>
-                                <h4 style="margin: 0">₱ @{{ item.product.price }}</h4>
+                                <h4 style="margin: 0">₱ @{{ item.price }}</h4>
                             </div>
                         </div>
                         <div>
@@ -64,17 +64,17 @@
                                     class="form-control"
                                     value="1"
                                     type="number"
-                                    :name="`item-${item.product_id}-quantity`"
+                                    :name="`item-${item.id}-quantity`"
                                     min="0"
                                     :max="item.quantity"
                                     style="margin: 0 0 6px 0"
-                                    v-on:change="valueChanged(`item-${item.product_id}`, item.product.price, index)"
-                                    v-on:input="valueChanged(`item-${item.product_id}`, item.product.price, index)"
+                                    v-on:change="valueChanged(`item-${item.id}`, item.price, index)"
+                                    v-on:input="valueChanged(`item-${item.id}`, item.price, index)"
                                 >
                             </div>
                             <div>
                                 <small>Subtotal: </small>
-                                <h4 class="subtotal" style="margin: 0">₱ @{{ item.product.price }}</h4>
+                                <h4 class="subtotal" style="margin: 0">₱ @{{ item.price }}</h4>
                             </div>
                         </div>
                         <div style="align-self: self-start; margin-top: 7px;">
@@ -83,12 +83,12 @@
                                 class="form-control"
                                 value="1"
                                 type="number"
-                                :name="`item-${item.product_id}-tbd`"
+                                :name="`item-${item.id}-tbd`"
                                 step="0.01"
                                 min="0.01"
                                 style="margin: 0 0 6px 0"
-                                v-on:change="valueChanged(`item-${item.product_id}`, item.product.price, index)"
-                                v-on:input="valueChanged(`item-${item.product_id}`, item.product.price, index)"
+                                v-on:change="valueChanged(`item-${item.id}`, item.price, index)"
+                                v-on:input="valueChanged(`item-${item.id}`, item.price, index)"
                             >
                         </div>
                         <div {{-- style="margin-left: auto;" --}}>
