@@ -288,9 +288,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $branches = $this->fetchBranches();
         $branch_products = $this->fetchBranchProducts();
         $payment_types = $this->fetchPaymentTypes(true);
+        $payment_methods = $this->fetchPaymentMethods();
         $transaction_item = $this->allTransactionItems($id);
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'transaction_item'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction_item'));
     }
 
     public function update(Request $request, $id)
@@ -360,6 +361,11 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                     $q->whereIn('id', [1,2]); # Full payment & Downpayment
                 })
                 ->get();
+        }
+
+        function fetchPaymentMethods()
+        {
+            return \App\Models\PaymentMethod::get();
         }
 
         function allTransactionItems($transaction_id)
@@ -503,9 +509,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         // fetch extra form fields 
         $branches = $this->fetchBranches();
         $branch_products = $this->fetchBranchProducts();
+        $payment_methods = json_encode('[]');
         $payment_types = $this->fetchPaymentTypes();
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_methods', 'payment_types'));
     }
 
         function fetchBranches()
@@ -527,7 +534,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         {
             $qty_pattern = '/(item-)(\d*)(-quantity)/';
             $price_pattern = '/(item-)(\d*)(-price)/';
-            $note_pattern = '/(item-)(\d*)(-note)/';
+            $tbd_pattern = '/(item-)(\d*)(-tbd)/';
 
             foreach ( $request->all() as $key => $value ) {
                 if( preg_match($price_pattern, $key) ) {
@@ -544,10 +551,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
                     $products[$branch_product_id]->quantity = intval( $value );
                 }
-                if( preg_match($note_pattern, $key) ) {
+                if( preg_match($tbd_pattern, $key) ) {
                     $branch_product_id = intval( explode('-', $key)[1] );
 
-                    $products[$branch_product_id]->note = $value;
+                    $products[$branch_product_id]->tbd = doubleval( $value );
                 }
             }
             $products = json_decode( json_encode($products), true);
@@ -562,12 +569,12 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                         [
                             'price_at_purchase' => $item['price_at_purchase'],
                             'quantity'          => $item['quantity'],
+                            'tbd'               => $item['tbd'],
                         ]
                     );
 
                     \App\Models\JobOrder::create([
                         'transaction_item_id' => $transaction_item['id'],
-                        'note'                => $item['note'],
                     ]);
             }
         }

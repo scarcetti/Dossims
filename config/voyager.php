@@ -147,6 +147,7 @@ return [
         'widgets' => [
             'TCG\\Voyager\\Widgets\\UserDimmer',
             'App\\Widgets\\Branches',
+            'App\\Widgets\\CuttingList',
         ],
 
     ],

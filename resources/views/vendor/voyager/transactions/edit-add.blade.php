@@ -1,8 +1,5 @@
 @extends('voyager::bread.edit-add')
 @section('submit-buttons')
-    @parent
-@endsection
-@section('submit-buttons')
     @include('common.alert')
     <div id="app" style="margin: 0 15px;">
         <span class="txns_" hidden>
@@ -46,10 +43,10 @@
                     "
                 >
                     {{-- @{{ item }} --}}
-                    <input v-if="item.product" :name="`item-${item.product_id}-price`" :value="item.product.price" hidden />
+                    <input v-if="item.product" :name="`item-${item.id}-price`" :value="item.price" hidden />
                     <input v-else :name="`item-${item.id}-price`" :value="item.price_at_purchase" hidden />
 
-                    <div v-if="item.product" :class="`cartContainer item-${item.product_id}`">
+                    <div v-if="item.product" :class="`cartContainer item-${item.id}`">
                         <div>
                             <div>
                                 <small>Product name: </small>
@@ -57,7 +54,7 @@
                             </div>
                             <div>
                                 <small>Item price: </small>
-                                <h4 style="margin: 0">₱ @{{ item.product.price }}</h4>
+                                <h4 style="margin: 0">₱ @{{ item.price }}</h4>
                             </div>
                         </div>
                         <div>
@@ -65,26 +62,34 @@
                                 <small>@{{ item.product.measurement_unit.name }}: </small>
                                 <input
                                     class="form-control"
-                                    :v-model="`cart.${item.product_id}-quantityCount`"
                                     value="1"
                                     type="number"
-                                    :name="`item-${item.product_id}-quantity`"
+                                    :name="`item-${item.id}-quantity`"
                                     min="0"
                                     :max="item.quantity"
                                     style="margin: 0 0 6px 0"
-                                    v-on:change="valueChanged(`item-${item.product_id}`, item.product.price, index)"
+                                    v-on:change="valueChanged(`item-${item.id}`, item.price, index)"
+                                    v-on:input="valueChanged(`item-${item.id}`, item.price, index)"
                                 >
                             </div>
                             <div>
                                 <small>Subtotal: </small>
-                                <h4 class="subtotal" style="margin: 0">₱ @{{ item.product.price }}</h4>
+                                <h4 class="subtotal" style="margin: 0">₱ @{{ item.price }}</h4>
                             </div>
                         </div>
-                        <div>
-                            <div>
-                                <small>Order note: </small>
-                                <textarea class="form-control" :name="`item-${item.product_id}-note`" rows="4" cols="50" placeholder="Write note here."></textarea>
-                            </div>
+                        <div style="align-self: self-start; margin-top: 7px;">
+                            <small>TBD field: </small>
+                            <input
+                                class="form-control"
+                                value="1"
+                                type="number"
+                                :name="`item-${item.id}-tbd`"
+                                step="0.01"
+                                min="0.01"
+                                style="margin: 0 0 6px 0"
+                                v-on:change="valueChanged(`item-${item.id}`, item.price, index)"
+                                v-on:input="valueChanged(`item-${item.id}`, item.price, index)"
+                            >
                         </div>
                         <div {{-- style="margin-left: auto;" --}}>
                             <h5>Stock: </h5>
@@ -134,11 +139,15 @@
                                 </span>
                             </div>
                         </div>
-                        <div>
-                            <div>
-                                <small>Order note: </small>
-                                <textarea readonly class="form-control" :name="`item-${item.id}-note`" rows="4" cols="50" placeholder="Write note here.">@{{item.job_order.note}}</textarea>
-                            </div>
+                        <div style="align-self: self-start; margin-top: 7px;">
+                            <small>TBD field: </small>
+                            <input
+                                class="form-control"
+                                readonly
+                                :value="item.tbd"
+                                type="number"
+                                style="margin: 0 0 6px 0"
+                            >
                         </div>
                         <div>
                             <span v-if="item.transaction.status == 'pending' && !item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">Add discount</span>
@@ -222,41 +231,100 @@
         </div>
 
         <div v-if="transactionItem" class="payment_container">
-            <div class="total_contaienr">
+            <div v-if="value[0].transaction.status == 'procuring'" class="total_container">
                 <h4>Grand total</h4>
                 <h2 style="font-weight: bold;">@{{ grandTotal }}</h2>
             </div>
-            <div v-if="value[0].transaction.status != 'procuring'" class="dropdowns">
-                <div style="margin: 30px 0 15px 0;">
-                    <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden/>
-                    <multiselect
-                        v-model="paymentType"
-                        deselect-label="Can't remove this value"
-                        track-by="name"
-                        label="name"
-                        placeholder="Payment type"
-                        :options="paymentTypes"
-                        :searchable="false"
-                        :allow-empty="false"
-                    />
+            
+            <div v-if="value[0].transaction.status == 'pending'">
+                <span class="btn btn-primary" @click="paymentButtonClicked()" readonly>Add payment</span>
 
-                </div>
-                <div class="form-group  col-md-12" style="padding: 0;">
+                <div class="modal fade" id="paymentDialog" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
+                    <div class="modal-success-dialog modal-dialog" role="document" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                        <div class="modal-content">
+                            <div class="modal-header" style="display: flex; align-items: center;">
+                                <h5 class="modal-title" id="dialogLabel">Add payment</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-left: auto;">
+                                <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" style="padding-top: 0px !important; padding-left: 5%; padding-right: 5%; max-height: 70vh;">
 
-                    <label class="control-label" for="name">Amount tendered</label>
-                    <input
-                        name="amount_tendered"
-                        class="form-control"
-                        type="number"
-                        min="0"
-                        style="margin: 0 0 6px 0"
-                    >
+                                <div class="total_container">
+                                    <div>
+                                        {{-- @{{ paymentType }} --}}
+                                        <span>Products total</span>
+                                        <h4 v-if="!paymentType">₱&nbsp;@{{ productsTotal.toFixed(2) }}</h4>
+                                        <h4 v-else-if="paymentType.id === 1">₱&nbsp;<s>@{{ (productsTotal * 2).toFixed(2) }}</s>&nbsp;@{{ productsTotal.toFixed(2) }}</h4>
+                                        <h4 v-else>₱&nbsp;@{{ productsTotal.toFixed(2) }}</h4>
+                                    </div>
+                                    <div>
+                                        <span>Transport total</span>
+                                        <h4>₱ @{{ shippingTotal.toFixed(2) }}</h4>
+                                    </div>
+                                    <div>
+                                        <h4>Grand total</h4>
+                                        <h2>@{{ grandTotal }}</h2>
+                                    </div>
+                                </div>
+                                <div class="dropdowns">
+                                    <div style="margin: 30px 0 15px 0;">
+                                        <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden/>
+                                        <multiselect
+                                            v-model="paymentType"
+                                            @input="paymentTypeChanged()"
+                                            deselect-label="Can't remove this value"
+                                            track-by="name"
+                                            label="name"
+                                            placeholder="Payment type"
+                                            :options="paymentTypes"
+                                            :searchable="false"
+                                            :allow-empty="false"
+                                        />
+                                    </div>
+                                    <div style="margin: 30px 0 15px 0;">
+                                        <input v-if="paymentMethod" name="payment_type_id" :value="paymentMethod.id" hidden/>
+                                        <multiselect
+                                            v-model="paymentMethod"
+                                            @input="paymentTypeChanged()"
+                                            deselect-label="Can't remove this value"
+                                            track-by="name"
+                                            label="name"
+                                            placeholder="Payment type"
+                                            :options="paymentMethods"
+                                            :searchable="false"
+                                            :allow-empty="false"
+                                        />
+                                    </div>
+                                    <div class="form-group  col-md-12" style="padding: 0;">
+
+                                        <label class="control-label" for="name">Amount tendered</label>
+                                        <input
+                                            name="amount_tendered"
+                                            class="form-control"
+                                            type="number"
+                                            min="0"
+                                            style="margin: 0 0 6px 0"
+                                        >
+                                    </div>
+                                </div>
+                                <div v-if="paymentType" style="text-align-last: end;">
+                                    <span class="btn btn-primary" @click="submitForm(paymentType.id)" readonly>
+                                        @{{ paymentType.id === 2 ? 'Print Official Receipt' : 'Print Charge Invoice' }}
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <br>
-    @parent
+    @if( count($dataTypeContent->toArray()) == 0 )
+        @parent
+    @endif
 @endsection
 @section('javascript')
     @parent
@@ -279,11 +347,15 @@
                 return {
                     value: [],
                     cart: [],
+                    productsTotal: '----',
+                    shippingTotal: 0.00,
                     grandTotal: '----',
                     transactionItem: false,
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
                     paymentTypes: {!! $payment_types ?? '' !!},
+                    paymentMethod: null,
+                    paymentMethods: {!! $payment_methods ?? '' !!},
                     cartSubtotals: [],
                     cbNote3: 'When switch is green, discounts are applied per item. Otherwise, discount is applied on the subtotal',
                 }
@@ -291,18 +363,19 @@
             methods: {
                 valueChanged(qtyQuery, price, index) {
                     const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value
+                    const tbdVal = document.querySelector(`[name=${qtyQuery}-tbd]`).value
+
                     if(Number(qtyVal) < 1) {
                         if(window.confirm('Remove item from list?')) {
-                            // alert(1)
                             this.value.splice(index, 1)
                         }
                         else {
                             const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
-                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price)).toFixed(2)
+                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
                         }
                     }
                     else {
-                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price)).toFixed(2)
+                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
                     }
                 },
                 getUpdateValue() {
@@ -368,6 +441,13 @@
                     }
                     return x.toFixed(2)
                 },
+                deliveryFeeModified() {
+
+                    this.getTotalValue()
+                },
+                paymentTypeChanged() {
+                    this.getTotalValue()
+                },
                 getTotalValue() {
                     let total = 0
                     this.value.forEach(item => {
@@ -375,7 +455,19 @@
                             total += parseFloat(item.discount_value) :
                             total += (parseFloat(item.price_at_purchase) * item.quantity)
                     })
-                    this.grandTotal = `₱ ${total.toFixed(2)}`
+
+
+
+                    if(this.paymentType) {
+                        if(this.paymentType.id === 1) {
+                            total = total / 2
+                            console.log(total)
+                        }
+                    }
+
+                    this.productsTotal = total
+                    // this.productsTotal = `₱ ${total.toFixed(2)}`
+                    this.grandTotal = `₱ ${(total - this.shippingTotal).toFixed(2)}`
                 },
                 disableSubmitOnFieldsEnter() {
                     $('form.form-edit-add').keypress(
@@ -385,6 +477,13 @@
                         }
                     })
                 },
+                paymentButtonClicked() {
+                    $(`#paymentDialog`).modal({backdrop: 'static', keyboard: false});
+                },
+                submitForm(submitType) {
+                    // submitType: 1 = downpayment, 2 = full
+                    $('form').submit()
+                }
             },
             created() {
                 this.disableSubmitOnFieldsEnter()
