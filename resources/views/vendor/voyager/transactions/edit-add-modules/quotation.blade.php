@@ -1,4 +1,4 @@
-<input v-if="value[index].selection" :name="`item-${value[index].selection.id}-price`" :value="value[index].selection.price_at_purchase" hidden />
+<input v-if="value[index].selection" :name="`item-${value[index].selection.id}-price`" :value="value[index].selection.price" hidden />
 <div class="cartContainer">
 {{-- <div :class="`cartContainer item-${item.id}`"> --}}
     <div>

@@ -1,4 +1,5 @@
-<input :name="`item-${item.id}-price`" :value="item.price" hidden />
+{{-- <input :name="`item-${item.id}-price`" :value="item.price" hidden /> --}}
+<input :name="`item-${item.id}-price`" :value="item.price_at_purchase" hidden />
 <div :class="`cartContainer item-${item.id}`">
     <div>
         <div>

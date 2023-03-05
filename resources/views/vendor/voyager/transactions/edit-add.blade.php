@@ -25,7 +25,7 @@
                 :options="branchProducts"
                 :multiple="true"
             ></multiselect> --}}
-            @{{ value }}
+            {{-- @{{ value }} --}}
 
             <div class="cartItemContainer">
                 <div
@@ -100,7 +100,6 @@
                 valueChanged(qtyQuery, price, index) {
                     const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value
                     const tbdVal = document.querySelector(`[name=${qtyQuery}-tbd]`).value
-                    console.log([qtyQuery, price, index])
 
                     if(Number(qtyVal) < 1) {
                         if(window.confirm('Remove item from list?')) {
