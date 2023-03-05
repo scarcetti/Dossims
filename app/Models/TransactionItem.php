@@ -13,6 +13,7 @@ class TransactionItem extends Model
         'branch_product_id',
         'price_at_purchase',
         'quantity',
+        'linear_meters',
         'tbd',
     ];
 

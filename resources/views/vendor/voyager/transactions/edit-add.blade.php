@@ -6,7 +6,7 @@
             {!! $transaction_item ?? '' !!}
         </span>
         <div>
-            <multiselect
+            {{-- <multiselect
                 v-if="!transactionItem"
                 v-model="value"
                 placeholder="Select Products"
@@ -14,7 +14,7 @@
                 track-by="id"
                 :options="branchProducts"
                 :multiple="true"
-            ></multiselect>{{-- 
+            ></multiselect> --}}{{-- 
             <multiselect
                 v-else
                 disabled
@@ -25,35 +25,25 @@
                 :options="branchProducts"
                 :multiple="true"
             ></multiselect> --}}
+            @{{ value }}
 
-            <div style="
-                max-height: 500px;
-                overflow: auto;
-                margin-top: 20px;
-            ">
-                {{-- @{{ discountKey }} --}}
+            <div class="cartItemContainer">
                 <div
                     v-for="(item, index) in value"
                     :key="index"
-                    style="
-                        border: 1px solid #e8e8e8;
-                        border-radius: 5px;
-                        padding: 8px;
-                        margin: 0 0 20px 0;
-                    "
                 >
-                    {{-- @{{ item }} --}}
-                    {{-- <input v-if="item.product" :name="`item-${item.id}-price`" :value="item.price" hidden /> --}}
-                    {{-- <input v-else :name="`item-${item.id}-price`" :value="item.price_at_purchase" hidden /> --}}
 
                     @if( isset($transaction_item) )
                         @include('voyager::transactions.edit-add-modules.viewing')
                     @else
                         @include('voyager::transactions.edit-add-modules.quotation')
                     @endif
-
-                    {{-- @include('voyager::transactions.edit-add-modules.item-card') --}}
                 </div>
+                @if( !isset($transaction_item) )
+                    <span v-on:click="addEmptyCartItem()" class="btn btn-warning edit" style="display: flex; flex-direction: column;">
+                        <i class="voyager-plus"></i> Add new item
+                    </span>
+                @endif
 
                 @include('voyager::transactions.edit-add-modules.totals')
             </div>
@@ -101,9 +91,16 @@
                 }
             },
             methods: {
+                addEmptyCartItem() {
+                    this.value.push({})
+                },
+                cartItemSelect(x) {
+                    console.log(x)
+                },
                 valueChanged(qtyQuery, price, index) {
                     const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value
                     const tbdVal = document.querySelector(`[name=${qtyQuery}-tbd]`).value
+                    console.log([qtyQuery, price, index])
 
                     if(Number(qtyVal) < 1) {
                         if(window.confirm('Remove item from list?')) {
@@ -111,11 +108,11 @@
                         }
                         else {
                             const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
-                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
+                            document.querySelector(`.cartContainer .subtotal.${qtyQuery}`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
                         }
                     }
                     else {
-                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
+                        document.querySelector(`.cartContainer .subtotal.${qtyQuery}`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
                     }
                 },
                 getUpdateValue() {
@@ -126,6 +123,9 @@
                         this.transactionItem = JSON.parse(txnItems)
                         this.value = this.transactionItem
                         this.getTotalValue()
+                    }
+                    else {
+                        this.addEmptyCartItem()
                     }
                 },
                 hideElements() {
