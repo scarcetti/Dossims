@@ -33,6 +33,7 @@
                             <div>
                                 <h4>Grand total</h4>
                                 <h2>@{{ grandTotal }}</h2>
+                                <input type="text" name="grand_total" :value="grandTotal_" hidden>
                             </div>
                         </div>
                         <div class="dropdowns">
@@ -51,14 +52,14 @@
                                 />
                             </div>
                             <div style="margin: 30px 0 15px 0;">
-                                <input v-if="paymentMethod" name="payment_type_id" :value="paymentMethod.id" hidden/>
+                                <input v-if="paymentMethod" name="payment_method_id" :value="paymentMethod.id" hidden/>
                                 <multiselect
                                     v-model="paymentMethod"
                                     @input="paymentTypeChanged()"
                                     deselect-label="Can't remove this value"
                                     track-by="name"
                                     label="name"
-                                    placeholder="Payment type"
+                                    placeholder="Payment method"
                                     :options="paymentMethods"
                                     :searchable="false"
                                     :allow-empty="false"

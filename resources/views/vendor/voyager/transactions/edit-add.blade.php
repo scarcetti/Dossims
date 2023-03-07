@@ -40,7 +40,7 @@
                     @endif
                 </div>
                 @if( !isset($transaction_item) )
-                    <span v-on:click="addEmptyCartItem()" class="btn btn-warning edit" style="display: flex; flex-direction: column;">
+                    <span v-on:click="addEmptyCartItem()" class="addItemBtn btn btn-warning edit" style="display: flex; flex-direction: column;">
                         <i class="voyager-plus"></i> Add new item
                     </span>
                 @endif
@@ -80,6 +80,7 @@
                     productsTotal: '----',
                     shippingTotal: 0.00,
                     grandTotal: '----',
+                    grandTotal_: 0,
                     transactionItem: false,
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
@@ -94,8 +95,13 @@
                 addEmptyCartItem() {
                     this.value.push({})
                 },
-                cartItemSelect(x) {
-                    console.log(x)
+                cartItemSelect(qtyQuery, price, index) {
+                    setTimeout(()=>{
+                        document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
+                        document.querySelector(`[name=${qtyQuery}-tbd]`).value = 1
+
+                        this.valueChanged(qtyQuery, price, index)
+                    }, 50)
                 },
                 valueChanged(qtyQuery, price, index) {
                     const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value
@@ -207,6 +213,7 @@
                     this.productsTotal = total
                     // this.productsTotal = `₱ ${total.toFixed(2)}`
                     this.grandTotal = `₱ ${(total - this.shippingTotal).toFixed(2)}`
+                    this.grandTotal_ = (total - this.shippingTotal).toFixed(2)
                 },
                 disableSubmitOnFieldsEnter() {
                     $('form.form-edit-add').keypress(

@@ -7,7 +7,7 @@
             {{-- <h4 style="margin: 0 0 10px 0">@{{ value[index].selection.product_name }}</h4> --}}
             <multiselect
                 v-model="value[index].selection"
-                @input="cartItemSelect(item)"
+                @input="cartItemSelect(`item-${value[index].selection.id}`, value[index].selection.price, index)"
                 deselect-label="Can't remove this value"
                 track-by="product_name"
                 label="product_name"
