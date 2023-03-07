@@ -100,12 +100,24 @@
                         document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
                         document.querySelector(`[name=${qtyQuery}-tbd]`).value = 1
 
+                        const linearMeter = document.querySelector(`[name=${qtyQuery}-linear-meters]`)
+                        if(linearMeter) {
+                            linearMeter.value = 1
+                        }
+
                         this.valueChanged(qtyQuery, price, index)
                     }, 50)
                 },
                 valueChanged(qtyQuery, price, index) {
                     const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value
                     const tbdVal = document.querySelector(`[name=${qtyQuery}-tbd]`).value
+                    const x = document.querySelector(`[name=${qtyQuery}-linear-meters]`)
+                    let linearMeter = 1
+                    let result = '---'
+
+                    if(x) {
+                        linearMeter = x.value
+                    }
 
                     if(Number(qtyVal) < 1) {
                         if(window.confirm('Remove item from list?')) {
@@ -113,12 +125,13 @@
                         }
                         else {
                             const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
-                            document.querySelector(`.cartContainer .subtotal.${qtyQuery}`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
+                            result = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal) * parseFloat(linearMeter)).toFixed(2)
                         }
                     }
                     else {
-                        document.querySelector(`.cartContainer .subtotal.${qtyQuery}`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
+                        result = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal) * parseFloat(linearMeter)).toFixed(2)
                     }
+                    document.querySelector(`.cartContainer .subtotal.${qtyQuery}`).innerHTML = result
                 },
                 getUpdateValue() {
                     const txnItems = document.querySelector('span.txns_').innerHTML
@@ -197,8 +210,8 @@
                     let total = 0
                     this.value.forEach(item => {
                         item.discount_value ?
-                            total += parseFloat(item.discount_value) :
-                            total += (parseFloat(item.price_at_purchase) * item.quantity)
+                            total += parseFloat(item.discount_value) * (item.linear_meters ? item.linear_meters : 1) :
+                            total += (parseFloat(item.price_at_purchase) * item.quantity) * (item.linear_meters ? item.linear_meters : 1)
                     })
 
 
