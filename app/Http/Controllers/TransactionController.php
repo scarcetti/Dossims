@@ -300,6 +300,8 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         $this->saveDiscounts($request);
 
+        $this->savePaymentInfo($request);
+
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -381,6 +383,24 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         function updateTransactionStatus($id)
         {
             return \App\Models\Transaction::where('id', $id)->update(['status' => 'procuring']);
+        }
+
+        function savePaymentInfo($request)
+        {
+            $is_downpayment = ($request->payment_type_id == 1);
+            $txn_payment = \App\Models\TransactionPayment::create([
+                'amount_paid' => $is_downpayment ? $request->amount_tendered : $request->grand_total,
+                'payment_type_id' => $request->payment_type_id,
+                'payment_method_id' => $request->payment_method_id,
+            ]);
+
+            if( $is_downpayment ) {
+                \App\Models\Balance::create([
+                    'customer_id' => $request->customer_id,
+                    'updated_at_payment_id' => $txn_payment->id,
+                    'outstanding_balance' => floatval($request->grand_total) - floatval($request->amount_tendered),
+                ]);
+            }
         }
 
         function saveDiscounts($request)

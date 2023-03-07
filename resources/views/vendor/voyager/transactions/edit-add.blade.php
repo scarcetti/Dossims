@@ -6,7 +6,7 @@
             {!! $transaction_item ?? '' !!}
         </span>
         <div>
-            <multiselect
+            {{-- <multiselect
                 v-if="!transactionItem"
                 v-model="value"
                 placeholder="Select Products"
@@ -14,7 +14,7 @@
                 track-by="id"
                 :options="branchProducts"
                 :multiple="true"
-            ></multiselect>
+            ></multiselect> --}}{{-- 
             <multiselect
                 v-else
                 disabled
@@ -24,302 +24,32 @@
                 track-by="id"
                 :options="branchProducts"
                 :multiple="true"
-            ></multiselect>
+            ></multiselect> --}}
+            {{-- @{{ value }} --}}
 
-            <div style="
-                max-height: 500px;
-                overflow: auto;
-                margin-top: 20px;
-            ">
-                {{-- @{{ discountKey }} --}}
+            <div class="cartItemContainer">
                 <div
                     v-for="(item, index) in value"
                     :key="index"
-                    style="
-                        border: 1px solid #e8e8e8;
-                        border-radius: 5px;
-                        padding: 8px;
-                        margin: 0 0 20px 0;
-                    "
                 >
-                    {{-- @{{ item }} --}}
-                    <input v-if="item.product" :name="`item-${item.id}-price`" :value="item.price" hidden />
-                    <input v-else :name="`item-${item.id}-price`" :value="item.price_at_purchase" hidden />
 
-                    <div v-if="item.product" :class="`cartContainer item-${item.id}`">
-                        <div>
-                            <div>
-                                <small>Product name: </small>
-                                <h4 style="margin: 0 0 10px 0">@{{ item.product_name }}</h4>
-                            </div>
-                            <div>
-                                <small>Item price: </small>
-                                <h4 style="margin: 0">₱ @{{ item.price }}</h4>
-                            </div>
-                        </div>
-                        <div>
-                            <div>
-                                <small>@{{ item.product.measurement_unit.name }}: </small>
-                                <input
-                                    class="form-control"
-                                    value="1"
-                                    type="number"
-                                    :name="`item-${item.id}-quantity`"
-                                    min="0"
-                                    :max="item.quantity"
-                                    style="margin: 0 0 6px 0"
-                                    v-on:change="valueChanged(`item-${item.id}`, item.price, index)"
-                                    v-on:input="valueChanged(`item-${item.id}`, item.price, index)"
-                                >
-                            </div>
-                            <div>
-                                <small>Subtotal: </small>
-                                <h4 class="subtotal" style="margin: 0">₱ @{{ item.price }}</h4>
-                            </div>
-                        </div>
-                        <div style="align-self: self-start; margin-top: 7px;">
-                            <small>TBD field: </small>
-                            <input
-                                class="form-control"
-                                value="1"
-                                type="number"
-                                :name="`item-${item.id}-tbd`"
-                                step="0.01"
-                                min="0.01"
-                                style="margin: 0 0 6px 0"
-                                v-on:change="valueChanged(`item-${item.id}`, item.price, index)"
-                                v-on:input="valueChanged(`item-${item.id}`, item.price, index)"
-                            >
-                        </div>
-                        <div {{-- style="margin-left: auto;" --}}>
-                            <h5>Stock: </h5>
-                            <h4> @{{ item.quantity }} @{{ item.product.measurement_unit.name }}</h4>
-                        </div>
-                    </div>
+                    @if( isset($transaction_item) )
+                        @include('voyager::transactions.edit-add-modules.viewing')
+                    @else
+                        @include('voyager::transactions.edit-add-modules.quotation')
+                    @endif
+                </div>
+                @if( !isset($transaction_item) )
+                    <span v-on:click="addEmptyCartItem()" class="addItemBtn btn btn-warning edit" style="display: flex; flex-direction: column;">
+                        <i class="voyager-plus"></i> Add new item
+                    </span>
+                @endif
 
-{{--  UP module for create =============================== DOWN module for edit  --}}
+                @include('voyager::transactions.edit-add-modules.totals')
+            </div>
+        </div>
 
-{{-- 
-        !!! NOTE FOR FUTURE SELF ON EDIT !!!
         
-        module for create using branch_products.id while on update mode using transaction_items.id for reference
- --}}
-
-                    <div v-else :class="`cartContainer item-${item.id}`">
-                        <div>
-                            <div>
-                                <small>Product name: </small>
-                                <h4 style="margin: 0 0 10px 0">@{{ item.product_name }}</h4>
-                            </div>
-                            <div>
-                                <small>Item price: </small>
-                                <h4 style="margin: 0">₱ @{{ item.price_at_purchase }}</h4>
-                            </div>
-                        </div>
-                        <div>
-                            <div>
-                                <small>@{{ item.branch_product.product.measurement_unit.name }}: </small>
-                                <input
-                                    class="form-control"
-                                    readonly
-                                    :value="item.quantity"
-                                    type="number"
-                                    min="0"
-                                    style="margin: 0 0 6px 0"
-                                >
-                            </div>
-                            <div>
-                                <small>Subtotal: </small>
-                                <span v-if="item.discount_value" style="display: flex;">
-                                    <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</s></h4>&nbsp;&nbsp;&nbsp;
-                                    <h4 class="subtotal" style="margin: 0">₱ @{{ item.discount_value }}</h4>
-                                </span>
-                                <span v-else style="display: flex;">
-                                    <h4 class="subtotal" style="margin: 0">₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</h4>
-                                </span>
-                            </div>
-                        </div>
-                        <div style="align-self: self-start; margin-top: 7px;">
-                            <small>TBD field: </small>
-                            <input
-                                class="form-control"
-                                readonly
-                                :value="item.tbd"
-                                type="number"
-                                style="margin: 0 0 6px 0"
-                            >
-                        </div>
-                        <div>
-                            <span v-if="item.transaction.status == 'pending' && !item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">Add discount</span>
-                            <span v-if="item.transaction.status == 'pending' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>
-                            <span v-if="item.transaction.status == 'procuring' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>
-                            <span v-if="item.transaction.status == 'procuring' && !item.discount" class="btn" readonly style="background: #cbc0b3; color: white;">Not discounted</span>
-                        </div>
-                        {{-- @{{item.discount}} --}}
-                        <div class="modal fade" :id="`discountDialog${item.id}`" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
-                            <div class="modal-success-dialog modal-dialog" role="document" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
-                                <div class="modal-content">
-                                    <div class="modal-header" style="display: flex; align-items: center;">
-                                        <h5 class="modal-title" id="dialogLabel">Set discounts for @{{ item.product_name }}</h5>
-                                        <button type="button" {{-- @click="closeImage" --}} class="close" data-dismiss="modal" aria-label="Close" style="margin-left: auto;">
-                                        <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <hr style="margin: 0">
-                                    <div class="modal-body" style="padding-top: 0px !important; padding-left: 5%; padding-right: 5%; max-height: 70vh;">
-                                        <div class="form-group  col-md-12" style="padding: 0;">
-                                            <label class="control-label" for="name">Discount value <i style="color:red;">&nbsp;&nbsp;&nbsp;Discount has no effect when discount value is empty</i></label>
-                                            <input
-                                                v-if="item.discount"
-                                                :name="`item-${item.id}-discount-value`"
-                                                class="form-control"
-                                                type="number"
-                                                min="0"
-                                                v-model="item.discount.value"
-                                                style="margin: 0 0 6px 0"
-                                                readonly
-                                            >
-                                            <input
-                                                v-else
-                                                v-on:change="discountsModified(item, index)"
-                                                v-on:input="discountsModified(item, index)"
-                                                :name="`item-${item.id}-discount-value`"
-                                                class="form-control"
-                                                type="number"
-                                                min="0"
-                                                style="margin: 0 0 6px 0"
-                                            >
-                                        </div>
-
-                                        <div class="form-group  col-md-12 ">
-                                            <h5>Type of discount</h5>
-                                            <ul v-if="item.transaction.status == 'pending'" class="radio" v-on:click="discountsModified(item, index)">
-                                                <li>
-                                                    <input type="radio" :id="`item-${item.id}-option-type-fixed`" :name="`item-${item.id}-discount-type`" value="fixed">
-                                                    <label :for="`item-${item.id}-option-type-fixed`">Fixed amount</label>
-                                                    <div class="check"></div>
-                                                </li>
-                                                <li>
-                                                    <input type="radio" :id="`item-${item.id}-option-type-percentage`" :name="`item-${item.id}-discount-type`" value="percentage">
-                                                    <label :for="`item-${item.id}-option-type-percentage`">Percentage</label>
-                                                    <div class="check"></div>
-                                                </li>
-                                            </ul>
-                                            <ul v-if="item.transaction.status == 'procuring' && item.discount">
-                                                <li><label>@{{ item.discount.fixed_amount ? 'Fixed amount' : 'By percentage' }}</label></li>
-                                                <li><label>@{{ item.discount.per_item ? `Applied per ${item.branch_product.product.measurement_unit.name}` : 'Applied on the subtotal' }}</label></li>
-                                            </ul>
-                                        </div>
-                                        <div v-if="item.transaction.status == 'pending'" style="margin: 0 10px">
-                                            <h5>Per item <small><br>@{{ cbNote3 }}</small></h5>
-                                            <label class="switch">
-                                                <input :name="`item-${item.id}-discount-type-per-item`" type="checkbox" v-on:click="discountsModified(item, index)">
-                                                <div class="slider round"></div>
-                                            </label>
-                                        </div>
-                                        <div v-if="item.transaction.status == 'pending' && !item.discount" style="text-align-last: right;">
-                                            <span v-on:click="removeDiscount(item.id, index)" class="btn btn-danger edit">Remove discount</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div v-if="transactionItem" class="payment_container">
-            <div v-if="value[0].transaction.status == 'procuring'" class="total_container">
-                <h4>Grand total</h4>
-                <h2 style="font-weight: bold;">@{{ grandTotal }}</h2>
-            </div>
-            
-            <div v-if="value[0].transaction.status == 'pending'">
-                <span class="btn btn-primary" @click="paymentButtonClicked()" readonly>Add payment</span>
-
-                <div class="modal fade" id="paymentDialog" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
-                    <div class="modal-success-dialog modal-dialog" role="document" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
-                        <div class="modal-content">
-                            <div class="modal-header" style="display: flex; align-items: center;">
-                                <h5 class="modal-title" id="dialogLabel">Add payment</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-left: auto;">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body" style="padding-top: 0px !important; padding-left: 5%; padding-right: 5%; max-height: 70vh;">
-
-                                <div class="total_container">
-                                    <div>
-                                        {{-- @{{ paymentType }} --}}
-                                        <span>Products total</span>
-                                        <h4 v-if="!paymentType">₱&nbsp;@{{ productsTotal.toFixed(2) }}</h4>
-                                        <h4 v-else-if="paymentType.id === 1">₱&nbsp;<s>@{{ (productsTotal * 2).toFixed(2) }}</s>&nbsp;@{{ productsTotal.toFixed(2) }}</h4>
-                                        <h4 v-else>₱&nbsp;@{{ productsTotal.toFixed(2) }}</h4>
-                                    </div>
-                                    <div>
-                                        <span>Transport total</span>
-                                        <h4>₱ @{{ shippingTotal.toFixed(2) }}</h4>
-                                    </div>
-                                    <div>
-                                        <h4>Grand total</h4>
-                                        <h2>@{{ grandTotal }}</h2>
-                                    </div>
-                                </div>
-                                <div class="dropdowns">
-                                    <div style="margin: 30px 0 15px 0;">
-                                        <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden/>
-                                        <multiselect
-                                            v-model="paymentType"
-                                            @input="paymentTypeChanged()"
-                                            deselect-label="Can't remove this value"
-                                            track-by="name"
-                                            label="name"
-                                            placeholder="Payment type"
-                                            :options="paymentTypes"
-                                            :searchable="false"
-                                            :allow-empty="false"
-                                        />
-                                    </div>
-                                    <div style="margin: 30px 0 15px 0;">
-                                        <input v-if="paymentMethod" name="payment_type_id" :value="paymentMethod.id" hidden/>
-                                        <multiselect
-                                            v-model="paymentMethod"
-                                            @input="paymentTypeChanged()"
-                                            deselect-label="Can't remove this value"
-                                            track-by="name"
-                                            label="name"
-                                            placeholder="Payment type"
-                                            :options="paymentMethods"
-                                            :searchable="false"
-                                            :allow-empty="false"
-                                        />
-                                    </div>
-                                    <div class="form-group  col-md-12" style="padding: 0;">
-
-                                        <label class="control-label" for="name">Amount tendered</label>
-                                        <input
-                                            name="amount_tendered"
-                                            class="form-control"
-                                            type="number"
-                                            min="0"
-                                            style="margin: 0 0 6px 0"
-                                        >
-                                    </div>
-                                </div>
-                                <div v-if="paymentType" style="text-align-last: end;">
-                                    <span class="btn btn-primary" @click="submitForm(paymentType.id)" readonly>
-                                        @{{ paymentType.id === 2 ? 'Print Official Receipt' : 'Print Charge Invoice' }}
-                                    </span>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <br>
     @if( count($dataTypeContent->toArray()) == 0 )
@@ -350,6 +80,7 @@
                     productsTotal: '----',
                     shippingTotal: 0.00,
                     grandTotal: '----',
+                    grandTotal_: 0,
                     transactionItem: false,
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
@@ -361,6 +92,17 @@
                 }
             },
             methods: {
+                addEmptyCartItem() {
+                    this.value.push({})
+                },
+                cartItemSelect(qtyQuery, price, index) {
+                    setTimeout(()=>{
+                        document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
+                        document.querySelector(`[name=${qtyQuery}-tbd]`).value = 1
+
+                        this.valueChanged(qtyQuery, price, index)
+                    }, 50)
+                },
                 valueChanged(qtyQuery, price, index) {
                     const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value
                     const tbdVal = document.querySelector(`[name=${qtyQuery}-tbd]`).value
@@ -371,11 +113,11 @@
                         }
                         else {
                             const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
-                            document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
+                            document.querySelector(`.cartContainer .subtotal.${qtyQuery}`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
                         }
                     }
                     else {
-                        document.querySelector(`.cartContainer.${qtyQuery} .subtotal`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
+                        document.querySelector(`.cartContainer .subtotal.${qtyQuery}`).innerHTML = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal)).toFixed(2)
                     }
                 },
                 getUpdateValue() {
@@ -386,6 +128,9 @@
                         this.transactionItem = JSON.parse(txnItems)
                         this.value = this.transactionItem
                         this.getTotalValue()
+                    }
+                    else {
+                        this.addEmptyCartItem()
                     }
                 },
                 hideElements() {
@@ -468,6 +213,7 @@
                     this.productsTotal = total
                     // this.productsTotal = `₱ ${total.toFixed(2)}`
                     this.grandTotal = `₱ ${(total - this.shippingTotal).toFixed(2)}`
+                    this.grandTotal_ = (total - this.shippingTotal).toFixed(2)
                 },
                 disableSubmitOnFieldsEnter() {
                     $('form.form-edit-add').keypress(

@@ -237,7 +237,7 @@
                                                 <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
                                             </a> 
                                             @if($data->status == 'procuring')
-                                                <a href="{{ ENV('APP_URL') }}/admin/cutting-list/{{ $data->id }}" title="View" class="btn btn-sm btn-primary pull-right view">
+                                                <a href="{{ ENV('APP_URL') }}/admin/cutting-list/{{ $data->id }}" title="View" class="btn btn-sm btn-primary pull-right view" style="margin-right: 6px;">
                                                     <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Cutting list</span>
                                                 </a> 
                                             @endif
