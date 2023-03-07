@@ -30,19 +30,31 @@
                 <h4 class="subtotal" style="margin: 0">₱ @{{ item.discount_value }}</h4>
             </span>
             <span v-else style="display: flex;">
-                <h4 class="subtotal" style="margin: 0">₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</h4>
+                <h4 class="subtotal" style="margin: 0">₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) * (item.linear_meters ? item.linear_meters : 1) }}</h4>
             </span>
         </div>
     </div>
     <div style="align-self: self-start; margin-top: 7px;">
-        <small>TBD field: </small>
-        <input
-            class="form-control"
-            readonly
-            :value="item.tbd"
-            type="number"
-            style="margin: 0 0 6px 0"
-        >
+        <div v-if="item.linear_meters">
+            <small>Linear meters: </small>
+            <input
+                class="form-control"
+                readonly
+                :value="item.linear_meters"
+                type="number"
+                style="margin: 0 0 6px 0"
+            >
+        </div>
+        <div>
+            <small>TBD field: </small>
+            <input
+                class="form-control"
+                readonly
+                :value="item.tbd"
+                type="number"
+                style="margin: 0 0 6px 0"
+            >
+        </div>
     </div>
     <div>
         <span v-if="item.transaction.status == 'pending' && !item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">Add discount</span>
