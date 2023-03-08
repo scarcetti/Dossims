@@ -76,9 +76,7 @@
             data () {
                 return {
                     value: [],
-                    cart: [],
                     productsTotal: '----',
-                    shippingTotal: 0.00,
                     grandTotal: '----',
                     grandTotal_: 0,
                     transactionItem: false,
@@ -89,6 +87,13 @@
                     paymentMethods: {!! $payment_methods ?? '' !!},
                     cartSubtotals: [],
                     cbNote3: 'When switch is green, discounts are applied per item. Otherwise, discount is applied on the subtotal',
+                    deliveryFeeDialog: false,
+                    deliveryFees: {
+                        outisde: false,
+                        long: false,
+                        distance: 1,
+                        shippingTotal: 0.00,
+                    }
                 }
             },
             methods: {
@@ -225,8 +230,8 @@
 
                     this.productsTotal = total
                     // this.productsTotal = `₱ ${total.toFixed(2)}`
-                    this.grandTotal = `₱ ${(total - this.shippingTotal).toFixed(2)}`
-                    this.grandTotal_ = (total - this.shippingTotal).toFixed(2)
+                    this.grandTotal = `₱ ${(total + this.deliveryFees.shippingTotal).toFixed(2)}`
+                    this.grandTotal_ = (total + this.deliveryFees.shippingTotal).toFixed(2)
                 },
                 disableSubmitOnFieldsEnter() {
                     $('form.form-edit-add').keypress(
@@ -242,11 +247,47 @@
                 submitForm(submitType) {
                     // submitType: 1 = downpayment, 2 = full
                     $('form').submit()
-                }
+                },
+                deliveryFeeInfoToggle( shown ) {
+                    const initial = {
+                            outisde: false,
+                            long: false,
+                            distance: 1,
+                            shippingTotal: 0.00,
+                        }
+
+                    this.deliveryFeeDialog = shown
+
+                    if( !shown ) {
+                        this.deliveryFees = Object.assign({}, this.deliveryFees, initial)
+                        this.getTotalValue()
+                    }
+                    else {
+                        this.deliveryFeeToggles()
+                    }
+                },
+                deliveryFeeToggles() {
+                    setTimeout(() => {
+                        this.deliveryFees.outisde = $('input.outsideBarnagay')[0].checked
+                        this.deliveryFees.long = $('input.longOrder')[0].checked
+
+                        if( !this.deliveryFees.outisde ) {
+                            this.deliveryFees.distance = 1
+
+                            this.deliveryFees.shippingTotal = this.deliveryFees.long ? 1000 : 500
+                        }
+                        else {
+                            this.deliveryFees.shippingTotal = (this.deliveryFees.long ? 1000 : 500) + (100 * Number(this.deliveryFees.distance))
+                        }
+
+                        this.getTotalValue()
+                    }, 10)
+                },
             },
             created() {
                 this.disableSubmitOnFieldsEnter()
                 this.getUpdateValue()
+
 
                 this.hideElements()
                 // this.disableElements()

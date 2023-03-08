@@ -13,7 +13,7 @@
                     <div class="modal-header" style="display: flex; align-items: center;">
                         <h5 class="modal-title" id="dialogLabel">Add payment</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-left: auto;">
-                        <span aria-hidden="true">&times;</span>
+                            <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body" style="padding-top: 0px !important; padding-left: 5%; padding-right: 5%; max-height: 70vh;">
@@ -27,8 +27,8 @@
                                 <h4 v-else>₱&nbsp;@{{ productsTotal.toFixed(2) }}</h4>
                             </div>
                             <div>
-                                <span>Transport total</span>
-                                <h4>₱ @{{ shippingTotal.toFixed(2) }}</h4>
+                                <span>Delivery total</span>
+                                <h4>₱ @{{ deliveryFees.shippingTotal.toFixed(2) }}</h4>
                             </div>
                             <div>
                                 <h4>Grand total</h4>
@@ -36,6 +36,37 @@
                                 <input type="text" name="grand_total" :value="grandTotal_" hidden>
                             </div>
                         </div>
+
+                        <div v-if="deliveryFeeDialog" class="deliveryFeeContainer">
+                            <span class="btn btn-danger" @click="deliveryFeeInfoToggle(false)" readonly>Remove delivery fee</span>
+                            <div style="margin-top: 10px;">
+                                <h5>Delivery outside barangay of the branch</h5>
+                                <label class="switch">
+                                    <input class="outsideBarnagay" type="checkbox" v-on:click="deliveryFeeToggles()">
+                                    <div class="slider round"></div>
+                                </label>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <h5>Items exceeding 5 meters (long)</h5>
+                                <label class="switch">
+                                    <input class="longOrder" type="checkbox" v-on:click="deliveryFeeToggles()">
+                                    <div class="slider round"></div>
+                                </label>
+                            </div>
+                            <div v-if="deliveryFees.outisde == true" style="display: contents;">
+                                <label class="control-label" for="name">Destination distance (km)</label>
+                                <input
+                                    v-model="deliveryFees.distance"
+                                    class="distance"
+                                    type="number"
+                                    min="0"
+                                    style="margin: 0 0 6px 0"
+                                    @input="deliveryFeeToggles()"
+                                >
+                            </div>
+                        </div>
+                        <span v-else class="btn btn-primary" @click="deliveryFeeInfoToggle(true)" readonly>Add delivery fee</span>
+
                         <div class="dropdowns">
                             <div style="margin: 30px 0 15px 0;">
                                 <input v-if="paymentType" name="payment_type_id" :value="paymentType.id" hidden/>
