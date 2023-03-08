@@ -54,8 +54,6 @@
 	            value="1"
 	            type="number"
 	            :name="`item-${value[index].selection.id}-linear-meters`"
-	            {{-- step="0.01" --}}
-	            {{-- min="0.01" --}}
 	            style="margin: 0 0 6px 0"
 	            v-on:change="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
 	            v-on:input="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
