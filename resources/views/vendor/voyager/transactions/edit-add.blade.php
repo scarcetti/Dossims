@@ -6,33 +6,11 @@
             {!! $transaction_item ?? '' !!}
         </span>
         <div>
-            {{-- <multiselect
-                v-if="!transactionItem"
-                v-model="value"
-                placeholder="Select Products"
-                label="product_name"
-                track-by="id"
-                :options="branchProducts"
-                :multiple="true"
-            ></multiselect> --}}{{-- 
-            <multiselect
-                v-else
-                disabled
-                v-model="value"
-                placeholder="Select Products"
-                label="product_name"
-                track-by="id"
-                :options="branchProducts"
-                :multiple="true"
-            ></multiselect> --}}
-            {{-- @{{ value }} --}}
-
             <div class="cartItemContainer">
                 <div
                     v-for="(item, index) in value"
                     :key="index"
                 >
-
                     @if( isset($transaction_item) )
                         @include('voyager::transactions.edit-add-modules.viewing')
                     @else
@@ -65,13 +43,10 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/transactions.css') }}">
 
     <script type="module">
-        // import VueNumberInput from '@chenfengyuan/vue-number-input';
-        // window.VueNumberInput = require('@chenfengyuan/vue-number-input');
         var app = new Vue({
             el: '#app',
             components: { 
                 Multiselect: window.VueMultiselect.default,
-                // VueNumberInput.name: VueNumberInput
             },
             data () {
                 return {
@@ -89,7 +64,7 @@
                     cbNote3: 'When switch is green, discounts are applied per item. Otherwise, discount is applied on the subtotal',
                     deliveryFeeDialog: false,
                     deliveryFees: {
-                        outisde: false,
+                        outside: false,
                         long: false,
                         distance: 1,
                         shippingTotal: 0.00,
@@ -250,7 +225,7 @@
                 },
                 deliveryFeeInfoToggle( shown ) {
                     const initial = {
-                            outisde: false,
+                            outside: false,
                             long: false,
                             distance: 1,
                             shippingTotal: 0.00,
@@ -268,10 +243,10 @@
                 },
                 deliveryFeeToggles() {
                     setTimeout(() => {
-                        this.deliveryFees.outisde = $('input.outsideBarnagay')[0].checked
+                        this.deliveryFees.outside = $('input.outsideBarnagay')[0].checked
                         this.deliveryFees.long = $('input.longOrder')[0].checked
 
-                        if( !this.deliveryFees.outisde ) {
+                        if( !this.deliveryFees.outside ) {
                             this.deliveryFees.distance = 1
 
                             this.deliveryFees.shippingTotal = this.deliveryFees.long ? 1000 : 500
@@ -292,6 +267,7 @@
                 this.hideElements()
                 // this.disableElements()
             }
+
         })
     </script>
 @endsection

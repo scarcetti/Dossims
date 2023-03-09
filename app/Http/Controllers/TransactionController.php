@@ -387,6 +387,12 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         function savePaymentInfo($request)
         {
+            #    Payment types value:
+            #       1 Downpayment
+            #       2 Full payment
+            #       3 Periodic payment
+            #       4 Final payment
+
             $is_downpayment = ($request->payment_type_id == 1);
             $txn_payment = \App\Models\TransactionPayment::create([
                 'amount_paid' => $is_downpayment ? $request->amount_tendered : $request->grand_total,
@@ -401,6 +407,8 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                     'outstanding_balance' => floatval($request->grand_total) - floatval($request->amount_tendered),
                 ]);
             }
+
+            $this->delivieryFees($request, $txn_payment->id);
         }
 
         function saveDiscounts($request)
@@ -464,12 +472,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         function saveTransactionPayments($request)
         {
-            #    Payment types value:
-            #       1 Downpayment
-            #       2 Full payment
-            #       3 Periodic payment
-            #       4 Final payment
-
+            
             if(intval($request->payment_type_id) == 1) {
 
             }
@@ -483,14 +486,22 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
             }
 
-            $transaction_payment = \App\Models\TransactionPayment::create([
-                'outstanding_balance'   => null,
-                'amount_paid'           => $request->amount_tendered,
-                'payment_type_id'       => intval($request->payment_type_id),
-                'remarks'               => null,
-            ]);
-
+            
             // return $transaction_payment;
+        }
+
+        function delivieryFees($request, $txid)
+        {
+            if( isset($request->delivery_fee) ) {
+                $fees = json_decode($request->delivery_fee);
+                \App\Models\DeliveryFees::create([
+                    'transaction_payment_id' => $txid,
+                    'outside_brgy'           => $fees->outside,
+                    'long'                   => $fees->long,
+                    'distance'               => intval($fees->distance),
+                    'total'                  => doubleval($fees->shippingTotal),
+                ]);
+            }
         }
 
     public function create(Request $request)

@@ -38,22 +38,25 @@
                         </div>
 
                         <div v-if="deliveryFeeDialog" class="deliveryFeeContainer">
+                            <input name="delivery_fee" :value="JSON.stringify(deliveryFees)" hidden>
                             <span class="btn btn-danger" @click="deliveryFeeInfoToggle(false)" readonly>Remove delivery fee</span>
-                            <div style="margin-top: 10px;">
-                                <h5>Delivery outside barangay of the branch</h5>
-                                <label class="switch">
-                                    <input class="outsideBarnagay" type="checkbox" v-on:click="deliveryFeeToggles()">
-                                    <div class="slider round"></div>
-                                </label>
+                            <div style="display:flex; justify-content: space-evenly;">
+                                <div style="margin-top: 10px;">
+                                    <h5><small>Delivery outside barangay of the branch</small></h5>
+                                    <label class="switch">
+                                        <input class="outsideBarnagay" type="checkbox" v-on:click="deliveryFeeToggles()">
+                                        <div class="slider round"></div>
+                                    </label>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <h5><small>Items exceeding 5 meters (long)</small></h5>
+                                    <label class="switch">
+                                        <input class="longOrder" type="checkbox" v-on:click="deliveryFeeToggles()">
+                                        <div class="slider round"></div>
+                                    </label>
+                                </div>
                             </div>
-                            <div style="margin-top: 10px;">
-                                <h5>Items exceeding 5 meters (long)</h5>
-                                <label class="switch">
-                                    <input class="longOrder" type="checkbox" v-on:click="deliveryFeeToggles()">
-                                    <div class="slider round"></div>
-                                </label>
-                            </div>
-                            <div v-if="deliveryFees.outisde == true" style="display: contents;">
+                            <div v-if="deliveryFees.outside == true" style="display: contents;">
                                 <label class="control-label" for="name">Destination distance (km)</label>
                                 <input
                                     v-model="deliveryFees.distance"
