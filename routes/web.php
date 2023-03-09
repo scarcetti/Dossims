@@ -27,3 +27,11 @@ Route::group(['prefix' => 'admin'], function () {
         Route::patch('/update-status/{id}', [CuttingListController::class,'updateStatus']);
     });
 });
+
+Route::group(['prefix' => 'printouts'], function () {
+   Route::get('/charge-invoice', [CuttingListController::class,'getOrders']); 
+   Route::get('/cutting-list', [CuttingListController::class,'getOrders']); 
+   Route::get('/delivery-receipt', [CuttingListController::class,'getOrders']); 
+   Route::get('/job-order', [CuttingListController::class,'getOrders']); 
+   Route::get('/official-receipt', [CuttingListController::class,'getOrders']); 
+});
