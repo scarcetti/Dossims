@@ -127,9 +127,9 @@ ul.radio li {
 }
 
 .cartItemContainer {
-    max-height: 500px;
-    height: 500px;
-    overflow: auto;
+/*    max-height: 500px;*/
+/*    height: 500px;*/
+/*    overflow: auto;*/
     margin-top: 20px;
 }
 
@@ -167,7 +167,7 @@ ul.radio li {
 .addItemBtn {
     display: flex;
     flex-direction: column;
-    height: 110px;
+/*    height: 110px;*/
     justify-content: center;
     align-items: center;
 
