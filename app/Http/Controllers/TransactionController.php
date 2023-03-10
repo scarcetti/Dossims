@@ -15,7 +15,20 @@ use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 
 class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseController
 {
+    function getBranch($column=null)
+    {
+        $user = Auth::user();
+        $x = \App\Models\Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
+                    $q->where('id', $user->id);
+                })->first();
 
+        if(is_null($column)) {
+            return is_null($x) ? false : $x;
+        }
+        else {
+            return is_null($x) ? false : $x->$column;   
+        }
+    }
 
     public function index(Request $request)
     {
@@ -107,6 +120,15 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             } else {
                 $dataTypeContent = call_user_func([$query->orderBy($model->getKeyName(), 'DESC'), $getter]);
             }
+
+            // --- C U S T O M ---
+
+            $branch_id = $this->getBranch('id');
+            $dataTypeContent = call_user_func([$query->when($branch_id, function($q) use ($branch_id) {
+                return $q->where('branch_id', $branch_id);
+            }), $getter]);
+
+            // --- C U S T O M ---
 
             // Replace relationships' keys for labels and create READ links if a slug is provided.
             $dataTypeContent = $this->resolveRelations($dataTypeContent, $dataType);
@@ -553,7 +575,13 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         function fetchBranchProducts()
         {
-            $branch_products = \App\Models\BranchProduct::with('product.measurementUnit')->get();
+            $branch_id = $this->getBranch('id');
+
+            $branch_products = \App\Models\BranchProduct::when($branch_id, function($q) use ($branch_id) {
+                    return $q->where('branch_id', $branch_id);
+                })
+                ->with('product.measurementUnit')
+                ->get();
             foreach ($branch_products as $key => $value) {
                 $branch_products[$key]->product_name = $value->product->name;
             }
@@ -618,6 +646,15 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             }
         }
 
+        function otherTxnFields($txid)
+        {
+            $branch_id = $this->getBranch('id');
+
+            if($branch_id) {
+                \App\Models\Transaction::where('id', $txid)->update(['branch_id' => $branch_id]);
+            }
+        }
+
     public function store(Request $request)
     {
         // return $request;
@@ -635,6 +672,9 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         // save items
         $this->saveProducts($request, $data->id);
+
+        // update other Transaction fields
+        $this->otherTxnFields($data->id);
 
         event(new BreadDataAdded($dataType, $data));
 
