@@ -11,6 +11,10 @@ class BranchEmployee extends Model
     protected $fillable = [
         'employee_id',
         'branch_id',
-        'job_order_id',
     ];
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
 }

@@ -17,4 +17,9 @@ class Branch extends Model
         'address',
         'zipcode',
     ];
+
+    public function branchEmployees()
+    {
+        return $this->hasMany(BranchEmployee::class);
+    }
 }
