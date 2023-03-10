@@ -27,3 +27,5 @@ from local:
 	-- drop table product_categories
 
 export local
+
+## Some deeper modifications are noted by `// --- C U S T O M ---`

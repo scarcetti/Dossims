@@ -40,7 +40,7 @@
                 @endif
             </ol>
                 @if( branch() )
-                    <ol class="breadcrumb hidden-xs" style="padding: 7px 13px; margin-left: 20px;">
+                    <ol class="breadcrumb hidden-xs" style="padding: 7px 13px; margin-left: 20px; background: #dddddd;">
                         <li>
                             <span style="font-weight: bold;">
                                 Branch: {{ branch() }}
