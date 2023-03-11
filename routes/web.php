@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CuttingListController;
 use App\Http\Controllers\PrintoutController;
+use App\Http\Controllers\InventoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/', [CuttingListController::class,'getOrders']);
         Route::get('/{id}', [CuttingListController::class,'cuttingList']);
         Route::patch('/update-status/{id}', [CuttingListController::class,'updateStatus']);
+    });
+
+    Route::group(['prefix' => 'inventory'], function () {
+        Route::get('/', [InventoryController::class,'index']);
     });
 });
 
