@@ -148,6 +148,7 @@ return [
             'TCG\\Voyager\\Widgets\\UserDimmer',
             'App\\Widgets\\Branches',
             'App\\Widgets\\Inventory',
+            'App\\Widgets\\OtherBranchProducts',
         ],
 
     ],
