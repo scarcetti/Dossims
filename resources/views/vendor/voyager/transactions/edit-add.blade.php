@@ -18,21 +18,20 @@
                     @endif
                 </div>
                 @if( !isset($transaction_item) )
-                    <span v-on:click="addEmptyCartItem()" class="addItemBtn btn btn-warning edit" style="display: flex; flex-direction: column;">
+                    <span v-if="value[value.length - 1].selection" v-on:click="addEmptyCartItem()" class="addItemBtn btn btn-warning edit" style="display: flex; flex-direction: column;">
                         <i class="voyager-plus"></i> Add new item
                     </span>
                 @endif
-
                 @include('voyager::transactions.edit-add-modules.totals')
             </div>
         </div>
-
-        
+        <br>
+        @if( count($dataTypeContent->toArray()) == 0 )
+            <span v-if="value[0].selection">
+                @parent
+            </span>
+        @endif
     </div>
-    <br>
-    @if( count($dataTypeContent->toArray()) == 0 )
-        @parent
-    @endif
 @endsection
 @section('javascript')
     @parent
@@ -258,6 +257,10 @@
                         this.getTotalValue()
                     }, 10)
                 },
+                deleteCartItem(index) {
+                    this.value.splice(index, 1)
+                    // console.log(this.value[index])
+                }
             },
             created() {
                 this.disableSubmitOnFieldsEnter()
