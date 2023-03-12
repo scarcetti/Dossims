@@ -180,3 +180,12 @@ ul.radio li {
     flex-direction: column;
     padding: 10px 30px;
 }
+
+.voyager-x {
+    display: none;
+}
+
+.cartContainer:hover .voyager-x{
+/*    border: solid pink;*/
+    display: block;
+}

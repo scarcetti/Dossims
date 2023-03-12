@@ -1,6 +1,11 @@
 <input v-if="value[index].selection" :name="`item-${value[index].selection.id}-price`" :value="value[index].selection.price" hidden />
 <div class="cartContainer">
-    <div>
+    <div class="col-md-1" v-if="value[index].selection">
+        <span v-if="value.length > 1" @click="deleteCartItem(index)">
+            <i class="voyager-x" style="font-size: 25px;"></i>
+        </span>
+    </div>
+    <div class="col-md-7">
         <div>
             <small>Product name: </small>
             <multiselect
@@ -21,7 +26,7 @@
             <h4 style="margin: 0">₱ @{{ value[index].selection.price }}</h4>
         </div>
     </div>
-    <div v-if="value[index].selection">
+    <div class="col-md-2" v-if="value[index].selection">
         <div>
             <small>
             	@{{ value[index].selection.product.measurement_unit.name == 'Linear Meter' ? 
@@ -46,7 +51,7 @@
             <h4 :class="`subtotal item-${value[index].selection.id}`" style="margin: 0">₱ @{{ value[index].selection.price }}</h4>
         </div>
     </div>
-    <div v-if="value[index].selection" {{-- style="align-self: self-start; margin-top: 7px;" --}}>
+    <div class="col-md-2" v-if="value[index].selection" {{-- style="align-self: self-start; margin-top: 7px;" --}}>
     	<div v-if="value[index].selection.product.measurement_unit.name == 'Linear Meter'">
 	        <small>Linear meters: </small>
 	        <input
@@ -74,7 +79,7 @@
 	        >
     	</div>
     </div>
-    <div v-if="value[index].selection">
+    <div class="col-md-2" v-if="value[index].selection">
         <h5>Stock: </h5>
         <h4> @{{ value[index].selection.quantity }} @{{ value[index].selection.product.measurement_unit.name }}</h4>
     </div>

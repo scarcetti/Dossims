@@ -149,6 +149,7 @@ return [
             'App\\Widgets\\Branches',
             'App\\Widgets\\Inventory',
             'App\\Widgets\\OtherBranchProducts',
+            'App\\Widgets\\BranchStocks',
         ],
 
     ],
