@@ -1,0 +1,119 @@
+div#vs1__combobox {
+  height: 37px !important;
+}
+.swal2-container {
+  z-index: 1000000000 !important;
+}
+.form-group {
+    margin-top: 10px !important;
+    position: relative !important;
+    padding-right: 5px !important;
+    padding-left: 5px !important;
+}
+
+@media screen and (max-width: 992px) {
+  .form-group {
+    margin-top: 20px !important;
+   }
+}
+
+.form-control-placeholder {
+  position: absolute;
+  top: 0;
+  transition: all 100ms;
+  font-size: 75%;
+  font-weight: bold;
+  padding: 7px 0 0 0px;
+  transform: translate3d(0, -70%, 0);
+  opacity: 1;
+  background-color: white;
+}
+.form-control, span.select2-selection.select2-selection--single {
+    height: 45px !important;
+}
+
+input.form-control {
+    height: 37px !important;
+    color: black;
+}
+.modal-mask {
+  position: fixed;
+  z-index: 99998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+.modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+.modal-container {
+  width: auto;
+  margin: 24px 24px;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+  font-family: Helvetica, Arial, sans-serif;
+}
+.modal-header h3 {
+  margin-top: 0;
+  color: #14855b;
+}
+.modal-body {
+  margin: 0px 0;
+}
+.modal-default-button {
+  float: right;
+}
+.modal-enter {
+  opacity: 0;
+}
+.modal-leave-active {
+  opacity: 0;
+}
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+.containers_ {
+  display: grid;
+  justify-items: end;
+  box-shadow: 0px 2px 10px 0px #00000017;
+  border-radius: 5px;
+  padding: 1%;
+  margin: .5%;
+}
+
+.paginator_ {
+  height: fit-content;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+th {
+  border-color: #eaeaea;
+  background: #f8fafc;
+  color: #337ab7;
+}
+
+td {
+  line-height: 40px;
+}
+
+/*  dropdown  */
+
+.vs__clear {
+  display: none;
+}
