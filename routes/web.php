@@ -31,6 +31,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::group(['prefix' => 'inventory'], function () {
         Route::get('/', [InventoryController::class,'index']);
+        Route::get('/transfers', [InventoryController::class,'inboundAndTransfers']);
     });
 });
 
