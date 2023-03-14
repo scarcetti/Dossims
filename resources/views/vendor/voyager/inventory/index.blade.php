@@ -39,6 +39,7 @@
             <table style="width: 100%;">
                 <thead>
                     <tr/>
+                        <th v-if="!activeBranch.id">Branch</th>
                         <th>Product name</th>
                         <th>Stocks</th>
                     </tr>
@@ -46,6 +47,7 @@
                 <tbody>
                     @forelse($branch_products as $item)
                         <tr style="border-top: solid #5c5c5c29 1px">
+                            <td v-if="!activeBranch.id">{{ $item->branch->name }}</td>
                             <td>{{ $item->product->name }}</td>
                             <td>{{ $item->quantity }}</td>
                         </tr>
