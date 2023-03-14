@@ -19,7 +19,9 @@ class InventoryController extends Controller
                                     $q->where('name', 'ilike', '%'.$request['search_input'].'%');
                                 });
                             })
-                            ->where('branch_id', $request['branch_id'])
+                            ->when(isset($request['branch_id']), function($q) use ($request) {
+                                $q->where('branch_id', $request['branch_id']);
+                            })
                             ->with('product')
                             ->get();
                             // ->paginate(15);
