@@ -1,7 +1,7 @@
 {{-- <input :name="`item-${item.id}-price`" :value="item.price" hidden /> --}}
 <input :name="`item-${item.id}-price`" :value="item.price_at_purchase" hidden />
 <div :class="`cartContainer item-${item.id}`">
-    <div>
+    <div class="col-md-6">
         <div>
             <small>Product name: </small>
             <h4 style="margin: 0 0 10px 0">@{{ item.product_name }}</h4>
@@ -11,7 +11,7 @@
             <h4 style="margin: 0">₱ @{{ item.price_at_purchase }}</h4>
         </div>
     </div>
-    <div>
+    <div class="col-md-2">
         <div>
             <small>@{{ item.branch_product.product.measurement_unit.name }}: </small>
             <input
@@ -34,7 +34,7 @@
             </span>
         </div>
     </div>
-    <div style="align-self: self-start; margin-top: 7px;">
+    <div class="col-md-2" style="align-self: self-start; margin-top: 7px;">
         <div v-if="item.linear_meters">
             <small>Linear meters: </small>
             <input
@@ -45,7 +45,7 @@
                 style="margin: 0 0 6px 0"
             >
         </div>
-        <div>
+        <div v-show="false">
             <small>TBD field: </small>
             <input
                 class="form-control"
@@ -56,7 +56,7 @@
             >
         </div>
     </div>
-    <div>
+    <div class="col-md-2">
         <span v-if="item.transaction.status == 'pending' && !item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">Add discount</span>
         <span v-if="item.transaction.status == 'pending' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>
         <span v-if="item.transaction.status == 'procuring' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>

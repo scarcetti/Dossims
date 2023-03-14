@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use PDF;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class PrintoutController extends Controller
@@ -26,18 +27,21 @@ class PrintoutController extends Controller
 
     }
 
-    public function officialReceipt()
+    public function officialReceipt($txid)
     {
 
         $data = [
-            'title' => 'Welcome to Tutsmake.com',
-            'date' => date('m/d/Y')
+            'title' => 'Doming\'s Steel Trading',
+            'date' => date('m/d/Y'),
         ];
-           
-        $pdf = PDF::setPaper('a4', 'landscape')->setWarnings(false);
 
-        $pdf->loadView('printout.official-receipt', compact('data'));
-        // return view('printout.official-receipt', compact('data'));
+        $transaction = Transaction::with('transactionItems.branchProduct.product', 'customer', 'businessCustomer')->find($txid);
+           // return $transaction;
+
+        $pdf = PDF::setPaper('a4', 'landscape')->setWarnings(false);
+        // return view('printout.official-receipt', compact('data', 'transaction'));
+        
+        $pdf->loadView('printout.official-receipt', compact('data', 'transaction'));
         return $pdf->stream();
         // return $pdf->download('tutsmake.pdf');
     }

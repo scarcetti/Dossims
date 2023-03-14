@@ -72,25 +72,44 @@
             },
             methods: {
                 addEmptyCartItem() {
-                    this.value.push({})
+                    const cartInitial = {
+                        branch_product_id: '',
+                        quantity: 1,
+                        linear_meters: 1,
+                        tbd: 1,
+                    }
+                    this.value.push(cartInitial)
                 },
-                cartItemSelect(qtyQuery, price, index) {
+                initialCartData() {
+                    const cartInitial = {
+                        branch_product_id: '',
+                        quantity: 1,
+                        linear_meters: 1,
+                        tbd: 1,
+                    }
+                    this.value = [cartInitial]
+                },
+                cartItemSelect(qtyQuery, price, index, product_id) {
                     setTimeout(()=>{
-                        document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
-                        document.querySelector(`[name=${qtyQuery}-tbd]`).value = 1
+                        // console.log(index)
+                        document.querySelector(`.item-${index} [name=${qtyQuery}-quantity]`).value = 1
+                        document.querySelector(`.item-${index} [name=${qtyQuery}-tbd]`).value = 1
 
-                        const linearMeter = document.querySelector(`[name=${qtyQuery}-linear-meters]`)
+                        const linearMeter = document.querySelector(`.item-${index} [name=${qtyQuery}-linear-meters]`)
                         if(linearMeter) {
                             linearMeter.value = 1
                         }
 
                         this.valueChanged(qtyQuery, price, index)
+
+                        // update v-model
+                        this.value[index].branch_product_id = product_id
                     }, 50)
                 },
                 valueChanged(qtyQuery, price, index) {
-                    const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value
-                    const tbdVal = document.querySelector(`[name=${qtyQuery}-tbd]`).value
-                    const x = document.querySelector(`[name=${qtyQuery}-linear-meters]`)
+                    const qtyVal = document.querySelector(`.item-${index} [name=${qtyQuery}-quantity]`).value
+                    const tbdVal = document.querySelector(`.item-${index} [name=${qtyQuery}-tbd]`).value
+                    const x = document.querySelector(`.item-${index} [name=${qtyQuery}-linear-meters]`)
                     let linearMeter = 1
                     let result = '---'
 
@@ -103,14 +122,14 @@
                             this.value.splice(index, 1)
                         }
                         else {
-                            const qtyVal = document.querySelector(`[name=${qtyQuery}-quantity]`).value = 1
+                            const qtyVal = document.querySelector(`.item-${index} [name=${qtyQuery}-quantity]`).value = 1
                             result = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal) * parseFloat(linearMeter)).toFixed(2)
                         }
                     }
                     else {
                         result = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal) * parseFloat(linearMeter)).toFixed(2)
                     }
-                    document.querySelector(`.cartContainer .subtotal.${qtyQuery}`).innerHTML = result
+                    document.querySelector(`.cartContainer.item-${index} .subtotal.${qtyQuery}`).innerHTML = result
                 },
                 getUpdateValue() {
                     const txnItems = document.querySelector('span.txns_').innerHTML
@@ -123,6 +142,7 @@
                     }
                     else {
                         this.addEmptyCartItem()
+                        this.initialCartData()
                     }
                 },
                 hideElements() {
@@ -265,7 +285,6 @@
             created() {
                 this.disableSubmitOnFieldsEnter()
                 this.getUpdateValue()
-
 
                 this.hideElements()
                 // this.disableElements()

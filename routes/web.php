@@ -40,5 +40,5 @@ Route::group(['prefix' => 'printouts'], function () {
    Route::get('/cutting-list', [PrintoutController::class,'cuttingList']); 
    Route::get('/delivery-receipt', [PrintoutController::class,'deliveryReceipt']); 
    Route::get('/job-order', [PrintoutController::class,'jobOrder']); 
-   Route::get('/official-receipt', [PrintoutController::class,'officialReceipt']); 
+   Route::get('/official-receipt/{txid}', [PrintoutController::class,'officialReceipt']); 
 });

@@ -1,5 +1,6 @@
 <input v-if="value[index].selection" :name="`item-${value[index].selection.id}-price`" :value="value[index].selection.price" hidden />
-<div class="cartContainer">
+<div :class="`cartContainer item-${index}`">
+    <input v-if="value[index].selection" :name="`item_${index}`" :value="JSON.stringify(value[index])" hidden>
     <div class="col-md-1" v-if="value[index].selection">
         <span v-if="value.length > 1" @click="deleteCartItem(index)">
             <i class="voyager-x" style="font-size: 25px;"></i>
@@ -10,7 +11,7 @@
             <small>Product name: </small>
             <multiselect
                 v-model="value[index].selection"
-                @input="cartItemSelect(`item-${value[index].selection.id}`, value[index].selection.price, index)"
+                @input="cartItemSelect(`item-${value[index].selection.id}`, value[index].selection.price, index, value[index].selection.id)"
                 deselect-label="Can't remove this value"
                 track-by="product_name"
                 label="product_name"
@@ -35,6 +36,7 @@
 	            }}: 
             </small>
             <input
+                v-model="value[index].quantity"
                 class="form-control"
                 value="1"
                 type="number"
@@ -55,18 +57,20 @@
     	<div v-if="value[index].selection.product.measurement_unit.name == 'Linear Meter'">
 	        <small>Linear meters: </small>
 	        <input
+                v-model="value[index].linear_meters"
 	            class="form-control"
 	            value="1"
-	            type="number"
+	            {{-- type="number" --}}
 	            :name="`item-${value[index].selection.id}-linear-meters`"
 	            style="margin: 0 0 6px 0"
 	            v-on:change="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
 	            v-on:input="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
 	        >
     	</div>
-    	<div>
+    	<div v-show="false">
 	        <small>TBD field: </small>
 	        <input
+                v-model="value[index].tbd"
 	            class="form-control"
 	            value="1"
 	            type="number"

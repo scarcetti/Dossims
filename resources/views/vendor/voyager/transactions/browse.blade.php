@@ -230,9 +230,9 @@
                                                     @endif
                                                 @endforeach
                                             @endif --}}
-                                            <a href="javascript:;" title="Delete" class="btn btn-sm btn-danger pull-right delete" data-id="{{ $data->id }}" id="delete-{{ $data->id }}">
+                                            {{-- <a href="javascript:;" title="Delete" class="btn btn-sm btn-danger pull-right delete" data-id="{{ $data->id }}" id="delete-{{ $data->id }}">
                                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Delete</span>
-                                            </a>
+                                            </a> --}}
                                             <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn btn-sm btn-warning pull-right view">
                                                 <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
                                             </a> 

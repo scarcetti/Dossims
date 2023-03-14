@@ -588,54 +588,27 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return $branch_products;
         }
 
-        // CHANCE OF ERROR WHEN SAVING SEQUENCE IS MODIFIED
         function saveProducts($request, $transaction_id)
         {
-            $qty_pattern = '/(item-)(\d*)(-quantity)/';
-            $price_pattern = '/(item-)(\d*)(-price)/';
-            $tbd_pattern = '/(item-)(\d*)(-tbd)/';
-            $lm_pattern = '/(item-)(\d*)(-linear-meter)/';
+            $pattern_ = '/^(item_)(\d*)$/';
 
             foreach ( $request->all() as $key => $value ) {
-                if( preg_match($price_pattern, $key) ) {
-                    $branch_product_id = intval( explode('-', $key)[1] );
+                if( preg_match($pattern_, $key) ) {
 
-                    $products[$branch_product_id] = (object) [ 
-                        'price_at_purchase' => doubleval($value),
-                        'branch_product_id' => $branch_product_id,
-                        'transaction_id'    => $transaction_id,
-                    ];
-                }
-                if( preg_match($qty_pattern, $key) ) {
-                    $branch_product_id = intval( explode('-', $key)[1] );
+                    $params = json_decode($value);
 
-                    $products[$branch_product_id]->quantity = intval( $value );
-                }
-                if( preg_match($tbd_pattern, $key) ) {
-                    $branch_product_id = intval( explode('-', $key)[1] );
+                    $transaction_item = \App\Models\TransactionItem::
 
-                    $products[$branch_product_id]->tbd = doubleval( $value );
-                }
-                if( preg_match($lm_pattern, $key) ) {
-                    $branch_product_id = intval( explode('-', $key)[1] );
-
-                    $products[$branch_product_id]->linear_meters = doubleval( $value );
-                }
-            }
-            $products = json_decode( json_encode($products), true);
-
-            foreach($products as $item) {
-                $transaction_item = \App\Models\TransactionItem::
                     updateOrCreate(
                         [
                             'transaction_id'    => $transaction_id,
-                            'branch_product_id' => $item['branch_product_id'],
+                            'branch_product_id' => intval($params->branch_product_id),
                         ],
                         [
-                            'price_at_purchase' => $item['price_at_purchase'],
-                            'quantity'          => $item['quantity'],
-                            'tbd'               => $item['tbd'],
-                            'linear_meters'     => isset($item['linear_meters']) ? $item['linear_meters'] : null,
+                            'price_at_purchase' => floatval($params->selection->price),
+                            'quantity'          => $params->quantity,
+                            'tbd'               => $params->tbd,
+                            'linear_meters'     => isset($params->linear_meters) ? $params->linear_meters : null,
                         ]
                     );
 
@@ -643,6 +616,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                         'transaction_item_id' => $transaction_item['id'],
                         'status'              => 'pending',
                     ]);
+                }
             }
         }
 
