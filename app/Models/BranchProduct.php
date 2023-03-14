@@ -19,4 +19,9 @@ class BranchProduct extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }
