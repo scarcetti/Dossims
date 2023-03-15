@@ -29,12 +29,7 @@
     </div>
     <div class="col-md-2" v-if="value[index].selection">
         <div>
-            <small>
-            	@{{ value[index].selection.product.measurement_unit.name == 'Linear Meter' ? 
-            			'Quantity' :
-            			value[index].selection.product.measurement_unit.name
-	            }}: 
-            </small>
+            <small>Quantity</small>
             <input
                 v-model="value[index].quantity"
                 class="form-control"
@@ -53,14 +48,13 @@
             <h4 :class="`subtotal item-${value[index].selection.id}`" style="margin: 0">₱ @{{ value[index].selection.price }}</h4>
         </div>
     </div>
-    <div class="col-md-2" v-if="value[index].selection" {{-- style="align-self: self-start; margin-top: 7px;" --}}>
+    <div class="col-md-2" v-if="value[index].selection">
     	<div v-if="value[index].selection.product.measurement_unit.name == 'Linear Meter'">
 	        <small>Linear meters: </small>
 	        <input
                 v-model="value[index].linear_meters"
 	            class="form-control"
 	            value="1"
-	            {{-- type="number" --}}
 	            :name="`item-${value[index].selection.id}-linear-meters`"
 	            style="margin: 0 0 6px 0"
 	            v-on:change="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
