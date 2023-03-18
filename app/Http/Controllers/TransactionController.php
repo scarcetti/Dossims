@@ -761,7 +761,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
     public function billing(Request $request)
     {
-        // SAVING DISCOUNT
+        // SAVING DISCOUNT & UPDATING STOCKS
         foreach($request->cart as $item) {
             if(isset($item['discount_value'])) {
                 $transaction_item = \App\Models\Discount::
@@ -776,7 +776,12 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                             'percentage'          => $item['discount_type'] == 'percentage',
                         ]
                     );
+
             }
+
+            $branch_product = \App\Models\BranchProduct::find($item['branch_product_id']);
+            $branch_product->quantity = $branch_product->quantity - $item['quantity'];
+            $branch_product->save();
         }
 
         $this->savePaymentInfo($request->payment);

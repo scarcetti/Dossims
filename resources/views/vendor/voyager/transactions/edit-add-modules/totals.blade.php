@@ -112,7 +112,7 @@
                                 >
                             </div>
                         </div>
-                        <div v-if="paymentType" style="text-align-last: end;">
+                        <div v-if="paymentType && paymentMethod && amountTendered" style="text-align-last: end;">
                             <span class="btn btn-primary" @click="addBilling()" readonly>
                                 @{{ paymentType.id === 2 ? 'Print Official Receipt' : 'Print Charge Invoice' }}
                             </span>
