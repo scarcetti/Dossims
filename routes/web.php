@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CuttingListController;
 use App\Http\Controllers\PrintoutController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,11 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
+
+    Route::group(['prefix' => 'transaction'], function () {
+        Route::post('create', [TransactionController::class,'storeTx']);
+        Route::post('billing', [TransactionController::class,'billing']);
+    });    
 
     Route::group(['prefix' => 'cutting-list'], function () {
         Route::get('/', [CuttingListController::class,'getOrders']);

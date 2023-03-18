@@ -21,4 +21,9 @@ class Customer extends Model
     {
         return "{$this->first_name} {$this->last_name}";
     }
+
+    public function balance()
+    {
+        return $this->hasOne(Balance::class);
+    }
 }

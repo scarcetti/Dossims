@@ -311,9 +311,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $branch_products = $this->fetchBranchProducts();
         $payment_types = $this->fetchPaymentTypes(true);
         $payment_methods = $this->fetchPaymentMethods();
-        $transaction_item = $this->allTransactionItems($id);
+        $transaction = $this->fetchTx($id);
+        // $transaction_item = $this->allTransactionItems($id);
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction_item'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction'));
     }
 
     public function update(Request $request, $id)
@@ -392,6 +393,24 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return \App\Models\PaymentMethod::get();
         }
 
+        public function fetchTx($id)
+        {
+            $transaction = \App\Models\Transaction::with(
+                    'transactionItems.branchProduct.product.measurementUnit',
+                    'transactionItems.jobOrder',
+                    'transactionItems.discount',
+                    'customer',
+                    'businessCustomer',
+                    'employee',
+                )->find($id);
+            foreach ($transaction->transactionItems as $key => $value) {
+                // return $value
+                $transaction->transactionItems[$key]->product_name = $value->branchProduct->product->name;
+                $transaction->transactionItems[$key]->price = $value->branchProduct->product->price;
+            }
+            return $transaction;
+        }
+
         function allTransactionItems($transaction_id)
         {
             $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct.product.measurementUnit', 'jobOrder', 'discount', 'transaction')->get();
@@ -415,18 +434,18 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             #       3 Periodic payment
             #       4 Final payment
 
-            $is_downpayment = ($request->payment_type_id == 1);
+            $is_downpayment = ($request['payment_type_id'] == 1);
             $txn_payment = \App\Models\TransactionPayment::create([
-                'amount_paid' => $is_downpayment ? $request->amount_tendered : $request->grand_total,
-                'payment_type_id' => $request->payment_type_id,
-                'payment_method_id' => $request->payment_method_id,
+                'amount_paid' => $is_downpayment ? $request['amount_tendered'] : $request['grand_total'],
+                'payment_type_id' => $request['payment_type_id'],
+                'payment_method_id' => $request['payment_method_id'],
             ]);
 
             if( $is_downpayment ) {
                 \App\Models\Balance::create([
-                    'customer_id' => $request->customer_id,
+                    'customer_id' => $request['customer_id'],
                     'updated_at_payment_id' => $txn_payment->id,
-                    'outstanding_balance' => floatval($request->grand_total) - floatval($request->amount_tendered),
+                    'outstanding_balance' => floatval($request['grand_total']) - floatval($request['amount_tendered']),
                 ]);
             }
 
@@ -565,12 +584,38 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $payment_methods = json_encode('[]');
         $payment_types = $this->fetchPaymentTypes();
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_methods', 'payment_types'));
+        $customers = $this->fetchCustomers();
+        $business_customers = $this->fetchBusinessCustomers();
+        $branch_employees = $this->fetchBranchEmployees();
+
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_methods', 'payment_types', 'customers', 'business_customers', 'branch_employees'));
     }
 
         function fetchBranches()
         {
             return \App\Models\Branch::get();
+        }
+
+        function fetchCustomers()
+        {
+            return \App\Models\Customer::orderBy('first_name', 'ASC')
+                        ->with('balance')
+                        ->get();
+        }
+
+        function fetchBusinessCustomers()
+        {
+            return \App\Models\BusinessCustomer::orderBy('name', 'ASC')->get();
+        }
+
+        function fetchBranchEmployees()
+        {
+            $branch_id = $this->getBranch('id');
+            return \App\Models\BranchEmployee::when($branch_id, function($q) use($branch_id) {
+                            $q->where('branch_id', $branch_id);
+                        })
+                        ->with('employee')
+                        ->get();
         }
 
         function fetchBranchProducts()
@@ -629,9 +674,22 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             }
         }
 
+        function createTx($request)
+        {
+            return \App\Models\Transaction::create([
+                'customer_id'               => $request->customer_id,
+                'employee_id'               => $request->employee_id,
+                'branch_id'                 => $this->getBranch('id'),
+                'transaction_payment_id'    => null,
+                'business_customer_id'      => $request->business_customer_id,
+                'status'                    => 'pending',
+                'transaction_placement'     => null,
+            ]);
+        }
+
     public function store(Request $request)
     {
-        // return $request;
+        return $request;
         $slug = $this->getSlug($request);
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
@@ -641,8 +699,11 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $this->authorize('add', app($dataType->model_name));
 
         // Validate fields with ajax
-        $val = $this->validateBread($request->all(), $dataType->addRows)->validate();
-        $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());
+        /*$val = $this->validateBread($request->all(), $dataType->addRows)->validate();
+        $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());*/
+
+        // create transactions
+        $data = $this->createTx($request);
 
         // save items
         $this->saveProducts($request, $data->id);
@@ -651,6 +712,11 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $this->otherTxnFields($data->id);
 
         event(new BreadDataAdded($dataType, $data));
+
+        return $redirect->with([
+            'message'    => __('voyager::generic.successfully_added_new')." {$dataType->getTranslatedAttribute('display_name_singular')}",
+            'alert-type' => 'success',
+        ]);
 
         if (!$request->has('_tagging')) {
             if (auth()->user()->can('browse', $data)) {
@@ -666,5 +732,58 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         } else {
             return response()->json(['success' => true, 'data' => $data]);
         }
+    }
+
+    public function storeTx(Request $request)
+    {
+        foreach($request->cart as $item) {
+            $cart[] = [
+                'branch_product_id' => $item['branch_product_id'],
+                'price_at_purchase' => floatval($item['selection']['price']),
+                'quantity'          => $item['quantity'],
+                'tbd'               => $item['tbd'],
+                'linear_meters'     => $item['linear_meters'] ?? null,
+            ];
+        }
+
+        $tx = \App\Models\Transaction::create([
+                'customer_id'               => $request->customer_id,
+                'employee_id'               => $request->employee_id,
+                'branch_id'                 => $this->getBranch('id') != 0 ? $this->getBranch('id') : null,
+                'transaction_payment_id'    => null,
+                'business_customer_id'      => $request->business_customer_id ?? null,
+                'status'                    => 'pending',
+                'transaction_placement'     => null,
+            ])
+            ->transactionItems()->createMany($cart);
+        return $tx;
+    }
+
+    public function billing(Request $request)
+    {
+        // SAVING DISCOUNT
+        foreach($request->cart as $item) {
+            if(isset($item['discount_value'])) {
+                $transaction_item = \App\Models\Discount::
+                    updateOrCreate(
+                        [
+                            'transaction_item_id' => $item['id'],
+                        ],
+                        [
+                            'value'               => $item['discount_value'],
+                            'per_item'            => $item['discount_per_item'] ? $item['discount_per_item'] : false,
+                            'fixed_amount'        => $item['discount_type'] == 'fixed',
+                            'percentage'          => $item['discount_type'] == 'percentage',
+                        ]
+                    );
+            }
+        }
+
+        $this->savePaymentInfo($request->payment);
+
+
+        \App\Models\Transaction::where('id', $request->txid)->update(['status' => 'procuring']);
+
+        return response(null, 200);
     }
 }

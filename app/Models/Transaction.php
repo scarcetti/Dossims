@@ -32,4 +32,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(BusinessCustomer::class);
     }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
 }
