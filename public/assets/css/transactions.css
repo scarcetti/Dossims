@@ -126,6 +126,12 @@ ul.radio li {
     z-index: 0 !important;
 }
 
+.cart {
+    padding: 10px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
 .cartItemContainer {
 /*    max-height: 500px;*/
 /*    height: 500px;*/

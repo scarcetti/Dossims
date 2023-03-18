@@ -1,59 +1,45 @@
-@extends('voyager::master')
-@section('content')
+@extends('voyager::bread.edit-add')
+@section('submit-buttons')
+    @include('common.alert')
     <div id="app" style="margin: 0 15px;">
-        <h1 class="page-title">
-            <i class=""></i>
-            @if( isset($transaction) )
-                Discount and Billing
-            @else
-                Create Quotation
-            @endif
-        </h1>
-        {{-- @{{form}} --}}
-        {{-- @{{value}} --}}
-        <section class="panel cart">
-            @if( isset($transaction) )
-                @include('voyager::transactions.edit-add-modules.heading.billing')
-            @else
-                @include('voyager::transactions.edit-add-modules.heading.create')
-            @endif
-            <span class="txn_" hidden>
-                {!! $transaction ?? '' !!}
-            </span>
-            <div>
-                <div class="cartItemContainer">
-                    <div
-                        v-for="(item, index) in value"
-                        :key="index"
-                    >
-                        @if( isset($transaction) )
-                            @include('voyager::transactions.edit-add-modules.viewing')
-                        @else
-                            @include('voyager::transactions.edit-add-modules.quotation')
-                        @endif
-                    </div>
-                    @if( !isset($transaction) )
-                        <span v-if="value[value.length - 1].selection" v-on:click="addEmptyCartItem()" class="addItemBtn btn btn-warning edit" style="display: flex; flex-direction: column;">
-                            <i class="voyager-plus"></i> Add new item
-                        </span>
+        <span class="txns_" hidden>
+            {!! $transaction_item ?? '' !!}
+        </span>
+        <div>
+            <div class="cartItemContainer">
+                <div
+                    v-for="(item, index) in value"
+                    :key="index"
+                >
+                    @if( isset($transaction_item) )
+                        @include('voyager::transactions.edit-add-modules.viewing')
+                    @else
+                        @include('voyager::transactions.edit-add-modules.quotation')
                     @endif
-                    @include('voyager::transactions.edit-add-modules.totals')
                 </div>
+                @if( !isset($transaction_item) )
+                    <span v-if="value[value.length - 1].selection" v-on:click="addEmptyCartItem()" class="addItemBtn btn btn-warning edit" style="display: flex; flex-direction: column;">
+                        <i class="voyager-plus"></i> Add new item
+                    </span>
+                @endif
+                @include('voyager::transactions.edit-add-modules.totals')
             </div>
-            <br>
-            @if( count($dataTypeContent->toArray()) == 0 )
-                <span v-if="value[0].selection">
-                    <button @click="createQuotation" type="submit" class="btn btn-primary save">Save</button>
-                </span>
-            @endif
-        </section>
+        </div>
+        <br>
+        @if( count($dataTypeContent->toArray()) == 0 )
+            <span v-if="value[0].selection">
+                @parent
+            </span>
+        @endif
     </div>
+@endsection
+@section('javascript')
+    @parent
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/transactions.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js" integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script type="module">
         var app = new Vue({
@@ -63,19 +49,16 @@
             },
             data () {
                 return {
-                    aaa: null,
                     value: [],
                     productsTotal: '----',
                     grandTotal: '----',
                     grandTotal_: 0,
-                    transaction: {},
                     transactionItem: false,
                     branchProducts: {!! $branch_products ?? '' !!},
                     paymentType: null,
                     paymentTypes: {!! $payment_types ?? '' !!},
                     paymentMethod: null,
                     paymentMethods: {!! $payment_methods ?? '' !!},
-                    amountTendered: null,
                     cartSubtotals: [],
                     cbNote3: 'When switch is green, discounts are applied per item. Otherwise, discount is applied on the subtotal',
                     deliveryFeeDialog: false,
@@ -84,76 +67,10 @@
                         long: false,
                         distance: 1,
                         shippingTotal: 0.00,
-                    },
-                    // create
-                    customer: {
-                        value: [],
-                        options: [{!! $customers ?? '' !!}]
-                    },
-                    businessCustomer: {
-                        value: [],
-                        options: [{!! $business_customers ?? '' !!}]
-                    },
-                    employee: {
-                        value: [],
-                        options: [{!! $branch_employees ?? '' !!}]
-                    },
-                    form: {},
-                    // create
+                    }
                 }
             },
             methods: {
-                createQuotation() {
-                    const payload = {
-                        customer_id: this.customer.value.id,
-                        business_customer_id: this.businessCustomer.value.id,
-                        employee_id: this.employee.value.id,
-                        cart: this.value,
-                    }
-                    axios.post(`${window.location.origin}/admin/transaction/create`, payload)
-                        .then(response => {
-                            window.location.reload()
-                            // console.log(response.data)
-                        })
-                        .catch(() => {
-                            alert('Please check input fields!')
-                        })
-                },
-                addBilling() {
-                    const payload = {
-                            payment: {
-                                payment_type_id: this.paymentType.id,
-                                payment_method_id: this.paymentMethod.id,
-                                amount_tendered: this.amountTendered,
-                                grand_total: this.grandTotal_,
-                                customer_id: this.transaction.customer_id,
-                                business_customer_id: this.transaction.business_customer_id,
-                            },
-                            cart: this.value,
-                            txid: this.transaction.id,
-                        }
-
-                    axios.post(`${window.location.origin}/admin/transaction/billing`, payload)
-                        .then(response => {
-                            window.location.reload()
-                            // console.log(response.data)
-                        })
-                        .catch(() => {
-                            alert('Please check input fields!')
-                        })
-                },
-                customNameLabel({first_name, last_name, contact_no}) {
-                    if(contact_no) {
-                        return `${first_name} ${last_name} - ${contact_no}`
-                    }
-                    else {
-                        return `${first_name} ${last_name}`   
-                    }
-                },
-                customEmployeeLabel({employee}) {
-                    // return employee
-                    return `${employee.first_name} ${employee.last_name}`
-                },
                 addEmptyCartItem() {
                     const cartInitial = {
                         branch_product_id: '',
@@ -215,14 +132,12 @@
                     document.querySelector(`.cartContainer.item-${index} .subtotal.${qtyQuery}`).innerHTML = result
                 },
                 getUpdateValue() {
-                    const txn = document.querySelector('span.txn_').innerHTML
+                    const txnItems = document.querySelector('span.txns_').innerHTML
                     const pattern = /^\s*$/g;
 
-                    if(!pattern.test(txn)) {
-                        this.transaction = JSON.parse(txn)
-                        this.value = this.transaction.transaction_items
-                        
-                        console.log(this.transaction)
+                    if(!pattern.test(txnItems)) {
+                        this.transactionItem = JSON.parse(txnItems)
+                        this.value = this.transactionItem
                         this.getTotalValue()
                     }
                     else {
@@ -323,6 +238,10 @@
                 paymentButtonClicked() {
                     $(`#paymentDialog`).modal({backdrop: 'static', keyboard: false});
                 },
+                submitForm(submitType) {
+                    // submitType: 1 = downpayment, 2 = full
+                    $('form').submit()
+                },
                 deliveryFeeInfoToggle( shown ) {
                     const initial = {
                             outside: false,
@@ -367,7 +286,7 @@
                 this.disableSubmitOnFieldsEnter()
                 this.getUpdateValue()
 
-                // this.hideElements()
+                this.hideElements()
                 // this.disableElements()
             }
 

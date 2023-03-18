@@ -1,10 +1,10 @@
-<div v-if="transactionItem" class="payment_container">
-    <div v-if="value[0].transaction.status == 'procuring'" class="total_container">
+<div v-if="transaction.transaction_items" class="payment_container">
+    <div v-if="transaction.status == 'procuring'" class="total_container">
         <h4>Grand total</h4>
         <h2 style="font-weight: bold;">@{{ grandTotal }}</h2>
     </div>
     
-    <div v-if="value[0].transaction.status == 'pending'">
+    <div v-if="transaction.status == 'pending'">
         <span class="btn btn-primary" @click="paymentButtonClicked()" readonly>Add payment</span>
 
         <div class="modal fade" id="paymentDialog" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
@@ -103,6 +103,7 @@
 
                                 <label class="control-label" for="name">Amount tendered</label>
                                 <input
+                                    v-model="amountTendered"
                                     name="amount_tendered"
                                     class="form-control"
                                     type="number"
@@ -112,7 +113,7 @@
                             </div>
                         </div>
                         <div v-if="paymentType" style="text-align-last: end;">
-                            <span class="btn btn-primary" @click="submitForm(paymentType.id)" readonly>
+                            <span class="btn btn-primary" @click="addBilling()" readonly>
                                 @{{ paymentType.id === 2 ? 'Print Official Receipt' : 'Print Charge Invoice' }}
                             </span>
                         </div>
