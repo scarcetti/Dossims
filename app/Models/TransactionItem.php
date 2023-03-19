@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\TransactionItemCreated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +16,10 @@ class TransactionItem extends Model
         'quantity',
         'linear_meters',
         'tbd',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => TransactionItemCreated::class,
     ];
 
     public function branchProduct()

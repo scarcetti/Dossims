@@ -98,6 +98,10 @@
                         value: [],
                         options: [{!! $branch_employees ?? '' !!}]
                     },
+                    cashier: {
+                        value: [],
+                        options: [{!! $branch_employees ?? '' !!}]
+                    },
                     form: {},
                     // create
                 }
@@ -107,7 +111,7 @@
                     const payload = {
                         customer_id: this.customer.value.id,
                         business_customer_id: this.businessCustomer.value.id,
-                        employee_id: this.employee.value.id,
+                        employee_id: this.employee.value.employee_id,
                         cart: this.value,
                     }
                     axios.post(`${window.location.origin}/admin/transaction/create`, payload)
@@ -131,6 +135,7 @@
                             },
                             cart: this.value,
                             txid: this.transaction.id,
+                            cashier_id: this.cashier.value.employee_id,
                         }
 
                     axios.post(`${window.location.origin}/admin/transaction/billing`, payload)
