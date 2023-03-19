@@ -312,9 +312,9 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $payment_types = $this->fetchPaymentTypes(true);
         $payment_methods = $this->fetchPaymentMethods();
         $transaction = $this->fetchTx($id);
-        // $transaction_item = $this->allTransactionItems($id);
+        $branch_employees = $this->fetchBranchEmployees();
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction', 'branch_employees'));
     }
 
     public function update(Request $request, $id)
@@ -787,7 +787,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $this->savePaymentInfo($request->payment);
 
 
-        \App\Models\Transaction::where('id', $request->txid)->update(['status' => 'procuring']);
+        \App\Models\Transaction::where('id', $request->txid)->update([
+                'status' => 'procuring',
+                'cashier_id' => $request->cashier_id,
+            ]);
 
         return response(null, 200);
     }
