@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateBillingValidation;
+use App\Http\Requests\CreateQuotationValidation;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -734,7 +736,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         }
     }
 
-    public function storeTx(Request $request)
+    public function storeTx(CreateQuotationValidation $request)
     {
         foreach($request->cart as $item) {
             $cart[] = [

@@ -195,3 +195,10 @@ ul.radio li {
 /*    border: solid pink;*/
     display: block;
 }
+
+.rr::after {
+    position: absolute;
+    content: '*';
+    color: red;
+    margin-left: 5px;
+}
