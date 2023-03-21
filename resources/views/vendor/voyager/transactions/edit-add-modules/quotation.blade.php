@@ -3,7 +3,7 @@
     <input v-if="value[index].selection" :name="`item_${index}`" :value="JSON.stringify(value[index])" hidden>
     <div class="col-md-1" v-if="value[index].selection">
         <span v-if="value.length > 1" @click="deleteCartItem(index)">
-            <i class="voyager-x" style="font-size: 25px;"></i>
+            <i class="voyager-x" style="font-size: 25px; cursor: pointer;"></i>
         </span>
     </div>
     <div class="col-md-7">
@@ -29,7 +29,7 @@
     </div>
     <div class="col-md-2" v-if="value[index].selection">
         <div>
-            <small>Quantity</small>
+            <small class="rr">Quantity</small>
             <input
                 v-model="value[index].quantity"
                 class="form-control"
@@ -50,7 +50,7 @@
     </div>
     <div class="col-md-2" v-if="value[index].selection">
     	<div v-if="value[index].selection.product.measurement_unit.name == 'Linear Meter'">
-	        <small>Linear meters: </small>
+	        <small class="rr">Linear meters: </small>
 	        <input
                 v-model="value[index].linear_meters"
 	            class="form-control"

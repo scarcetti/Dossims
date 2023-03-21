@@ -44,6 +44,7 @@
             @if( count($dataTypeContent->toArray()) == 0 )
                 <span v-if="value[0].selection">
                     <button @click="createQuotation" type="submit" class="btn btn-primary save">Save</button>
+                    <i style="color: red;">Fields with * are required</i>
                 </span>
             @endif
         </section>
@@ -63,7 +64,6 @@
             },
             data () {
                 return {
-                    aaa: null,
                     value: [],
                     productsTotal: '----',
                     grandTotal: '----',
@@ -87,19 +87,19 @@
                     },
                     // create
                     customer: {
-                        value: [],
+                        value: null,
                         options: [{!! $customers ?? '' !!}]
                     },
                     businessCustomer: {
-                        value: [],
+                        value: null,
                         options: [{!! $business_customers ?? '' !!}]
                     },
                     employee: {
-                        value: [],
+                        value: null,
                         options: [{!! $branch_employees ?? '' !!}]
                     },
                     cashier: {
-                        value: [],
+                        value: null,
                         options: [{!! $branch_employees ?? '' !!}]
                     },
                     form: {},
@@ -109,18 +109,23 @@
             methods: {
                 createQuotation() {
                     const payload = {
-                        customer_id: this.customer.value.id,
-                        business_customer_id: this.businessCustomer.value.id,
-                        employee_id: this.employee.value.employee_id,
+                        customer_id: this.customer.value && this.customer.value.id,
+                        business_customer_id: this.businessCustomer.value && this.businessCustomer.value.id,
+                        employee_id: this.employee.value && this.employee.value.employee_id,
                         cart: this.value,
                     }
+                    console.log(payload)
                     axios.post(`${window.location.origin}/admin/transaction/create`, payload)
                         .then(response => {
                             window.location.reload()
-                            // console.log(response.data)
                         })
-                        .catch(() => {
-                            alert('Please check input fields!')
+                        .catch(x => {
+                            const y = Object.keys(x.response.data.errors)
+
+                            for (let key of y) {
+                                alert(x.response.data.errors[key][0])
+                                break
+                            }
                         })
                 },
                 addBilling() {
