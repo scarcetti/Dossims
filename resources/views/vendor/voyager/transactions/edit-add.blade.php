@@ -121,7 +121,6 @@
                         })
                         .catch(x => {
                             const y = Object.keys(x.response.data.errors)
-
                             for (let key of y) {
                                 alert(x.response.data.errors[key][0])
                                 break
@@ -140,7 +139,8 @@
                             },
                             cart: this.value,
                             txid: this.transaction.id,
-                            cashier_id: this.cashier.value.employee_id,
+                            cashier_id: this.cashier.value && this.cashier.value.employee_id,
+                            delivery_fee: this.deliveryFees,
                         }
 
                     axios.post(`${window.location.origin}/admin/transaction/billing`, payload)
@@ -148,8 +148,12 @@
                             window.location.reload()
                             // console.log(response.data)
                         })
-                        .catch(() => {
-                            alert('Please check input fields!')
+                        .catch(x => {
+                            const y = Object.keys(x.response.data.errors)
+                            for (let key of y) {
+                                alert(x.response.data.errors[key][0])
+                                break
+                            }
                         })
                 },
                 customNameLabel({first_name, last_name, contact_no}) {
