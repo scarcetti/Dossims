@@ -60,25 +60,30 @@ class GenerateTransaction extends Command
 
         # CUSTOMERS TODAY --------------------------------------------------------------------------------
 
-        $customers_today = random_int(20, 35);
 
         # CUSTOMERS TODAY --------------------------------------------------------------------------------
 
         # GET BRANCH -------------------------------------------------------------------------------------
 
-        $branch = $this->anticipate('What branch', ['Toril', 'Tagum']);
+        $branch = $this->anticipate('What branch', ['Toril', 'toril', 'TORIL', 'Tagum', 'tagum', 'TAGUM']);
         $branch_id = \App\Models\Branch::where('name', 'ilike', '%'.$branch.'%')->first('id')->id;
 
         # GET BRANCH -------------------------------------------------------------------------------------
 
-        while($customers_today > 0) {
-            $this->info($customers_today);
+        foreach($dates as $date) {
+            // $this->info($date);
 
+            $customers_today = random_int(20, 35);
+            while($customers_today > 0) {
+                // $this->info($customers_today);
+                $this->handleTransactionItems($branch_id, $date);
 
-            $this->handleTransactionItems($branch_id, $dates);
+                $customers_today--;
+            }
 
-            $customers_today--;
+            // break; // F O R  T E S T I N G ! ! ! !
         }
+
 
 
 
@@ -86,39 +91,62 @@ class GenerateTransaction extends Command
         $this->info('The command was successful! ');
     }
 
-    public function handleTransactionItems($branch_id='', $dates)
+    public function handleTransactionItems($branch_id='', $date)
     {
         $customer_purchases = random_int(2, 5);
+        $subtotal = 0;
+
         while($customer_purchases > 0) {
 
-            $branch_product_id = random_int(1, \App\Models\BranchProduct::where('branch_id', $branch_id)->get()->count());
+            $branch_product_id = \App\Models\BranchProduct::where('branch_id', $branch_id)->get('id')->random()->id;
 
+            $price_at_purchase = intval(\App\Models\BranchProduct::where('id', $branch_product_id)->pluck('price')[0] ?? 2023);
+            $quantity = random_int(4, 7);
+
+            $subtotal += ($price_at_purchase * $quantity);
+            
             $purchases[] = [
                 'branch_product_id' => $branch_product_id,
-                'price_at_purchase' => intval(\App\Models\BranchProduct::where('id', $branch_product_id)->pluck('price')[0]),
-                'quantity' => random_int(4, 7),
-                'tbd' => 1,
-                'linear_meters' => null,
+                'price_at_purchase' => $price_at_purchase,
+                'quantity'          => $quantity,
+                'tbd'               => 1,
+                'linear_meters'     => null,
             ];
+
             $customer_purchases--;
         }
 
+        $txn_payment = \App\Models\TransactionPayment::create([
+                'amount_paid'       => $subtotal,
+                'payment_type_id'   => 2,
+                'payment_method_id' => 1,
+                'remarks'           => null,
+            ]);
+
         $txn = \App\Models\Transaction::create([
-            'customer_id' => random_int(1, \App\Models\Customer::get()->count()),
-            'employee_id' => 22,
-            'branch_id' => $branch_id,
-            'transaction_payment_id' => $branch_id,
-            'business_customer_id' => null,
-            'status' => 'pending',
-            'transaction_placement' => $dates[0],
-        ])->transactionItems()->createMany($purchases);
-        // dd($purchases);
-        die($txn);
+                'customer_id'               => \App\Models\Customer::all('id')->random()->id,
+                'employee_id'               => 22,
+                'cashier_id'                => 37,
+                'branch_id'                 => $branch_id,
+                'transaction_payment_id'    => $txn_payment->id,
+                'business_customer_id'      => null,
+                'status'                    => 'procuring',
+                'transaction_placement'     => $date,
+            ])
+            ->transactionItems()->createMany($purchases);
+
+        // die($txn);
     }
 
-    public function handlePayments($value='')
-    {
-        // code...
-    }
+        function handlePayments($value='')
+        {
+            #    Payment types value:
+            #       1 Downpayment
+            #       2 Full payment
+            #       3 Periodic payment
+            #       4 Final payment
+
+            // code...
+        }
 
 }

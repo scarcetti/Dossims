@@ -4,7 +4,7 @@
 
     <style type="text/css">
         body.login {
-            background-image: url("{{ env('APP_URL')  }}/images/roof.png");
+/*            background-image: url("{{ env('APP_URL')  }}/images/roof.png");*/
         }
         body.login .login-container {
             position: relative !important;
