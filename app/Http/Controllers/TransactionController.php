@@ -319,68 +319,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction', 'branch_employees'));
     }
 
-    public function update(Request $request, $id)
-    {
-        // return $request;
-
-        $this->saveDiscounts($request);
-
-        $this->savePaymentInfo($request);
-
-        $slug = $this->getSlug($request);
-
-        $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
-
-        // Compatibility with Model binding.
-        $id = $id instanceof \Illuminate\Database\Eloquent\Model ? $id->{$id->getKeyName()} : $id;
-
-        $model = app($dataType->model_name);
-        $query = $model->query();
-        if ($dataType->scope && $dataType->scope != '' && method_exists($model, 'scope'.ucfirst($dataType->scope))) {
-            $query = $query->{$dataType->scope}();
-        }
-        if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
-            $query = $query->withTrashed();
-        }
-
-        $data = $query->findOrFail($id);
-
-        // Check permission
-        $this->authorize('edit', $data);
-
-        // Validate fields with ajax
-        $val = $this->validateBread($request->all(), $dataType->editRows, $dataType->name, $id)->validate();
-
-        // Get fields with images to remove before updating and make a copy of $data
-        $to_remove = $dataType->editRows->where('type', 'image')
-            ->filter(function ($item, $key) use ($request) {
-                return $request->hasFile($item->field);
-            });
-        $original_data = clone($data);
-
-        $this->insertUpdateData($request, $slug, $dataType->editRows, $data);
-
-        // update items
-        // $this->saveProducts($request, $id);
-
-        // Delete Images
-        $this->deleteBreadImages($original_data, $to_remove);
-
-        event(new BreadDataUpdated($dataType, $data));
-
-        if (auth()->user()->can('browse', app($dataType->model_name))) {
-            $redirect = redirect()->route("voyager.{$dataType->slug}.index");
-        } else {
-            $redirect = redirect()->back();
-        }
-
-        $this->updateTransactionStatus($id);
-
-        return $redirect->with([
-            'message'    => __('voyager::generic.successfully_updated')." {$dataType->getTranslatedAttribute('display_name_singular')}",
-            'alert-type' => 'success',
-        ]);
-    }
         function fetchPaymentTypes($create=false)
         {
             return \App\Models\PaymentType::
@@ -426,32 +364,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         function updateTransactionStatus($id)
         {
             return \App\Models\Transaction::where('id', $id)->update(['status' => 'procuring']);
-        }
-
-        function savePaymentInfo($request)
-        {
-            #    Payment types value:
-            #       1 Downpayment
-            #       2 Full payment
-            #       3 Periodic payment
-            #       4 Final payment
-
-            $is_downpayment = ($request['payment_type_id'] == 1);
-            $txn_payment = \App\Models\TransactionPayment::create([
-                'amount_paid' => $is_downpayment ? $request['amount_tendered'] : $request['grand_total'],
-                'payment_type_id' => $request['payment_type_id'],
-                'payment_method_id' => $request['payment_method_id'],
-            ]);
-
-            if( $is_downpayment ) {
-                \App\Models\Balance::create([
-                    'customer_id' => $request['customer_id'],
-                    'updated_at_payment_id' => $txn_payment->id,
-                    'outstanding_balance' => floatval($request['grand_total']) - floatval($request['amount_tendered']),
-                ]);
-            }
-
-            $this->delivieryFees($request, $txn_payment->id);
         }
 
         function saveDiscounts($request)
@@ -531,20 +443,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
             
             // return $transaction_payment;
-        }
-
-        function delivieryFees($request, $txid)
-        {
-            if( isset($request->delivery_fee) ) {
-                $fees = json_decode($request->delivery_fee);
-                \App\Models\DeliveryFees::create([
-                    'transaction_payment_id' => $txid,
-                    'outside_brgy'           => $fees->outside,
-                    'long'                   => $fees->long,
-                    'distance'               => intval($fees->distance),
-                    'total'                  => doubleval($fees->shippingTotal),
-                ]);
-            }
         }
 
     public function create(Request $request)
@@ -689,53 +587,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             ]);
         }
 
-    public function store(Request $request)
-    {
-        return $request;
-        $slug = $this->getSlug($request);
-
-        $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
-
-
-        // Check permission
-        $this->authorize('add', app($dataType->model_name));
-
-        // Validate fields with ajax
-        /*$val = $this->validateBread($request->all(), $dataType->addRows)->validate();
-        $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());*/
-
-        // create transactions
-        $data = $this->createTx($request);
-
-        // save items
-        $this->saveProducts($request, $data->id);
-
-        // update other Transaction fields
-        $this->otherTxnFields($data->id);
-
-        event(new BreadDataAdded($dataType, $data));
-
-        return $redirect->with([
-            'message'    => __('voyager::generic.successfully_added_new')." {$dataType->getTranslatedAttribute('display_name_singular')}",
-            'alert-type' => 'success',
-        ]);
-
-        if (!$request->has('_tagging')) {
-            if (auth()->user()->can('browse', $data)) {
-                $redirect = redirect()->route("voyager.{$dataType->slug}.index");
-            } else {
-                $redirect = redirect()->back();
-            }
-
-            return $redirect->with([
-                'message'    => __('voyager::generic.successfully_added_new')." {$dataType->getTranslatedAttribute('display_name_singular')}",
-                'alert-type' => 'success',
-            ]);
-        } else {
-            return response()->json(['success' => true, 'data' => $data]);
-        }
-    }
-
     public function storeTx(CreateQuotationValidation $request)
     {
         foreach($request->cart as $item) {
@@ -761,7 +612,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         return $tx;
     }
 
-    public function billing(Request $request)
+    public function billing(CreateBillingValidation $request)
     {
         // SAVING DISCOUNT & UPDATING STOCKS
         foreach($request->cart as $item) {
@@ -786,7 +637,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $branch_product->save();
         }
 
-        $this->savePaymentInfo($request->payment);
+        $this->savePaymentInfo($request->payment, $request->delivery_fee);
 
 
         \App\Models\Transaction::where('id', $request->txid)->update([
@@ -796,4 +647,43 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         return response(null, 200);
     }
+        function savePaymentInfo($payment, $delivery_fee)
+        {
+            #    Payment types value:
+            #       1 Downpayment
+            #       2 Full payment
+            #       3 Periodic payment
+            #       4 Final payment
+
+            $is_downpayment = ($payment['payment_type_id'] == 1);
+            $txn_payment = \App\Models\TransactionPayment::create([
+                'amount_paid' => $is_downpayment ? $payment['amount_tendered'] : $payment['grand_total'],
+                'payment_type_id' => $payment['payment_type_id'],
+                'payment_method_id' => $payment['payment_method_id'],
+            ]);
+
+            if( $is_downpayment ) {
+                \App\Models\Balance::create([
+                    'customer_id' => $payment['customer_id'],
+                    'updated_at_payment_id' => $txn_payment->id,
+                    'outstanding_balance' => floatval($payment['grand_total']) - floatval($payment['amount_tendered']),
+                ]);
+            }
+
+            $this->delivieryFees($delivery_fee, $txn_payment->id);
+        }
+
+        function delivieryFees($request, $txid)
+        {
+            if( isset($request) ) {
+                $fees = $request;
+                \App\Models\DeliveryFees::create([
+                    'transaction_payment_id' => $txid,
+                    'outside_brgy'           => $fees['outside'],
+                    'long'                   => $fees['long'],
+                    'distance'               => intval($fees['distance']),
+                    'total'                  => doubleval($fees['shippingTotal']),
+                ]);
+            }
+        }
 }
