@@ -70,8 +70,12 @@ class GenerateTransaction extends Command
 
         # GET BRANCH -------------------------------------------------------------------------------------
 
+        $this->info('FILLING TRANSACTIONS...');
+
+        $bar = $this->output->createProgressBar(count($dates));
+        $bar->start();
+
         foreach($dates as $date) {
-            // $this->info($date);
 
             $customers_today = random_int(20, 35);
             while($customers_today > 0) {
@@ -81,14 +85,13 @@ class GenerateTransaction extends Command
                 $customers_today--;
             }
 
+            $bar->advance();
             // break; // F O R  T E S T I N G ! ! ! !
         }
 
-
-
-
-
-        $this->info('The command was successful! ');
+        $bar->finish();
+        $this->newLine(1);
+        $this->info('TRANSACTIONS CREATED');
     }
 
     public function handleTransactionItems($branch_id='', $date)
