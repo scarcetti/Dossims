@@ -14,4 +14,9 @@ class TransactionPayment extends Model
         'payment_method_id',
         'remarks',
     ];
+
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class);
+    }
 }

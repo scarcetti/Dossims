@@ -5,6 +5,7 @@ use App\Http\Controllers\CuttingListController;
 use App\Http\Controllers\PrintoutController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PredictionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,6 +39,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['prefix' => 'inventory'], function () {
         Route::get('/', [InventoryController::class,'index']);
         Route::get('/transfers', [InventoryController::class,'inboundAndTransfers']);
+    });
+
+    Route::group(['prefix' => 'predictions'], function () {
+        Route::get('/', [PredictionController::class,'index']);
     });
 });
 

@@ -38,4 +38,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }

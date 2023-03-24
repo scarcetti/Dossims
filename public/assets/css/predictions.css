@@ -1,0 +1,38 @@
+#dashboard .chart {
+  width: 100% !important;
+  height:300px;
+}
+
+figure.chart-container {
+  width: 100%;
+  display: inline-block;
+  position: relative;
+  margin: .7em .7vw;
+  border: 1px solid rgba(0,0,0,.1);
+  border-radius: 8px;
+  box-shadow: 0 0 45px rgb(0 0 0 / 20%);
+  padding: 1.5em 2em;
+  background: white;
+}
+
+figure.chart-container span {
+  font-weight: bold;
+}
+
+.app-container {
+  min-height: 100%;
+  position: relative;
+  background: #f9f9f9;
+  padding-bottom: 30px;
+}
+
+.container-width-basis {
+  border: solid;
+}
+
+@media only screen and (max-width: 1082px) {
+  #chart1, #chart2, #chart3 {
+    width: 62vw;
+    height:300px;
+  }
+}

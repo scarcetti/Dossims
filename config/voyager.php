@@ -150,6 +150,7 @@ return [
             'App\\Widgets\\Inventory',
             'App\\Widgets\\OtherBranchProducts',
             'App\\Widgets\\BranchStocks',
+            'App\\Widgets\\Predictions',
         ],
 
     ],
