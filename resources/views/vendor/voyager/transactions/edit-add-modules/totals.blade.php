@@ -35,6 +35,15 @@
                                 <h2>@{{ grandTotal }}</h2>
                                 <input type="text" name="grand_total" :value="grandTotal_" hidden>
                             </div>
+                            <div v-if="amountTendered" :class="`${(amountTendered - grandTotal_) >= 0 ? '' : 'err'}`">
+                                <span>Amount tendered</span>
+                                <h4>-&nbsp;&nbsp;&nbsp;₱@{{ valueFixed(amountTendered) }}</h4>
+                            </div>
+                            <div v-if="amountTendered && (amountTendered - grandTotal_) > 0">
+                                <span style="font-weight: bold;">Change</span>
+                                <h4 style="font-weight: bold;">₱@{{ valueFixed( amountTendered - grandTotal_ ) }}</h4>
+                            </div>
+
                         </div>
 
                         <div v-if="deliveryFeeDialog" class="deliveryFeeContainer">

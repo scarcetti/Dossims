@@ -16,7 +16,7 @@
     @endif
     <div style="margin: 30px 0 15px 0;">
         <input v-if="cashier.value" name="employee_id" :value="cashier.value.id" hidden/>
-        <label class="control-label" for="name">Cashiered by</label>
+        <label class="control-label rr" for="name">Cashiered by</label>
         <multiselect
             v-model="cashier.value"
             {{-- @input="customer.value = []" --}}

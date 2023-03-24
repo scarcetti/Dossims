@@ -375,7 +375,10 @@
                 deleteCartItem(index) {
                     this.value.splice(index, 1)
                     // console.log(this.value[index])
-                }
+                },
+                valueFixed(x) {
+                    return parseFloat(x).toFixed(2)
+                },
             },
             created() {
                 this.disableSubmitOnFieldsEnter()

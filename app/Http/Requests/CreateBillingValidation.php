@@ -54,4 +54,21 @@ class CreateBillingValidation extends FormRequest
 
         return $base_fields;
     }
+
+    public function messages()
+    {
+        return [
+            'cashier_id.required' => 'Cashier field is required.',
+    
+            'cart.*.discount_value.required_if' => 'Discount value is required.',
+            'cart.*.discount_value.numeric' => 'Incorrect input for Discount value.',
+            'cart.*.discount_value.gt' => 'Incorrect input for Discount value.',
+    
+            'payment.payment_type_id.required'  => 'Payment type is required',
+            'payment.payment_method_id.required'  => 'Payment method is required',
+
+            'payment.amount_tendered.required'  => 'Amount tendered is required',
+            'payment.amount_tendered.gte'  => 'Amount tendered must be greater than or equal to the grand total.',
+        ];
+    }
 }
