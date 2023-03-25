@@ -56,7 +56,7 @@ td {
                         </div>
                     </div>
                 </div><br>
-                <h2 class="fw-bold">CHARGE INVOICE</h2><br>
+                <h2 class="fw-bold">CASH INVOICE</h2><br>
                 <div class="row">
                     <div class="col">
                         <ul class="list-unstyled">
@@ -132,62 +132,26 @@ td {
     <div class="container">
         <table>
             <tbody>
-                <td style="padding: 10px; font-size: 12px;"><p><span class="fw-bold">PROMISSORY NOTE:</span> The undersigned buyer agree to pay the above account within 30 days after date. Failure to pay the above account after stated period of time the buyer shall be oblidged to pay a surcharge of 20 %. All civil action on this contract shall be institured in the count of Davao City and the buyer agree to pay an attorney's fee and court cost should the seller instituted legal action.</p></td>
+                <td style="padding: 10px; font-size: 12px;">
+                    <p>It is understood that DOMING's STEEL TRADING assumes no liability for any damages as a result of service(s) rebdered. Items not claimed withing 30 days from due date shall be disposed of. 
+                        <span class="fw-bold">FULL PAYMENT UPON ORDER</span>
+                    </p><br>
+                    
+                       <center>
+                            <h5 style="font-size: 12px;">CUSTOMER'S NAME & SIGNATURE &emsp;
+                                <span> PREPARED BY &emsp;</span>
+                                <span> RELEASED BY DATE &emsp;</span>
+                                <span> RECEIVED BY DATE &emsp;</span>
+                            </h5>
+                       </center>
+                        
+                    </span>
+                </td>
             </tbody>
-        </table>
-        <div class="row">
-            <p style="text-align: right; font-size: 12px;">Received the goods above in good order and conditions.</p><br>
-            <div class="col-xl-3" >
-               
-            </div>
-            <div class="col-xl-9" >
-                <hr style="height:3px;background-color:#000000; width: 25% "><br>
-                
-            </div>
-        </div>
-        <div class="row">
-            <div class="col" >
-                <h5 style="text-align: left; font-size: 12px;"><u>Alan Benedict Golpeo</u><br>
-                    <i>Cashier/ Authorized Representative</i>
-                </h5>
-            </div>
-            <div class="col" >
-                <h5 style="text-align: right; font-size: 12px;">Customer's Signature &emsp;&emsp;</h5>
-            </div>
-        </div>
-        <h3 style="color: red;">00008051</h3>
-        
+        </table><br>
+        <p>By:
+            <u>Alan Benedict Golpeo</u><br>
+            <i>Cashier/Authorized Representative</i>
+        </p><br>
     </div>
 </div>
-
-<!--
-<table>
-  <thead>
-     <tr>
-      <th>Product</th>
-      <th>Quantity</th>
-      <th>Unit price</th>
-      <th>Subtotal</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-        <td class="1_ 2_"></td>
-        <td class="1_ 2_"></td>
-        <td class="1_ 2_"></td>
-        <td class="1_ 2_"></td>
-      </tr>
- 
-
-   @foreach($transaction->transactionItems as $item)
-      <tr>
-        <td class="1_ 2_">{{ $item->branchProduct->product->name }}</td>
-        <td class="1_ 2_">{{ $item->quantity }}</td>
-        <td class="1_ 2_">{{ $item->price_at_purchase }}</td>
-        <td class="1_ 2_">{{ subtotal($item) }}</td>
-      </tr>
-    @endforeach 
-  </tbody>
-   Customer name:{{ $transaction->customer->first_name }} {{ $transaction->customer->last_name }}  Elon Moist 
-</table>
--->

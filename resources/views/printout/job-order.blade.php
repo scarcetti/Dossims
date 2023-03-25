@@ -27,10 +27,12 @@ td {
   
             <div class="container">
                 <div class="row">
-                    <div class="col-xl-3" >
-                        <img src="./doming_logo.jpg" alt="Doming's Steel Logo" style="width:250px;">
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4" >
+                        <center>
+                            <img src="./doming_logo.jpg" alt="Doming's Steel Logo" style="width:90%">
+                        </center>
                     </div>
-                    <div class="col-xl-6">
+                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                         <div class="text-center">
                             <h2 style="font-family:Bernard MT Condensed">DOMING'S STEEL TRADING</h2>
                             <small style="font-size: 14px;">Prk. 5, McArthur Highway, Brgy. Lizada, Toril District, Davao City</small><br>
@@ -38,7 +40,8 @@ td {
                             <small style="font-size: 13px;">VAT Reg. TIN: 416-676-701-002 • Cell No. Smart 09209680226 / Globe 09752874632</small>
                         </div>
                     </div>
-                </div><br><br>
+                </div><br>
+                <h2 class="fw-bold">JOB ORDER</h2><br>
                 <div class="row">
                     <div class="col">
                         <ul class="list-unstyled">
@@ -56,12 +59,12 @@ td {
                             </li>
                         </ul>
                     </div>
-                <div class="col">
-                    <ul class="list-unstyled">
-                        <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
-                            class="fw-bold">Date: </span>March 14, 2023</li>
-                    </ul>
-                </div>
+                    <div class="col">
+                        <ul class="list-unstyled">
+                            <li class="text-muted"><i class="fas fa-circle" style="color:#84B0CA ;"></i> <span
+                                class="fw-bold">Date: </span>March 14, 2023</li>
+                        </ul>
+                    </div>
             </div>
     
             <div class="row my-2 mx-1 justify-content-center">
@@ -132,6 +135,7 @@ td {
             <div class="col" >
                 <h5 style="text-align: right; font-size: 12px;">Customer's Signature &emsp;&emsp;</h5>
             </div>
+            <h3 style="color: red;">00008051</h3>
         </div>
         
     </div>

@@ -39,9 +39,9 @@ class PrintoutController extends Controller
            // return $transaction;
 
         $pdf = PDF::setPaper('a4', 'landscape')->setWarnings(false);
-        // return view('printout.official-receipt', compact('data', 'transaction'));
+        // return view('printout.official-receipt.index', compact('data', 'transaction'));
         
-        $pdf->loadView('printout.official-receipt', compact('data', 'transaction'));
+        $pdf->loadView('printout.official-receipt.index', compact('data', 'transaction'));
         return $pdf->stream();
         // return $pdf->download('tutsmake.pdf');
     }
