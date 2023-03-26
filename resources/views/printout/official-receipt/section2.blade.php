@@ -1,3 +1,6 @@
+@php
+    $or_fields = ['Received from', 'with TIN', 'and address at', 'business style of', 'the sum of', 'PESOS', 'In payment for'];
+@endphp
 <div class="row" style="">
 	<span>
 		<img alt="asd" src="{{public_path('images/domings.png')}}" style="width: 200px; margin-top: -20px">
@@ -18,7 +21,7 @@
 		</div>
 	</div>
 </div>
-<br><br><br><br>
+<br><br>
 <div class="row" style=" position: relative;" >
 	<div style="font-size: 25px; font-weight: bold;">
 		OFFICIAL RECEIPT
@@ -28,42 +31,45 @@
 	</div>
 </div>
 <div style=" position: relative; font-size:18px">
-	<div>
-		Received from  ___________________________________________________________________
-	</div>
-	<div>
-		with TIN _______________________________________________________________________
-	</div>
-	<div>
-		and address at ___________________________________________________________________
-	</div>
-	<div>
-		business style of _________________________________________________________________
-	</div>
-	<div>
-		the sum of ______________________________________________________________________
-	</div>
-	<div>
-		__________________________________________________ PESOS (P ___________________)
-	</div>
-	<div>
-		In payment for __________________________________________________________________
-	</div>
+	<table width="100%">
+		<tbody>
+			@foreach($or_fields as $item)
+				<tr>
+					<td class="nob" style="width: 15%">{{ $item }}</td>
+					@if($item != 'the sum of')
+						<td class="ob">
+							@if($item == 'PESOS')
+								₱
+							@endif
+						</td>
+					@else
+						<td class="nob"></td>
+					@endif
+				</tr>
+				@if($item == 'the sum of')
+					<tr>
+						<td class="nob"></td>
+						<td class="ob"></td>
+					</tr>
+				@endif
+			@endforeach
+		</tbody>
+	</table>
 </div>
-<div style=" position: relative; margin-top: 39px;">
+<div style=" position: relative; margin-top: 20px;">
 	<div style="float: left; width: 50%;">
 		<table width="90%">
 			<tbody>
 				<tr>
-					<td colSpan="2">Sr. Citezen TIN</td>
+					<td colSpan="2">Sr. Citizen TIN</td>
 				</tr>
 				<tr>
 					<td class="nb">OSCA/PWS ID No.</td>
 					<td class="nb">Signature</td>
 				</tr>
 				<tr>
-					<td class="nt">.</td>
-					<td class="nt">.</td>
+					<td class="nt"></td>
+					<td class="nt"></td>
 				</tr>
 			</tbody>
 		</table>

@@ -1,5 +1,5 @@
 @php
-    $invoice_fields = ['Total Sales', 'Less VAT', 'Total', 'Less: SC/PWD Disc', 'Total Due', 'Less: Withhodling Tax', 'Amount Due', '.', 'VATable Sales', 'VAT-Exempt Sales', 'Zero Rated Sales', 'Vat Amount', 'Total Sales'];
+    $invoice_fields = ['Total Sales', 'Less VAT', 'Total', 'Less: SC/PWD Disc', 'Total Due', 'Less: Withhodling Tax', 'Amount Due', '', 'VATable Sales', 'VAT-Exempt Sales', 'Zero Rated Sales', 'Vat Amount', 'Total Sales'];
 @endphp
 <table width="100%">
 	<thead>

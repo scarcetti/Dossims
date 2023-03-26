@@ -37,13 +37,20 @@ div {
     float:right;
 }
 .nt {
-    border-top: unset !important;
+    border-top: 0;
 }
 .nb {
-    border-bottom: unset !important;
+    border-bottom: 0;
+}
+.nob {
+    border: 0;
+}
+.ob {
+    border-left: 0; border-top: 0; border-right: 0;
 }
 th, td {
     border: solid 1px;
+    height: 28px;
 }
 input[type="checkbox"] {
 
@@ -58,6 +65,6 @@ input[type="checkbox"] {
         @include('printout.official-receipt.section2')
     </div>
 </div>
-{{-- <div>
-        @include('printout.official-receipt.section3')    
-</div> --}}
+<div>
+    @include('printout.official-receipt.section3')
+</div>
