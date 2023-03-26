@@ -22,7 +22,7 @@ class PredictionController extends Controller
             $tx = TransactionPayment::whereHas('transaction', function($q) use($offset_month) {
                         $this_month = Carbon::now()->format('M-Y');
 
-                        $q->whereDate('transaction_placement', '>', Carbon::parse($this_month)->subMonths($offset_month)->endOfMonth());
+                        $q->whereDate('created_at', '>', Carbon::parse($this_month)->subMonths($offset_month)->endOfMonth());
                     })
                     ->whereHas('transaction.branch', function($q) use($branch_id) {
                         $q->where('id', $branch_id);
@@ -34,7 +34,7 @@ class PredictionController extends Controller
             if( count($tx) < 1 ) return null;
 
             foreach($tx as $key => $value) {
-                $month = Carbon::parse($value->transaction->transaction_placement)->format('M Y');
+                $month = Carbon::parse($value->transaction->created_at)->format('M Y');
                 $paid = floatval($value->amount_paid);
 
                 if(isset($months[$month])) {

@@ -17,6 +17,8 @@ class Transaction extends Model
         'business_customer_id',
         'status',
         'transaction_placement',
+        'created_at',
+        'updated_at',
     ];
 
     public function transactionItems()

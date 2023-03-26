@@ -134,7 +134,9 @@ class GenerateTransaction extends Command
                 'transaction_payment_id'    => $txn_payment->id,
                 'business_customer_id'      => null,
                 'status'                    => 'procuring',
-                'transaction_placement'     => $date,
+                'transaction_placement'     => null,
+                'created_at'                => $date,
+                'updated_at'                => $date,
             ])
             ->transactionItems()->createMany($purchases);
 
