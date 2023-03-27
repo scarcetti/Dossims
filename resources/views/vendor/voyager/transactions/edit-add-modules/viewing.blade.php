@@ -13,7 +13,8 @@
     </div>
     <div class="col-md-2">
         <div>
-            <small>@{{ item.branch_product.product.measurement_unit.name }}: </small>
+            {{-- <small>@{{ item.branch_product.product.measurement_unit.name }}: </small> --}}
+            <small>Quantity: </small>
             <input
                 class="form-control"
                 readonly
@@ -35,7 +36,7 @@
         </div>
     </div>
     <div class="col-md-2" style="align-self: self-start; margin-top: 7px;">
-        <div v-if="item.linear_meters">
+        <div v-if="item.branch_product.product.measurement_unit.name == 'Linear Meter'">
             <small>Linear meters: </small>
             <input
                 class="form-control"

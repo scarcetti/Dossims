@@ -589,6 +589,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
     public function storeTx(CreateQuotationValidation $request)
     {
+        dd(123);
         foreach($request->cart as $item) {
             $cart[] = [
                 'branch_product_id' => $item['branch_product_id'],
@@ -637,12 +638,13 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $branch_product->save();
         }
 
-        $this->savePaymentInfo($request->payment, $request->delivery_fee);
+        $tx_payment_id = $this->savePaymentInfo($request->payment, $request->delivery_fee);
 
 
         \App\Models\Transaction::where('id', $request->txid)->update([
                 'status' => 'procuring',
                 'cashier_id' => $request->cashier_id,
+                'transaction_payment_id' => $tx_payment_id,
             ]);
 
         return response(null, 200);
@@ -671,6 +673,8 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             }
 
             $this->delivieryFees($delivery_fee, $txn_payment->id);
+
+            return $txn_payment->id;
         }
 
         function delivieryFees($request, $txid)
