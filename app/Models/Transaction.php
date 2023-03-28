@@ -19,6 +19,7 @@ class Transaction extends Model
         'transaction_placement',
         'created_at',
         'updated_at',
+        'txno',
     ];
 
     public function transactionItems()
@@ -36,9 +37,14 @@ class Transaction extends Model
         return $this->belongsTo(BusinessCustomer::class);
     }
 
+    public function cashier()
+    {
+        return $this->belongsTo(Employee::class, 'cashier_id');
+    }
+
     public function employee()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Employee::class, 'employee_id');
     }
 
     public function branch()

@@ -31,6 +31,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 if( env('APP_DEBUG') ) {
     Route::group(['prefix' => 'test'], function(){
-        
+        Route::post('txno', [TransactionController::class,'createTxno']);
     });
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateBillingValidation;
 use App\Http\Requests\CreateQuotationValidation;
+use App\Models\Transaction;
 use Exception;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             return is_null($x) ? false : $x;
         }
         else {
-            return is_null($x) ? false : $x->$column;   
+            return is_null($x) ? false : $x->$column;
         }
     }
 
@@ -308,7 +309,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $view = "voyager::$slug.edit-add";
         }
 
-        // fetch extra form fields 
+        // fetch extra form fields
         $branches = $this->fetchBranches();
         $branch_products = $this->fetchBranchProducts();
         $payment_types = $this->fetchPaymentTypes(true);
@@ -341,6 +342,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                     'transactionItems.discount',
                     'customer',
                     'businessCustomer',
+                    'cashier',
                     'employee',
                 )->find($id);
             foreach ($transaction->transactionItems as $key => $value) {
@@ -427,7 +429,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         function saveTransactionPayments($request)
         {
-            
+
             if(intval($request->payment_type_id) == 1) {
 
             }
@@ -441,7 +443,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
             }
 
-            
+
             // return $transaction_payment;
         }
 
@@ -478,7 +480,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         }
 
 
-        // fetch extra form fields 
+        // fetch extra form fields
         $branches = $this->fetchBranches();
         $branch_products = $this->fetchBranchProducts();
         $payment_methods = json_encode('[]');
@@ -589,7 +591,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
     public function storeTx(CreateQuotationValidation $request)
     {
-        dd(123);
         foreach($request->cart as $item) {
             $cart[] = [
                 'branch_product_id' => $item['branch_product_id'],
@@ -645,6 +646,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                 'status' => 'procuring',
                 'cashier_id' => $request->cashier_id,
                 'transaction_payment_id' => $tx_payment_id,
+                'txno' => $this->createTxno(),
             ]);
 
         return response(null, 200);
@@ -689,5 +691,24 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                     'total'                  => doubleval($fees['shippingTotal']),
                 ]);
             }
+        }
+
+        function createTxno()
+        {
+            $tx = Transaction::where('branch_id', $this->getBranch('id'))
+                ->whereNotNull('txno')
+                ->latest('id')
+                ->first('txno');
+
+            if( is_null($tx) ) {
+                return '000001';
+            }
+
+            $x = intval($tx->txno) + 1;
+            while ( strlen(strval($x)) < 6 ) {
+                $x = '0' . strval($x);
+            }
+
+            return $x;
         }
 }

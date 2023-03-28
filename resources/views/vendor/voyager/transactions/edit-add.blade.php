@@ -59,7 +59,7 @@
     <script type="module">
         var app = new Vue({
             el: '#app',
-            components: { 
+            components: {
                 Multiselect: window.VueMultiselect.default,
             },
             data () {
@@ -161,7 +161,7 @@
                         return `${first_name} ${last_name} - ${contact_no}`
                     }
                     else {
-                        return `${first_name} ${last_name}`   
+                        return `${first_name} ${last_name}`
                     }
                 },
                 customEmployeeLabel({employee}) {
@@ -191,6 +191,9 @@
                         // console.log(index)
                         document.querySelector(`.item-${index} [name=${qtyQuery}-quantity]`).value = 1
                         document.querySelector(`.item-${index} [name=${qtyQuery}-tbd]`).value = 1
+
+                        this.value[index].quantity = 1
+                        this.value[index].linear_meters = 1
 
                         const linearMeter = document.querySelector(`.item-${index} [name=${qtyQuery}-linear-meters]`)
                         if(linearMeter) {
@@ -235,7 +238,7 @@
                     if(!pattern.test(txn)) {
                         this.transaction = JSON.parse(txn)
                         this.value = this.transaction.transaction_items
-                        
+
                         console.log(this.transaction)
                         this.getTotalValue()
                     }
