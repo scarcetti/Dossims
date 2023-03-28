@@ -51,4 +51,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(Branch::class);
     }
+
+    public function payment()
+    {
+        return $this->belongsTo(TransactionPayment::class, 'transaction_payment_id');
+    }
 }

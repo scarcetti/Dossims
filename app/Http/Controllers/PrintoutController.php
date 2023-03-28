@@ -29,19 +29,20 @@ class PrintoutController extends Controller
 
     public function officialReceipt($txid)
     {
+        $transaction = Transaction::with(
+            'transactionItems.branchProduct.product',
+            'customer',
+            'cashier',
+            'businessCustomer',
+            'payment.payment_method',
+        )->find($txid);
 
-        $data = [
-            'title' => 'Doming\'s Steel Trading',
-            'date' => date('m/d/Y'),
-        ];
-
-        $transaction = Transaction::with('transactionItems.branchProduct.product', 'customer', 'businessCustomer')->find($txid);
-           // return $transaction;
+        if( is_null($transaction ) ) abort(404);
 
         $pdf = PDF::setPaper('a4', 'landscape')->setWarnings(false);
         // return view('printout.official-receipt.index', compact('data', 'transaction'));
-        
-        $pdf->loadView('printout.official-receipt.index', compact('data', 'transaction'));
+
+        $pdf->loadView('printout.official-receipt.index', compact('transaction'));
         return $pdf->stream();
         // return $pdf->download('tutsmake.pdf');
     }

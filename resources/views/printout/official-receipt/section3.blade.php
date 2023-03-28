@@ -23,7 +23,7 @@
 		<div style="position: relative;">
 			<div style="position: absolute; top: 10px; left: 0; width: 40%;">
 				<h2 style="color: red;">
-					[ TRANSACTION NO ]
+					{{ $transaction->txno }}
 				</h2>
 			</div>
 			<div style="position: absolute; top: 20px; right: 0; width: 60%">
@@ -31,7 +31,7 @@
 					Printer's Accreditation No. 108MP2013000000000000000001
 				</div>
 				<div>
-					Date issued [ DATE ]
+					Date issued {{ \Carbon\Carbon::parse($transaction->payment->created_at)->format('M d, Y') }}
 				</div>
 			</div>
 			<div style="position: absolute; top: 90px; left: 0; width: 100%">

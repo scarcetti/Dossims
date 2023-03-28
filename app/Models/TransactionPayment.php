@@ -19,4 +19,14 @@ class TransactionPayment extends Model
     {
         return $this->hasOne(Transaction::class);
     }
+
+    public function payment_type()
+    {
+        return $this->belongsTo(PaymentType::class);
+    }
+
+    public function payment_method()
+    {
+        return $this->belongsTo(PaymentMethod::class);
+    }
 }
