@@ -107,7 +107,7 @@ class GenerateTransaction extends Command
             $quantity = random_int(4, 7);
 
             $subtotal += ($price_at_purchase * $quantity);
-            
+
             $purchases[] = [
                 'branch_product_id' => $branch_product_id,
                 'price_at_purchase' => $price_at_purchase,
@@ -137,6 +137,7 @@ class GenerateTransaction extends Command
                 'transaction_placement'     => null,
                 'created_at'                => $date,
                 'updated_at'                => $date,
+                'txno'                      => (new \App\Http\Controllers\TransactionController)->createTxno($branch_id),
             ])
             ->transactionItems()->createMany($purchases);
 

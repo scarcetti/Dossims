@@ -693,9 +693,9 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             }
         }
 
-        function createTxno()
+        function createTxno($branch_id=null)
         {
-            $tx = Transaction::where('branch_id', $this->getBranch('id'))
+            $tx = Transaction::where('branch_id', $branch_id ?? $this->getBranch('id'))
                 ->whereNotNull('txno')
                 ->latest('id')
                 ->first('txno');
