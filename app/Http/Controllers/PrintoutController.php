@@ -12,6 +12,11 @@ class PrintoutController extends Controller
 
     }
 
+    public function cashInvoice()
+    {
+
+    }
+
     public function cuttingList()
     {
 

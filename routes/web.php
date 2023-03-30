@@ -28,7 +28,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['prefix' => 'transaction'], function () {
         Route::post('create', [TransactionController::class,'storeTx']);
         Route::post('billing', [TransactionController::class,'billing']);
-    });    
+    });
 
     Route::group(['prefix' => 'cutting-list'], function () {
         Route::get('/', [CuttingListController::class,'getOrders']);
@@ -47,9 +47,10 @@ Route::group(['prefix' => 'admin'], function () {
 });
 
 Route::group(['prefix' => 'printouts'], function () {
-   Route::get('/charge-invoice', [PrintoutController::class,'chargeInvoice']); 
-   Route::get('/cutting-list', [PrintoutController::class,'cuttingList']); 
-   Route::get('/delivery-receipt', [PrintoutController::class,'deliveryReceipt']); 
-   Route::get('/job-order', [PrintoutController::class,'jobOrder']); 
-   Route::get('/official-receipt/{txid}', [PrintoutController::class,'officialReceipt']); 
+   Route::get('/charge-invoice', [PrintoutController::class,'chargeInvoice']);
+   Route::get('/cash-invoice', [PrintoutController::class,'cashInvoice']);
+   Route::get('/cutting-list', [PrintoutController::class,'cuttingList']);
+   Route::get('/delivery-receipt', [PrintoutController::class,'deliveryReceipt']);
+   Route::get('/job-order', [PrintoutController::class,'jobOrder']);
+   Route::get('/official-receipt/{txid}', [PrintoutController::class,'officialReceipt']);
 });
