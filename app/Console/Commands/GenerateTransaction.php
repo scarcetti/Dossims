@@ -48,7 +48,7 @@ class GenerateTransaction extends Command
         # DATE RANGE -------------------------------------------------------------------------------------
 
         $startDate = Carbon::now();
-        $endDate = $startDate->copy()->subMonths(3);
+        $endDate = $startDate->copy()->subMonths(6);
 
         $dates = CarbonPeriod::create($endDate, '1 day', $startDate)->toArray();
 

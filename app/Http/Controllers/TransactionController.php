@@ -670,7 +670,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                 \App\Models\Balance::create([
                     'customer_id' => $payment['customer_id'],
                     'updated_at_payment_id' => $txn_payment->id,
-                    'outstanding_balance' => floatval($payment['grand_total']) - floatval($payment['amount_tendered']),
+                    'outstanding_balance' => floatval($payment['balance']),
                 ]);
             }
 

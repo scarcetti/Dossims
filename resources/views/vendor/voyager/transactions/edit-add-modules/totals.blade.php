@@ -3,7 +3,7 @@
         <h4>Grand total</h4>
         <h2 style="font-weight: bold;">@{{ grandTotal }}</h2>
     </div>
-    
+
     <div v-if="transaction.status == 'pending'">
         <span class="btn btn-primary" @click="paymentButtonClicked()" readonly>Add payment</span>
 
@@ -31,9 +31,14 @@
                                 <h4>₱ @{{ deliveryFees.shippingTotal.toFixed(2) }}</h4>
                             </div>
                             <div>
-                                <h4>Grand total</h4>
+                                <h4 v-if="paymentType">@{{ paymentType.id === 1 ? 'Minimum Payable' : 'Grand total'}}</h4>
+                                <h4 v-else>Grand total</h4>
                                 <h2>@{{ grandTotal }}</h2>
                                 <input type="text" name="grand_total" :value="grandTotal_" hidden>
+                            </div>
+                            <div v-if="downpaymentAmount" :class="`${(downpaymentAmount - grandTotal_) >= 0 ? '' : 'err'}`">
+                                <h4>Downpayment amount</h4>
+                                <h2 style="border-top: unset;">₱ @{{ valueFixed(downpaymentAmount) }}</h2>
                             </div>
                             <div v-if="amountTendered" :class="`${(amountTendered - grandTotal_) >= 0 ? '' : 'err'}`">
                                 <span>Amount tendered</span>
@@ -108,20 +113,32 @@
                                     :allow-empty="false"
                                 />
                             </div>
-                            <div class="form-group  col-md-12" style="padding: 0;">
+                            <div v-if="paymentType ? paymentType.id === 1 : false " class="form-group  col-md-12" style="padding: 0;">
 
-                                <label class="control-label" for="name">Amount tendered</label>
+                                <label class="control-label" for="name">Downpayment amount</label>
                                 <input
-                                    v-model="amountTendered"
-                                    name="amount_tendered"
+                                    v-model="downpaymentAmount"
+                                    name="downpayment_amount"
                                     class="form-control"
                                     type="number"
                                     min="0"
                                     style="margin: 0 0 6px 0"
                                 >
                             </div>
+                            <div v-if="paymentMethod && paymentType ?  (paymentType.id==1 && paymentMethod.id != 1 ? false : true) : false" class="form-group  col-md-12" style="padding: 0;">
+
+                                <label class="control-label" for="name">Amount tendered</label>
+                                <input
+                                v-model="amountTendered"
+                                name="amount_tendered"
+                                class="form-control"
+                                type="number"
+                                min="0"
+                                style="margin: 0 0 6px 0"
+                                >
+                            </div>
                         </div>
-                        <div v-if="paymentType && paymentMethod && amountTendered" style="text-align-last: end;">
+                        <div v-if="paymentType && paymentMethod && (downpaymentAmount || amountTendered)" style="text-align-last: end;">
                             <span class="btn btn-primary" @click="addBilling()" readonly>
                                 @{{ paymentType.id === 2 ? 'Print Official Receipt' : 'Print Charge Invoice' }}
                             </span>

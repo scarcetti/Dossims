@@ -65,7 +65,7 @@
             data () {
                 return {
                     value: [],
-                    productsTotal: '----',
+                    productsTotal: null,
                     grandTotal: '----',
                     grandTotal_: 0,
                     transaction: {},
@@ -75,6 +75,7 @@
                     paymentTypes: {!! $payment_types ?? '' !!},
                     paymentMethod: null,
                     paymentMethods: {!! $payment_methods ?? '' !!},
+                    downpaymentAmount: null,
                     amountTendered: null,
                     cartSubtotals: [],
                     cbNote3: 'When switch is green, discounts are applied per item. Otherwise, discount is applied on the subtotal',
@@ -128,11 +129,16 @@
                         })
                 },
                 addBilling() {
+                    const tendered = this.amountTendered ? this.amountTendered : this.downpaymentAmount
+                    const balance = this.downpaymentAmount ? parseFloat(this.productsTotal) + parseFloat(this.grandTotal_) - parseFloat(tendered)   : null
+
                     const payload = {
                             payment: {
                                 payment_type_id: this.paymentType.id,
                                 payment_method_id: this.paymentMethod.id,
-                                amount_tendered: this.amountTendered,
+                                downpayment_amount: this.downpaymentAmount,
+                                amount_tendered: tendered,
+                                balance: balance,
                                 grand_total: this.grandTotal_,
                                 customer_id: this.transaction.customer_id,
                                 business_customer_id: this.transaction.business_customer_id,
@@ -305,6 +311,8 @@
                     this.getTotalValue()
                 },
                 paymentTypeChanged() {
+                    this.amountTendered = null
+                    this.downpaymentAmount = null
                     this.getTotalValue()
                 },
                 getTotalValue() {
