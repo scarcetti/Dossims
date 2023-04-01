@@ -9,7 +9,12 @@ class PrintoutController extends Controller
 {
     public function chargeInvoice()
     {
+        $transaction = 1;
+        $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
+        // return view('printout.charge-invoice.index', compact('transaction'));
 
+        $pdf->loadView('printout.charge-invoice.index', compact('transaction'));
+        return $pdf->stream();
     }
 
     public function cashInvoice()
