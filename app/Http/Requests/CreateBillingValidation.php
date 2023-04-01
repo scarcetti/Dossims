@@ -39,7 +39,7 @@ class CreateBillingValidation extends FormRequest
             'payment.payment_type_id'  => 'required',
             'payment.payment_method_id'  => 'required',
 
-            'payment.downpayment_amount'  => 'numeric|gte:payment.grand_total',
+            'payment.downpayment_amount'  => 'exclude_unless:payment.payment_type_id,1|numeric|gte:payment.grand_total',
             'payment.amount_tendered'  => 'required|numeric|gte:payment.grand_total',
         ];
 
