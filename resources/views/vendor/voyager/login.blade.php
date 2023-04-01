@@ -22,6 +22,7 @@
             align-items: center !important;
             padding: 40px !important;
             width: -webkit-fill-available;
+            width: -moz-available;
             background: transparent;
             border-top: unset;
         }
