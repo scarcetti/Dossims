@@ -10,10 +10,12 @@ class PredictionController extends Controller
 {
     public function index()
     {
-        $sales = $this->monthly_sales();
-        $chart_option = $this->format_for_chart($sales);
-        $asd = [];
-        return view('voyager::predictions.index', compact('asd', 'chart_option'));
+        $sales1 = $this->monthly_sales();
+        $sales2 = $this->monthly_sales(3);
+
+        $toril = $this->format_for_chart($sales1, 'Toril Main Branch');
+        $tagum = $this->format_for_chart($sales2, 'Tagum Branch');
+        return view('voyager::predictions.index', compact('toril', 'tagum'));
     }
 
         function monthly_sales($branch_id=4)
@@ -52,7 +54,7 @@ class PredictionController extends Controller
             return $months;
         }
 
-        public function format_for_chart($sales)
+        public function format_for_chart($sales, $title='Item')
         {
             /* FORMAT PARAMETERS AS
 
@@ -94,7 +96,7 @@ class PredictionController extends Controller
 
             $vueChartOption = (object) array (
                 'title' => (object) [
-                    'text' => 'Toril Main Branch'
+                    'text' => $title,
                 ],
                 'legend' =>
                 array (
