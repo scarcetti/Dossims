@@ -75,13 +75,13 @@
     input[type="checkbox"] {}
 </style>
 <div style="position: relative; height: 230px;">
-    @include('printout.charge-invoice.section1')
+    @include('printout.cash-invoice.section1')
 </div>
 <div style="position: relative; height: 400px;">
-    @include('printout.charge-invoice.section2')
+    @include('printout.cash-invoice.section2')
 </div>
 <div style="position: relative; height: 400px;">
-    @include('printout.charge-invoice.section3')
+    @include('printout.cash-invoice.section3')
 </div>
 
 
