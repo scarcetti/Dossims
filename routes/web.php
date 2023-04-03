@@ -6,6 +6,7 @@ use App\Http\Controllers\PrintoutController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\AnalyticsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +44,10 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::group(['prefix' => 'predictions'], function () {
         Route::get('/', [PredictionController::class,'index']);
+    });
+
+    Route::group(['prefix' => 'analytics'], function () {
+        Route::get('/', [AnalyticsController::class,'index']);
     });
 });
 
