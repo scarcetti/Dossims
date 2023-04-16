@@ -27,7 +27,7 @@
                             </td>
                             <td>
                                 {{-- {{ $item }} --}}
-                                <button @click="view({{ $item->id }})" type="submit" class="btn btn-primary save">View</button>
+                                <button @click="view({{ $item->id }})" type="subtypemit" class="btn btn-primary save">View</button>
                             </td>
                         </tr>
                     @empty

@@ -16,11 +16,11 @@
         />
     </div>
     <div v-if="customer.value && customer.value.balance">
-        @{{ customer.value.balance}}
+        {{-- @{{ customer.value.balance}} --}}
         <span>
             <i style="color: red;">
                 Has remaining balance.
-                <a href="">Pay now</a>?
+                <button type="subtypemit" class="btn btn-primary save" @click="viewBalance(customer.value.balance.id)">Make full payment</button>
             </i>
         </span>
     </div>

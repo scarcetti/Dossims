@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Balance;
+use App\Http\Requests\FinalBillingValidation;
 use Illuminate\Http\Request;
 
 class BalancesController extends Controller
@@ -15,11 +16,13 @@ class BalancesController extends Controller
     public function selected($id)
     {
         $balances = Balance::with('customer')->findOrFail($id);
-        return view('voyager::balances.settle', compact('balances'));
+        $payment_methods = (new \App\Http\Controllers\TransactionController)->fetchPaymentMethods();
+
+        return view('voyager::balances.settle', compact('balances', 'payment_methods'));
     }
 
-    public function settle(Request $request)
+    public function settle(FinalBillingValidation $request)
     {
-        # code...
+        return 1;
     }
 }

@@ -1,3 +1,10 @@
+@php
+    // $auth = \Illuminate\Support\Facades\Auth::user();
+    // if( is_null($auth) ) {
+    //     return redirect()->intended('/admin');
+    // }
+    // dd($auth);
+@endphp
 <!DOCTYPE html>
 <html lang="{{ config('app.locale') }}" dir="{{ __('voyager::generic.is_rtl') == 'true' ? 'rtl' : 'ltr' }}">
 <head>

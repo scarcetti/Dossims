@@ -390,6 +390,10 @@
                 valueFixed(x) {
                     return parseFloat(x).toFixed(2)
                 },
+                viewBalance(x) {
+                    console.log(x)
+                    location.href = `${location.origin}/admin/balances/${x}`
+                }
             },
             created() {
                 this.disableSubmitOnFieldsEnter()
