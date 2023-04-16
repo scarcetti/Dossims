@@ -25,7 +25,7 @@ class FinalBillingValidation extends FormRequest
     {
         return [
             'cashier_id'       => 'required',
-            'grand_total'      => 'nullable',
+            // 'grand_total'      => 'nullable',
             'amount_tendered'  => 'required|numeric|gte:grand_total',
         ];
     }
@@ -33,7 +33,7 @@ class FinalBillingValidation extends FormRequest
     public function messages()
     {
         return [
-            'cashier_id.required'               => 'Cashier field is required.',
+            'cashier_id.required'       => 'Cashier field is required.',
             'amount_tendered.required'  => 'Amount tendered is required',
             'amount_tendered.gte'       => 'Amount tendered must be greater than or equal to the grand total.',
         ];
