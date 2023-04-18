@@ -6,6 +6,8 @@ use App\Http\Controllers\PrintoutController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\BalancesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,8 +43,18 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/transfers', [InventoryController::class,'inboundAndTransfers']);
     });
 
+    Route::group(['prefix' => 'balances'], function () {
+        Route::get('/', [BalancesController::class,'index']);
+        Route::get('/{id}', [BalancesController::class,'selected']);
+        Route::post('/settle', [BalancesController::class,'settle']);
+    });
+
     Route::group(['prefix' => 'predictions'], function () {
         Route::get('/', [PredictionController::class,'index']);
+    });
+
+    Route::group(['prefix' => 'analytics'], function () {
+        Route::get('/', [AnalyticsController::class,'index']);
     });
 });
 

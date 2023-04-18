@@ -151,6 +151,9 @@ return [
             'App\\Widgets\\OtherBranchProducts',
             'App\\Widgets\\BranchStocks',
             'App\\Widgets\\Predictions',
+            'App\\Widgets\\StockAnalytics',
+            'App\\Widgets\\NewTransaction',
+            'App\\Widgets\\Balances',
         ],
 
     ],

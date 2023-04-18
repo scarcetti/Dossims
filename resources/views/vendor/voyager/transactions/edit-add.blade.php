@@ -20,7 +20,7 @@
             <span class="txn_" hidden>
                 {!! $transaction ?? '' !!}
             </span>
-            <div>
+            <div v-if="(customer.value && !customer.value.balance) || transaction.transaction_items">
                 <div class="cartItemContainer">
                     <div
                         v-for="(item, index) in value"
@@ -42,7 +42,7 @@
             </div>
             <br>
             @if( count($dataTypeContent->toArray()) == 0 )
-                <span v-if="value[0].selection">
+                <span v-if="value[0].selection && customer.value && !customer.value.balance">
                     <button @click="createQuotation" type="submit" class="btn btn-primary save">Save</button>
                     <i style="color: red;">Fields with * are required</i>
                 </span>
@@ -390,6 +390,10 @@
                 valueFixed(x) {
                     return parseFloat(x).toFixed(2)
                 },
+                viewBalance(x) {
+                    console.log(x)
+                    location.href = `${location.origin}/admin/balances/${x}`
+                }
             },
             created() {
                 this.disableSubmitOnFieldsEnter()

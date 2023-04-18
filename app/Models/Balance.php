@@ -13,4 +13,9 @@ class Balance extends Model
         'updated_at_payment_id',
         'outstanding_balance',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }

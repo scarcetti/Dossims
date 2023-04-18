@@ -15,16 +15,16 @@
             :allow-empty="true"
         />
     </div>
-    {{-- <div v-if="customer.value">
-        @{{ customer.value.balance}}
-        <div v-if="customer.value.balance">
-            <span>Has no pending balance</span>
-        </div>
-        <div v-else>
-            <span>Has pending balance</span>
-        </div>
-    </div> --}}
-    <div style="margin: 30px 0 15px 0;">
+    <div v-if="customer.value && customer.value.balance">
+        {{-- @{{ customer.value.balance}} --}}
+        <span>
+            <i style="color: red;">
+                Has remaining balance.
+                <button type="subtypemit" class="btn btn-primary save" @click="viewBalance(customer.value.balance.id)">Make full payment</button>
+            </i>
+        </span>
+    </div>
+    <div v-if="customer.value && !customer.value.balance" style="margin: 30px 0 15px 0;">
         <input v-if="businessCustomer.value" name="business_customer_id" :value="businessCustomer.value.id" hidden/>
         <label :class="`control-label ${customer.value ? '' : 'rr'}`" for="name">Business Customer</label>
         <multiselect
@@ -41,7 +41,7 @@
             :allow-empty="true"
         />
     </div>
-    <div style="margin: 30px 0 15px 0;">
+    <div v-if="customer.value && !customer.value.balance" style="margin: 30px 0 15px 0;">
         <input v-if="employee.value" name="employee_id" :value="employee.value.id" hidden/>
         <label class="control-label rr" for="name">Employee</label>
         <multiselect
