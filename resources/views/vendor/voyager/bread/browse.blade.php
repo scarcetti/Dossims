@@ -302,6 +302,9 @@
                     <form action="#" id="delete_form" method="POST">
                         {{ method_field('DELETE') }}
                         {{ csrf_field() }}
+                        <div>
+                            <input type="password" name="password" placeholder="Enter password to authorize action" style="    width: 100%; margin: 0 5px 30px 5px; font-size: 18px;">
+                        </div>
                         <input type="submit" class="btn btn-danger pull-right delete-confirm" value="{{ __('voyager::generic.delete_confirm') }}">
                     </form>
                     <button type="button" class="btn btn-default pull-right" data-dismiss="modal">{{ __('voyager::generic.cancel') }}</button>
