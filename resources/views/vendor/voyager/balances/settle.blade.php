@@ -98,6 +98,7 @@
                         value: null,
                         options: [{!! $branch_employees ?? '' !!}]
                     },
+                    balances_: {!! $balances ?? '' !!},
                 }
             },
             methods: {
@@ -115,14 +116,14 @@
                 addBilling() {
                     this.payload.grand_total = this.balance
                     this.payload.cashier_id = this.cashier.value ? this.cashier.value.id : null
+                    this.payload.balances_ = this.balances_
 
                     console.log(this.payload)
 
                     axios.post(`${window.location.origin}/admin/balances/settle`, this.payload)
                         .then(response => {
-                            // window.location.reload()
-                            alert('Payment Completed!')
-                            location.href = `${location.origin}/admin`
+                            // alert('Payment Completed!')
+                            // location.href = `${location.origin}/admin`
                         })
                         .catch(x => {
                             const y = Object.keys(x.response.data.errors)
