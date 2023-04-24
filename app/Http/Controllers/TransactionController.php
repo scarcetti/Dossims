@@ -85,7 +85,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $this->removeRelationshipField($dataType, 'browse');
 
             if ($search->value != '' && $search->key && $search->filter) {
-                $search_filter = ($search->filter == 'equals') ? '=' : 'LIKE';
+                $search_filter = ($search->filter == 'equals') ? '=' : 'ILIKE';
                 $search_value = ($search->filter == 'equals') ? $search->value : '%'.$search->value.'%';
 
                 $searchField = $dataType->name.'.'.$search->key;
@@ -114,6 +114,11 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                         'joined.'.$row->details->key
                     );
                 }
+
+                // dd($query->orderBy($orderBy, $querySortOrder));
+                // dd([$orderBy, $querySortOrder]);
+                // $getter,
+
 
                 $dataTypeContent = call_user_func([
                     $query->orderBy($orderBy, $querySortOrder),
