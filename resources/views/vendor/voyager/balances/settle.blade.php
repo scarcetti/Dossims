@@ -122,8 +122,8 @@
 
                     axios.post(`${window.location.origin}/admin/balances/settle`, this.payload)
                         .then(response => {
-                            // alert('Payment Completed!')
-                            // location.href = `${location.origin}/admin`
+                            alert('Transaction completed!')
+                            location.href = `${location.origin}/admin`
                         })
                         .catch(x => {
                             const y = Object.keys(x.response.data.errors)

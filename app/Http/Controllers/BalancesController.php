@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FinalBillingValidation;
 use App\Models\Balance;
 use App\Models\Branch;
+use App\Models\Employee;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -85,12 +86,15 @@ class BalancesController extends Controller
         //     'txno' => $this->createTxno(),
         // ]);
 
+        $employee_id = Employee::findOrFail(Auth::user()->id)->id;
+
         $transaction = [
-            'customer_id'               => $request->balances_->customer_id ?? null,
-            'employee_id'               => $request->balances_->employee_id ?? null,
-            'status' => 'completed',
-            'cashier_id' => $request->cashier_id,
-            'txno' => $this->createTxno(),
+            'customer_id'               => $request->balances_['customer_id'] ?? null,
+            'branch_id'                 => $this->getBranch('id'),
+            'employee_id'               => $employee_id,
+            'status'                    => 'completed',
+            'cashier_id'                => $employee_id,
+            'txno'                      => $this->createTxno(),
         ];
 
         $txn_payment = \App\Models\TransactionPayment::create([
@@ -99,6 +103,8 @@ class BalancesController extends Controller
             'payment_method_id' => $request->payment_method['id'],
         ])->transaction()->create($transaction);
 
-        return $txn_payment;
+        $deleted = Balance::where('id', $request->balances_['id'])->delete();
+
+        return $deleted;
     }
 }
