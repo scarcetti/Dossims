@@ -4,7 +4,9 @@
         <i class="voyager-credit-card"></i><h4>Transactions</h4>
         <p>Manage transactions</p>
         <div class="btns">
+            @if(!in_array(Auth::user()->role->name, ['branch_manager', 'general_manager']))
             <a href="{{ env('APP_URL') }}/admin/transactions/create" class="btn btn-primary">New Quotation</a>
+            @endif
             <a href="{{ env('APP_URL') }}/admin/transactions" class="btn btn-primary">View Transactions</a>
         </div>
     </div>

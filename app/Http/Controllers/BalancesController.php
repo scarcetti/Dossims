@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 use App\Http\Requests\FinalBillingValidation;
 use App\Models\Balance;
+use App\Models\Branch;
+use App\Models\Employee;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,7 +14,7 @@ class BalancesController extends Controller
     function getBranch($column=null)
     {
         $user = Auth::user();
-        $x = \App\Models\Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
+        $x = Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
                     $q->where('id', $user->id);
                 })->first();
 
@@ -21,6 +24,25 @@ class BalancesController extends Controller
         else {
             return is_null($x) ? false : $x->$column;
         }
+    }
+
+    function createTxno($branch_id=null)
+    {
+        $tx = Transaction::where('branch_id', $branch_id ?? $this->getBranch('id'))
+            ->whereNotNull('txno')
+            ->latest('id')
+            ->first('txno');
+
+        if( is_null($tx) ) {
+            return '000001';
+        }
+
+        $x = intval($tx->txno) + 1;
+        while ( strlen(strval($x)) < 6 ) {
+            $x = '0' . strval($x);
+        }
+
+        return $x;
     }
 
     public function index()
@@ -64,11 +86,25 @@ class BalancesController extends Controller
         //     'txno' => $this->createTxno(),
         // ]);
 
-        // $txn_payment = \App\Models\TransactionPayment::create([
-        //     'amount_paid' => $request->grand_total,
-        //     'payment_type_id' => 4,
-        //     'payment_method_id' => $payment['payment_method_id'],
-        // ]);
-        // return 1;
+        $employee_id = Employee::findOrFail(Auth::user()->id)->id;
+
+        $transaction = [
+            'customer_id'               => $request->balances_['customer_id'] ?? null,
+            'branch_id'                 => $this->getBranch('id'),
+            'employee_id'               => $employee_id,
+            'status'                    => 'completed',
+            'cashier_id'                => $employee_id,
+            'txno'                      => $this->createTxno(),
+        ];
+
+        $txn_payment = \App\Models\TransactionPayment::create([
+            'amount_paid' => $request->grand_total,
+            'payment_type_id' => 4,
+            'payment_method_id' => $request->payment_method['id'],
+        ])->transaction()->create($transaction);
+
+        $deleted = Balance::where('id', $request->balances_['id'])->delete();
+
+        return $deleted;
     }
 }

@@ -483,6 +483,19 @@ class VoyagerBaseController extends Controller
 
         $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
 
+        // --- C U S T O M ---
+
+        if($this->check_password_($request->password, $dataType)) {
+            $msg = [
+                'message'    => 'Incorrect password.',
+                'alert-type' => 'error',
+            ];
+
+            return redirect()->route("voyager.{$dataType->slug}.index")->with($msg);
+        }
+
+        // --- C U S T O M ---
+
         // Init array of IDs
         $ids = [];
         if (empty($id)) {
@@ -494,7 +507,7 @@ class VoyagerBaseController extends Controller
         }
 
         $affected = 0;
-        
+
         foreach ($ids as $id) {
             $data = call_user_func([$dataType->model_name, 'findOrFail'], $id);
 
@@ -529,6 +542,16 @@ class VoyagerBaseController extends Controller
 
         return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
     }
+
+        function check_password_($password, $dataType)
+        {
+            $cred = [ 'id' => Auth::user()->id, 'password' => $password ];
+
+            if(!Auth::guard('web')->attempt($cred)) {
+                // return true if password is incorrect
+                return true;
+            }
+        }
 
     public function restore(Request $request, $id)
     {
