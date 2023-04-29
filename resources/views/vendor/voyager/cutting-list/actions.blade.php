@@ -93,11 +93,9 @@
 
                 let text = `Update status of "${item.branch_product.product.name}" to "${next}"?`;
                 if (confirm(text) == true) {
-                    // update query here
-                    console.log(123, item)
-                    axios.patch(`${window.location.origin}/admin/cutting-list/update-status/${item.job_order.id}`)
-                    .then(() => {
-                        // window.location.reload()
+                    axios.patch(`${window.location.origin}/admin/cutting-list/update-status/${item.transaction_id}/${item.job_order.id}`)
+                    .then(response => {
+                        window.location.reload()
                     })
                 }
         	},

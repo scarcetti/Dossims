@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Transaction;
 use App\Models\JobOrder;
+use App\Models\Transaction;
+use App\Models\TransactionItem;
+use Illuminate\Http\Request;
 
 class CuttingListController extends Controller
 {
@@ -24,20 +25,29 @@ class CuttingListController extends Controller
         return view('voyager::cutting-list.actions', compact('txns'));
     }
 
-    public function updateStatus($id)
+    public function updateStatus($transaction_id, $job_order_id)
     {
-        // return $id;
-        $job_order = JobOrder::find($id);
-
+        $job_order = JobOrder::find($job_order_id);
         $status = $job_order->status;
-
-        return $job_order->update([
+        $job_order->update([
             'status' => $status == 'pending' ? 'in progress' : 'completed',
         ]);
+
+        $this->other_orders($transaction_id);
+
+        return $job_order;
     }
 
-            function FunctionName(Type $var = null)
+            function other_orders($transaction_id)
             {
-                # code...
+                // $transaction_items = TransactionItem::where('transaction_id', $transaction_id)->with('jobOrder')->get();
+
+                $incomplete_jos = JobOrder::whereHas('transaction_item', function($q) use($transaction_id) {
+                        $q->where('transaction_id', $transaction_id)->where('status', '!=', 'completed');
+                    })->pluck('status')->count();
+
+                if($incomplete_jos == 0) {
+                    $transaction = Transaction::where('id', $transaction_id)->update(['status' => 'preparing for delivery']);
+                }
             }
 }

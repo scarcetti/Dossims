@@ -13,4 +13,9 @@ class JobOrder extends Model
         'note',
         'status',
     ];
+
+    public function transaction_item()
+    {
+        return $this->belongsTo(TransactionItem::class);
+    }
 }

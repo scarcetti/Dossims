@@ -133,7 +133,7 @@ class GenerateTransaction extends Command
                 'branch_id'                 => $branch_id,
                 'transaction_payment_id'    => $txn_payment->id,
                 'business_customer_id'      => null,
-                'status'                    => 'procuring',
+                'status'                    => 'delivered',
                 'transaction_placement'     => null,
                 'created_at'                => $date,
                 'updated_at'                => $date,
