@@ -56,5 +56,15 @@
   .slider.round:before {
     border-radius: 50%;
   }
-
+  .outlinedBtn {
+    border-color: #e7e7e7;
+    color: black;
+    background-color: white;
+    padding: 14px 28px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .outlinedBtn:hover {
+    background: #e7e7e7;
+  }
   /* switch button  */

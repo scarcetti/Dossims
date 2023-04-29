@@ -2,9 +2,15 @@
 <div :class="`cartContainer item-${index}`">
     <input v-if="value[index].selection" :name="`item_${index}`" :value="JSON.stringify(value[index])" hidden>
     <div class="col-md-1" v-if="value[index].selection">
-        <span v-if="value.length > 1" @click="deleteCartItem(index)">
-            <i class="voyager-x" style="font-size: 25px; cursor: pointer;"></i>
-        </span>
+     {{--    <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn btn-sm btn-primary pull-right view">
+            <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Add Payment</span>
+        </a> --}}
+       {{--  <span v-if="value.length > 1" @click="deleteCartItem(index)">yeeet
+            <i class="btn btn-sm btn-danger" style="font-size: 25px; cursor: pointer;">Remove Item</i>
+        </span> --}}
+        <button  title="Remove Item" class="btn btn-sm btn-danger pull-right delete" v-if="value.length > 1" @click="deleteCartItem(index)">
+            <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Remove Item</span>
+        </button>
     </div>
     <div class="col-md-7">
         <div>
