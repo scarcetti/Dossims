@@ -26,6 +26,7 @@ class CuttingListController extends Controller
 
     public function updateStatus($id)
     {
+        // return $id;
         $job_order = JobOrder::find($id);
 
         $status = $job_order->status;
@@ -34,4 +35,9 @@ class CuttingListController extends Controller
             'status' => $status == 'pending' ? 'in progress' : 'completed',
         ]);
     }
+
+            function FunctionName(Type $var = null)
+            {
+                # code...
+            }
 }
