@@ -12,21 +12,21 @@
             <div class="col-md-12">
                 <div class="panel panel-bordered">
                     <div class="panel-body">
-                        {{-- TOGGLE BUTTON --}}
-                        <div style="margin: 0 10px;">
-                            <div class="row">
-                                <div class="col-md-12 bg-light text-right">
-                                    <h5><small>Only show unpaid transactions</small></h5>
-                                    <label class="switch">
-                                        <input name="asd" type="checkbox">
-                                        <div class="slider round"></div>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
 
                         @if ($isServerSide)
-                            <form method="get" class="form-search">
+                        <form method="get" class="form-search">
+                                {{-- TOGGLE BUTTON --}}
+                                <div style="margin: 0 10px;">
+                                    <div class="row">
+                                        <div class="col-md-12 bg-light text-right">
+                                            <h5><small>Only show unpaid transactions</small></h5>
+                                            <label class="switch">
+                                                <input name="asd" type="checkbox">
+                                                <div class="slider round"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div id="search-input">
                                     <div class="col-2">
                                         <select id="search_key" name="key">
@@ -247,12 +247,15 @@
                                             {{-- <a href="javascript:;" title="Delete" class="btn btn-sm btn-danger pull-right delete" data-id="{{ $data->id }}" id="delete-{{ $data->id }}">
                                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Delete</span>
                                             </a> --}}
-                                            <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn outlinedBtn pull-right view">
-                                                <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
-                                            </a>
-                                            <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn btn-sm btn-success pull-right view">
-                                                <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Add Payment</span>
-                                            </a>
+                                            @if( $data->status == 'waiting for payment' )
+                                                <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn btn-sm btn-success pull-right view">
+                                                    <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Add Payment</span>
+                                                </a>
+                                            @else
+                                                <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn outlinedBtn pull-right view">
+                                                    <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
+                                                </a>
+                                            @endif
                                             @if($data->status == 'procuring')
                                                 <a href="{{ ENV('APP_URL') }}/admin/cutting-list/{{ $data->id }}" title="View" class="btn btn-sm btn-warning pull-right view" style="margin-right: 6px;">
                                                     <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Cutting list</span>

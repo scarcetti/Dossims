@@ -58,8 +58,8 @@
         </div>
     </div>
     <div class="col-md-2">
-        <span v-if="transaction.status == 'pending' && !item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">Add discount</span>
-        <span v-if="transaction.status == 'pending' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>
+        <span v-if="transaction.status == 'waiting for payment' && !item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">Add discount</span>
+        <span v-if="transaction.status == 'waiting for payment' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>
         <span v-if="transaction.status == 'procuring' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>
         <span v-if="transaction.status == 'procuring' && !item.discount" class="btn" readonly style="background: #cbc0b3; color: white;">Not discounted</span>
     </div>
@@ -101,7 +101,7 @@
 
                     <div class="form-group  col-md-12 ">
                         <h5>Type of discount</h5>
-                        <ul v-if="transaction.status == 'pending'" class="radio" v-on:click="discountsModified(item, index)">
+                        <ul v-if="transaction.status == 'waiting for payment'" class="radio" v-on:click="discountsModified(item, index)">
                             <li>
                                 <input v-model="value[index].discount_type" type="radio" :id="`item-${item.id}-option-type-fixed`" :name="`item-${item.id}-discount-type`" value="fixed">
                                 <label :for="`item-${item.id}-option-type-fixed`">Fixed amount</label>
@@ -118,15 +118,16 @@
                             <li><label>@{{ item.discount.per_item ? `Applied per ${item.branch_product.product.measurement_unit.name}` : 'Applied on the subtotal' }}</label></li>
                         </ul>
                     </div>
-                    <div v-if="transaction.status == 'pending'" style="margin: 0 10px">
+                    <div v-if="transaction.status == 'waiting for payment'" style="margin: 0 10px">
                         <h5>Per item <small><br>@{{ cbNote3 }}</small></h5>
                         <label class="switch">
                             <input v-model="value[index].discount_per_item" :name="`item-${item.id}-discount-type-per-item`" type="checkbox" v-on:click="discountsModified(item, index)">
                             <div class="slider round"></div>
                         </label>
                     </div>
-                    <div v-if="transaction.status == 'pending' && !item.discount" style="text-align-last: right;">
-                        <span v-on:click="removeDiscount(item.id, index)" class="btn btn-danger edit">Remove discount</span>
+                    <div v-if="transaction.status == 'waiting for payment' && !item.discount" style="text-align-last: right;">
+                        <span v-on:click="applyDiscount(item, index)" class="btn btn-success edit" data-dismiss="modal" aria-label="Close">Apply discount</span>
+                        <span v-on:click="removeDiscount(item.id, index)" class="btn btn-danger edit" data-dismiss="modal" aria-label="Close">Remove discount</span>
                     </div>
                 </div>
             </div>

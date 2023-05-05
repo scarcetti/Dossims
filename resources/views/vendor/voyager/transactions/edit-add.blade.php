@@ -119,6 +119,7 @@
                     console.log(payload)
                     axios.post(`${window.location.origin}/admin/transaction/create`, payload)
                         .then(response => {
+                            alert('Quotation created!')
                             window.location.reload()
                         })
                         .catch(x => {
@@ -267,15 +268,7 @@
                 discountDialogShow(id) {
                     $(`#discountDialog${id}`).modal({backdrop: 'static', keyboard: false});
                 },
-                removeDiscount(item_id, cardIndex) {
-                    const elements = document.querySelectorAll(`[name*="${item_id}-discount"]`)
-                    elements[0].value = null
-
-                    this.value[cardIndex].discount_value = null
-
-                    this.getTotalValue()
-                },
-                discountsModified(cardValues, cardIndex) {
+                applyDiscount(cardValues, cardIndex) {
                     const elements = document.querySelectorAll(`[name*="${cardValues.id}-discount"]`)
 
                     let fields = {
@@ -290,6 +283,34 @@
                     }
 
                     this.getTotalValue()
+
+                    alert('Discount applied.')
+                },
+                removeDiscount(item_id, cardIndex) {
+                    const elements = document.querySelectorAll(`[name*="${item_id}-discount"]`)
+                    elements[0].value = null
+
+                    this.value[cardIndex].discount_value = null
+
+                    this.getTotalValue()
+
+                    alert('Discount removed.')
+                },
+                discountsModified(cardValues, cardIndex) {
+                    // const elements = document.querySelectorAll(`[name*="${cardValues.id}-discount"]`)
+
+                    // let fields = {
+                    //     value: parseFloat(elements[0].value),
+                    //     isFixed: elements[1].checked,
+                    //     isPercentage: elements[2].checked,
+                    //     isPerItem: elements[3].checked,
+                    // }
+
+                    // if(fields.value && fields.isFixed || fields.isPercentage) {
+                    //     this.$set(this.value[cardIndex], 'discount_value', this.getDiscountedSubtotal(cardValues, fields))
+                    // }
+
+                    // this.getTotalValue()
                 },
                 getDiscountedSubtotal(cardValues, fields) {
                     let x = 0

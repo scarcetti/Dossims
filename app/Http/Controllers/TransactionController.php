@@ -691,7 +691,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                 'branch_id'                 => $this->getBranch('id') != 0 ? $this->getBranch('id') : null,
                 'transaction_payment_id'    => null,
                 'business_customer_id'      => $request->business_customer_id ?? null,
-                'status'                    => 'pending',
+                'status'                    => 'waiting for payment',
                 'transaction_placement'     => null,
             ])
             ->transactionItems()->createMany($cart);

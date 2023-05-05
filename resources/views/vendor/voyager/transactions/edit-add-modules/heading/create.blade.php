@@ -10,7 +10,7 @@
             track-by="id"
             :custom-label="customNameLabel"
             :options="customer.options[0]"
-            placeholder="Select customer"
+            placeholder="None"
             :searchable="true"
             :allow-empty="true"
         />
@@ -36,7 +36,7 @@
             :options="businessCustomer.options[0]"
             {{-- :custom-label="customNameLabel"
             :options="customer.options[0]" --}}
-            placeholder="Select business customer"
+            placeholder="None"
             :searchable="true"
             :allow-empty="true"
         />

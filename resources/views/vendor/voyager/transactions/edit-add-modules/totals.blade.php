@@ -4,7 +4,7 @@
         <h2 style="font-weight: bold;">@{{ grandTotal }}</h2>
     </div>
 
-    <div v-if="transaction.status == 'pending'">
+    <div v-if="transaction.status == 'waiting for payment'">
         <span class="btn btn-primary" @click="paymentButtonClicked()" readonly>Add payment</span>
 
         <div class="modal fade" id="paymentDialog" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
@@ -139,8 +139,13 @@
                             </div>
                         </div>
                         <div v-if="paymentType && paymentMethod && (downpaymentAmount || amountTendered)" style="text-align-last: end;">
+                            <span class="btn btn-danger" data-dismiss="modal" aria-label="Close" readonly>
+                                {{-- @{{ paymentType.id === 2 ? 'Print Official Receipt' : 'Print Charge Invoice' }} --}}
+                                Cancel
+                            </span>
                             <span class="btn btn-primary" @click="addBilling()" readonly>
-                                @{{ paymentType.id === 2 ? 'Print Official Receipt' : 'Print Charge Invoice' }}
+                                {{-- @{{ paymentType.id === 2 ? 'Print Official Receipt' : 'Print Charge Invoice' }} --}}
+                                Add Payment
                             </span>
                         </div>
 
