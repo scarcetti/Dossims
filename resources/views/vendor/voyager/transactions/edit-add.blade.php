@@ -20,6 +20,9 @@
             <span class="txn_" hidden>
                 {!! $transaction ?? '' !!}
             </span>
+            <span class="logged_employee_" hidden>
+                {!! $logged_employee ?? '' !!}
+            </span>
             <div v-if="(customer.value && !customer.value.balance) || transaction.transaction_items">
                 <div class="cartItemContainer">
                     <div
@@ -97,10 +100,12 @@
                         options: [{!! $business_customers ?? '' !!}]
                     },
                     employee: {
+                        // value: [{ !! $logged_employee ?? '' !!}],
                         value: null,
                         options: [{!! $branch_employees ?? '' !!}]
                     },
                     cashier: {
+                        // value: [{ !! $logged_employee ?? '' !!}],
                         value: null,
                         options: [{!! $branch_employees ?? '' !!}]
                     },
@@ -253,6 +258,15 @@
                     else {
                         this.addEmptyCartItem()
                         this.initialCartData()
+                    }
+                },
+                getLoggedUser() {
+                    const employees = document.querySelector('span.logged_employee_').innerHTML
+                    const pattern = /^\s*$/g;
+
+                    if(!pattern.test(employees)) {
+                        this.employee.value = JSON.parse(employees)
+                        this.cashier.value = JSON.parse(employees)
                     }
                 },
                 hideElements() {
@@ -420,6 +434,7 @@
             created() {
                 this.disableSubmitOnFieldsEnter()
                 this.getUpdateValue()
+                this.getLoggedUser()
 
                 // this.hideElements()
                 // this.disableElements()

@@ -32,7 +32,8 @@
                 :allow-empty="false"
             />
         </div>
-        {{-- @{{ cashier }} --}}
+        {{-- @{{ cashier.value }} --}}
+        <br>
     @else
         <div class="form-group  col-md-12" style="margin: 30px 0 15px 0;">
             <label class="control-label" for="name">Cashiered by</label>

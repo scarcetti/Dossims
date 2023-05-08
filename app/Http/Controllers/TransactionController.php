@@ -34,6 +34,16 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         }
     }
 
+    function current_employee($employees_list)
+    {
+        // dd(Auth::user());
+        $current = array_filter($employees_list->toArray(), function ($employee) {
+            return $employee['employee_id'] == Auth::user()->employee_id;
+        });
+
+        return json_encode($current[key($current)]);
+    }
+
     public function index(Request $request)
     {
         // GET THE SLUG, ex. 'posts', 'pages', etc.
@@ -322,8 +332,9 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $payment_methods = $this->fetchPaymentMethods();
         $transaction = $this->fetchTx($id);
         $branch_employees = $this->fetchBranchEmployees();
+        $logged_employee = $this->current_employee($branch_employees);
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction', 'branch_employees'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction', 'branch_employees', 'logged_employee'));
     }
 
         function fetchPaymentTypes($create=false)
@@ -337,7 +348,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         function fetchPaymentMethods()
         {
-            return \App\Models\PaymentMethod::get();
+            return \App\Models\PaymentMethod::whereIn('name', ['Cash', 'Check'])->get();
         }
 
         public function fetchTx($id)
@@ -495,8 +506,9 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $customers = $this->fetchCustomers();
         $business_customers = $this->fetchBusinessCustomers();
         $branch_employees = $this->fetchBranchEmployees();
+        $logged_employee = $this->current_employee($branch_employees);
 
-        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_methods', 'payment_types', 'customers', 'business_customers', 'branch_employees'));
+        return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_methods', 'payment_types', 'customers', 'business_customers', 'branch_employees', 'logged_employee'));
     }
 
         function fetchBranches()
