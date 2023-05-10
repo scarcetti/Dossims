@@ -1,0 +1,8 @@
+.filters_container {
+    display: flex;
+
+}
+
+.filters_container > * {
+    padding: 0 5px 10px 5px;
+}

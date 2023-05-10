@@ -18,12 +18,29 @@
                                 {{-- TOGGLE BUTTON --}}
                                 <div style="margin: 0 10px;">
                                     <div class="row">
-                                        <div class="col-md-12 bg-light text-right">
-                                            <h5><small>Only show unpaid transactions</small></h5>
-                                            <label class="switch">
-                                                <input name="asd" type="checkbox">
-                                                <div class="slider round"></div>
-                                            </label>
+                                        <div class="filters_container">
+                                            <div class="">
+                                                <h5><small>Hide unpaid transactions</small></h5>
+                                                <label class="switch">
+                                                    @if(isset(Request::all()['hide_unpaid']))
+                                                        <input name="hide_unpaid" type="checkbox" checked onclick="submit()">
+                                                    @else
+                                                        <input name="hide_unpaid" type="checkbox" onclick="submit()">
+                                                    @endif
+                                                    <div class="slider round"></div>
+                                                </label>
+                                            </div>
+                                            <div class="">
+                                                <h5><small>Hide paid transactions</small></h5>
+                                                <label class="switch">
+                                                    @if(isset(Request::all()['hide_paid']))
+                                                        <input name="hide_paid" type="checkbox" checked onclick="submit()">
+                                                    @else
+                                                        <input name="hide_paid" type="checkbox" onclick="submit()">
+                                                    @endif
+                                                    <div class="slider round"></div>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -318,6 +335,7 @@
 @section('javascript')
     <!-- DataTables -->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom-switch.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/transaction-browse.css') }}">
     @if(!$dataType->server_side && config('dashboard.data_tables.responsive'))
         <script src="{{ voyager_asset('lib/js/dataTables.responsive.min.js') }}"></script>
     @endif

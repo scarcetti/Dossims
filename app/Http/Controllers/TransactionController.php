@@ -142,10 +142,25 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
             // --- C U S T O M ---
 
+            $hidden_field_filters = [];
+            if(isset($request->hide_unpaid)) {
+                array_push($hidden_field_filters, 'waiting for payment');
+            }
+            if(isset($request->hide_paid)) {
+                array_push($hidden_field_filters,
+                    'procuring',
+                    'preparing for delivery',
+                    'delivered',
+                );
+            }
+
             $branch_id = $this->getBranch('id');
-            $dataTypeContent = call_user_func([$query->when($branch_id, function($q) use ($branch_id) {
-                return $q->where('branch_id', $branch_id);
-            }), $getter]);
+            $dataTypeContent = call_user_func([$query
+                ->when($branch_id, function($q) use ($branch_id) {
+                    return $q->where('branch_id', $branch_id);
+                })
+                ->whereNotIn('status', $hidden_field_filters),
+            $getter]);
 
             // --- C U S T O M ---
 
