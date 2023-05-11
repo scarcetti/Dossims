@@ -155,7 +155,7 @@ class AnalyticsController extends Controller
             $figures = array_slice($figures, -3);
 
             array_unshift($dates, 'Month');
-            array_unshift($figures, 'Figure');
+            array_unshift($figures, 'Real Figures');
             array_unshift($predictions, 'Prediction');
 
             $vueChartOption = (object) array (

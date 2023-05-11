@@ -38,7 +38,7 @@
                         <thead>
                             <tr />
                             <th>Ranking</th>
-                            <th>Product name</th>
+                            <th>Predictions</th>
                             {{-- <th>Sales</th> --}}
                             </tr>
                         </thead>
@@ -46,12 +46,12 @@
                             @forelse($top_products as $key => $value)
                                 <tr style="border-top: solid #5c5c5c29 1px" @click="rankingClicked({{ $value }})">
                                     <td>#&nbsp;{{ $key + 1 }}</td>
-                                    <td>{{ $value->branchProduct->product->name }}</td>
+                                    {{-- <td>{{ $value->branchProduct->product->name }}</td> --}}
                                     {{-- <td>{{ $value->count_ }}</td> --}}
                                 </tr>
                                 <tr class="graph-{{ $value->branch_product_id }}" branch_product_id={{ $value->branch_product_id }}>
                                     <td colspan="2">
-                                        <div class="col-lg-12 col-md-12">
+                                        <div class="col-lg-11 col-md-11">
                                             <div class="chart-container-width-basis"></div>
                                             <figure class="chart-container">
                                                 <div id="chart-{{$value->branch_product_id}}" class="chart"></div>
@@ -70,32 +70,6 @@
                     {{-- {{ $branch_products->links() }} --}}
                 </div>
             </section>
-
-            <div class="modal fade" id="prediction_dialog" tabindex="-1" role="dialog" aria-labelledby="dialogLabel"
-                aria-hidden="true" v-if="selected">
-                <div class="modal-success-dialog modal-dialog" role="document"
-                    style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
-                    <div class="modal-content">
-                        <div class="modal-header" style="display: flex; align-items: center;">
-                            <h5 class="modal-title" id="dialogLabel">@{{ selected.branch_product.product.name }}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                                style="margin-left: auto;">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body"
-                            style="padding-top: 0px !important; padding-left: 5%; padding-right: 5%; max-height: 70vh;">
-                            <div class="col-lg-12 col-md-12">
-                                <div class="chart-container-width-basis"></div>
-                                <figure class="chart-container">
-                                    {{-- <span>Containers Received in the past 12 months</span> --}}
-                                    <div id="chart1" class="chart"></div>
-                                </figure>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
     </body>
