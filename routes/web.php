@@ -55,6 +55,7 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::group(['prefix' => 'analytics'], function () {
         Route::get('/', [AnalyticsController::class,'index']);
+        Route::get('/chart/{branch_product_id}', [AnalyticsController::class,'chart']);
     });
 });
 

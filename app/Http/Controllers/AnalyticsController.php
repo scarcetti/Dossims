@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TransactionItem;
+use App\Models\BranchProduct;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AnalyticsController extends Controller
 {
@@ -21,8 +25,214 @@ class AnalyticsController extends Controller
         }
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('voyager::analytics.index');
+        // return $this->test();
+        $top_products = $this->top_products($request);
+
+        return view('voyager::analytics.index', compact('top_products'));
     }
+        function top_products($request)
+        {
+            $filter_by = (isset($request->filter_value) || !is_null($request->filter_value)) ? $request->filter_value : 'Weekly';
+            // 'Weekly', 'Monthly', 'Yearly', 'All-time'
+
+            $branch_id = $this->getBranch('id');
+
+            $top_items = TransactionItem::selectRaw('branch_product_id, count(id) as count_')
+                            ->groupBy('branch_product_id')
+                            ->orderBy('count_', 'desc')
+                            ->with('branchProduct.product')
+                            ->when($filter_by == 'Weekly', function($q) {
+                                $now = Carbon::now();
+                                $start = $now->startOfWeek()->format('m-d-Y');
+                                $end = $now->endOfWeek()->format('m-d-Y');
+
+                                $q->whereBetween('created_at', [$start, $end]);
+                            })
+                            ->when($filter_by == 'Monthly', function($q) {
+                                $q->whereHas('transaction', function($w) {
+                                    $w->whereMonth('created_at', Carbon::now()->format('m'));
+                                });
+                            })
+                            ->when($filter_by == 'Yearly', function($q) {
+                                $q->whereHas('transaction', function($w) {
+                                    $w->whereYear('created_at', Carbon::now()->format('Y'));
+                                });
+                            })
+                            ->whereHas('branchProduct', function($q) use($branch_id) {
+                                $q->where('branch_id', $branch_id);
+                            })
+                            // ->when($filter_by != 'All-time', function($q) {
+                            //     $q->take(10);
+                            // })
+                            ->take(20)
+                            ->get();
+
+            return $top_items;
+        }
+
+    public function chart($branch_product_id)
+    {
+        $bp = BranchProduct::with('product')->find($branch_product_id);
+
+        $months = $this->monthly_sales($branch_product_id, $this->getBranch('id'));
+        $qty = $this->format_for_chart($months, $bp->product->name);
+        return $qty;
+    }
+
+        function monthly_sales($branch_product_id, $branch_id=4)
+        {
+            $offset_month = 6;
+            $tx = TransactionItem::whereHas('transaction', function($q) use($offset_month) {
+                        $this_month = Carbon::now()->format('M-Y');
+
+                        $q->whereDate('created_at', '>', Carbon::parse($this_month)->subMonths($offset_month)->endOfMonth());
+                    })
+                    ->whereHas('transaction.branch', function($q) use($branch_id) {
+                        $q->where('id', $branch_id);
+                    })
+                    ->where('branch_product_id', $branch_product_id)
+                    ->with('transaction.branch')
+                    // ->take(10)
+                    ->get();
+
+            if( count($tx) < 1 ) return null;
+
+            foreach($tx as $key => $value) {
+                $month = Carbon::parse($value->transaction->created_at)->format('M Y');
+                $qty = $value->quantity;
+
+                if(isset($months[$month])) {
+                    array_push($months[$month], $qty);
+                }
+                else {
+                    $months[$month] = [$qty];
+                }
+            }
+
+            foreach($months as $key => $value) {
+                $months[$key] = array_sum($value);
+            }
+
+            return $months;
+        }
+
+        function format_for_chart($sales, $title='Item')
+        {
+            /* FORMAT PARAMETERS AS
+
+                - $sales :
+                    { "12-22": 123123123, "1-23": 321321312, "2-23": 43434343 }
+            */
+
+            if(is_null($sales)) return null;
+
+            $dates = array_keys((array) $sales);
+            $figures = array_values((array) $sales);
+
+
+            foreach($figures as $key => $value) {
+                if($key > 1) {
+                    $predictions[] = array_sum([
+                        $figures[$key - 2],
+                        $figures[$key - 1],
+                        $figures[$key],
+                    ]) / 3;
+                }
+            }
+
+            // PREDICTION APPENDS
+            $next_month = Carbon::parse(end($dates))->addMonths(1)->format('M Y');
+            $last_unpredicted_month = end($dates);
+            array_push($dates, $next_month);
+
+            // $last_three = array_slice($figures, -3);
+            // $predicted_figure = array_sum($last_three) / 3;
+            // array_push($figures, $predicted_figure);
+
+            $dates = array_slice($dates, -4);
+            $figures = array_slice($figures, -3);
+
+            array_unshift($dates, 'Month');
+            array_unshift($figures, 'Figure');
+            array_unshift($predictions, 'Prediction');
+
+            $vueChartOption = (object) array (
+                'title' => (object) [
+                    'text' => $title,
+                ],
+                'legend' =>
+                array (
+                ),
+                'toolbox' => (object) [
+
+                    'feature' => (object) [
+                      'saveAsImage' => (object)[]
+                    ]
+                ],
+                'tooltip' =>
+                array (
+                  'trigger' => 'axis',
+                  'showContent' => true,
+                ),
+                'dataset' =>
+                array (
+                  'source' =>
+                  array (
+                    0 => $dates,
+                    1 => $figures,
+                    2 => $predictions,
+                  ),
+                ),
+                'xAxis' =>
+                array (
+                  'type' => 'category',
+                ),
+                'yAxis' =>
+                array (
+                  'gridIndex' => 0,
+                ),
+                'series' =>
+                array (
+                  0 =>
+                  array (
+                    'type' => 'line',
+                    'smooth' => true,
+                    'seriesLayoutBy' => 'row',
+                    'emphasis' =>
+                    array (
+                      'focus' => 'series',
+                    ),
+                  ),
+                  1 =>
+                  array (
+                    'type' => 'line',
+                    'smooth' => true,
+                    'seriesLayoutBy' => 'row',
+                    'emphasis' =>
+                    array (
+                      'focus' => 'series',
+                    ),
+                  )
+                ),
+              );
+
+            return json_encode($vueChartOption);
+        }
+
+        function test()
+        {
+            $now = Carbon::now();
+            // $start = $now->startOfWeek()->format('M d Y');
+            // $end = $now->endOfWeek()->format('M d Y');
+
+            // $start = $now->startOfMonth()->format('M d Y');
+            // $end = $now->endOfMonth()->format('M d Y');
+
+            $start = $now->startOfYear()->format('M d Y');
+            $end = $now->endOfYear()->format('M d Y');
+
+            return [$start, $end];
+        }
 }
