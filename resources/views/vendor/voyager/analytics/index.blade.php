@@ -45,7 +45,7 @@
                         <tbody>
                             @forelse($top_products as $key => $value)
                                 <tr style="border-top: solid #5c5c5c29 1px" @click="rankingClicked({{ $value }})">
-                                    <td>#&nbsp;{{ $key + 1 }}</td>
+                                    <td><h3>#&nbsp;{{ $key + 1 }}</h3></td>
                                     {{-- <td>{{ $value->branchProduct->product->name }}</td> --}}
                                     {{-- <td>{{ $value->count_ }}</td> --}}
                                 </tr>
