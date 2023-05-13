@@ -151,6 +151,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                     'procuring',
                     'preparing for delivery',
                     'delivered',
+                    'completed',
                 );
             }
 
