@@ -340,6 +340,26 @@
         <script src="{{ voyager_asset('lib/js/dataTables.responsive.min.js') }}"></script>
     @endif
     <script>
+        let elements = document.querySelectorAll("div");
+
+        // Loop through the elements to find the one with the desired inner text
+        for (let i = 0; i < elements.length; i++) {
+            if (elements[i].innerText === 'completed') {
+                elements[i].style.color = 'green';
+            }
+            if (elements[i].innerText === 'delivered') {
+                elements[i].style.color = 'green';
+            }
+            if (elements[i].innerText === 'procuring') {
+                elements[i].style.color = 'blue';
+            }
+            if (elements[i].innerText === 'waiting for payment') {
+                elements[i].style.color = 'orange';
+            }
+            if (elements[i].innerText === 'preparing for delivery') {
+                elements[i].style.color = 'purple';
+            }
+        }
         $(document).ready(function () {
             @if (!$dataType->server_side)
                 var table = $('#dataTable').DataTable({!! json_encode(

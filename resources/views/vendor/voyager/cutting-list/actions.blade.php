@@ -3,6 +3,14 @@
     {
         return !in_array(Auth::user()->role->name, ['general_manager', 'branch_manager']);
     }
+    function checkMeasurement($qnty, $LM)
+    {
+        if ($LM>0){
+            return ($qnty*$LM);
+        }else{
+            return $qnty;
+        }
+    }
 @endphp
 @extends('voyager::master')
 @section('content')
@@ -38,7 +46,8 @@
                                 {{ $item->branchProduct->product->name }}
                             </td>
                             <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
-                                {{ $item->quantity }} {{ $item->branchProduct->product->measurementUnit->name }}
+                                {{checkMeasurement($item->quantity, $item->linear_meters)}} {{ $item->branchProduct->product->measurementUnit->name }}
+                                {{-- || actual: {{ $item->quantity}}  {{ $item->branchProduct->product->measurementUnit->name }} --}}
                             </td>
                             <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
                                 {{ $item->jobOrder->note }}
@@ -99,7 +108,32 @@
                     })
                 }
         	},
+            setColorIdentifiers() {
+                let elements = document.querySelectorAll("td");
+
+                // Loop through the elements to find the one with the desired inner text
+                for (let i = 0; i < elements.length; i++) {
+                    if (elements[i].innerText === 'completed') {
+                        elements[i].style.color = 'green';
+                    }
+                        if (elements[i].innerText === 'delivered') {
+                        elements[i].style.color = 'green';
+                    }
+                    if (elements[i].innerText === 'in progress') {
+                        elements[i].style.color = 'blue';
+                    }
+                    if (elements[i].innerText === 'pending') {
+                        elements[i].style.color = 'orange';
+                    }
+                    if (elements[i].innerText === 'preparing for delivery') {
+                        elements[i].style.color = 'purple';
+                    }
+                }
+            }
         },
+        created() {
+            this.setColorIdentifiers()
+        }
     })
 </script>
 @endsection
