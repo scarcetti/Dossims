@@ -26,6 +26,16 @@ class BalancesController extends Controller
         }
     }
 
+    function current_employee($employees_list)
+    {
+        // dd(Auth::user());
+        $current = array_filter($employees_list->toArray(), function ($employee) {
+            return $employee['employee_id'] == Auth::user()->employee_id;
+        });
+
+        return json_encode($current[key($current)]);
+    }
+
     function createTxno($branch_id=null)
     {
         $tx = Transaction::where('branch_id', $branch_id ?? $this->getBranch('id'))
@@ -56,9 +66,9 @@ class BalancesController extends Controller
         $balances = Balance::with('customer')->findOrFail($id);
         $payment_methods = (new \App\Http\Controllers\TransactionController)->fetchPaymentMethods();
         $branch_employees = $this->fetchBranchEmployees();
+        $logged_employee = $this->current_employee($branch_employees);
 
-
-        return view('voyager::balances.settle', compact('balances', 'payment_methods', 'branch_employees'));
+        return view('voyager::balances.settle', compact('balances', 'payment_methods', 'branch_employees', 'logged_employee'));
     }
 
         function fetchBranchEmployees()

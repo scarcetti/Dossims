@@ -23,7 +23,7 @@
             <span class="logged_employee_" hidden>
                 {!! $logged_employee ?? '' !!}
             </span>
-            <div v-if="(customer.value && !customer.value.balance) || transaction.transaction_items">
+            <div v-if="(customer.value && !customer.value.balance) || (businessCustomer.value) || transaction.transaction_items">
                 <div class="cartItemContainer">
                     <div
                         v-for="(item, index) in value"

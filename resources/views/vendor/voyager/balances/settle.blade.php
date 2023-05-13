@@ -18,6 +18,9 @@
                     <span>Delivery total</span>
                     <h4>₱ 123123</h4>
                 </div> --}}
+                <span class="logged_employee_" hidden>
+                    {!! $logged_employee ?? '' !!}
+                </span>
                 <div>
                     <h4>Remaining balance</h4>
                     <h3>₱&nbsp;@{{ valueFixed( balance ) }}</h3>
@@ -137,6 +140,17 @@
                     // return employee
                     return `${employee.first_name} ${employee.last_name}`
                 },
+                getLoggedUser() {
+                    const employees = document.querySelector('span.logged_employee_').innerHTML
+                    const pattern = /^\s*$/g;
+
+                    if(!pattern.test(employees)) {
+                        this.cashier.value = JSON.parse(employees)
+                    }
+                },
+            },
+            created() {
+                this.getLoggedUser()
             }
         })
     </script>
