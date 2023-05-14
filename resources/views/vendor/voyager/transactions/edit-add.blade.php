@@ -41,6 +41,11 @@
                         </span>
                     @endif
                     @include('voyager::transactions.edit-add-modules.totals')
+                    {{-- {{ $dataTypeContent }} --}}
+
+                    @if( isset($dataTypeContent->id) && !in_array($dataTypeContent->status, ['waiting for payment']) )
+                        @include('voyager::transactions.edit-add-modules.print-buttons')
+                    @endif
                 </div>
             </div>
             <br>

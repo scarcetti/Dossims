@@ -12,6 +12,7 @@ class Product extends Model
         'name',
         'product_category_id',
         'measurement_unit_id',
+        'ready_made',
     ];
 
     public function measurementUnit()

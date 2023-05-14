@@ -1,50 +1,69 @@
 <?php
 
 namespace App\Http\Controllers;
-use PDF;
+
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use PDF;
+use ZipArchive;
 
 class PrintoutController extends Controller
 {
-    public function chargeInvoice()
+    public function chargeInvoice($txid)
     {
         $transaction = 1;
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
         // return view('printout.charge-invoice.index', compact('transaction'));
 
         $pdf->loadView('printout.charge-invoice.index', compact('transaction'));
-        return $pdf->stream();
+        // return $pdf->stream();
+        return $pdf->download("$txid-charge-invoice.pdf");
     }
 
-    public function cashInvoice()
+    public function cashInvoice($txid)
     {
         $transaction = 1;
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
         // return view('printout.charge-invoice.index', compact('transaction'));
 
         $pdf->loadView('printout.cash-invoice.index', compact('transaction'));
-        return $pdf->stream();
+        // return $pdf->stream();
+        return $pdf->download("$txid-cash-invoice.pdf");
     }
 
-    public function cuttingList()
+    public function cuttingList($txid)
     {
+        $transaction = 1;
+        $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
+        // return view('printout.charge-invoice.index', compact('transaction'));
 
+        $pdf->loadView('printout.cutting-list', compact('transaction'));
+        // return $pdf->stream();
+        return $pdf->download("$txid-cutting-list.pdf");
     }
 
-    public function deliveryReceipt()
+    public function deliveryReceipt($txid)
     {
         $transaction = 1;
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
         // return view('printout.charge-invoice.index', compact('transaction'));
 
         $pdf->loadView('printout.delivery-fee.index', compact('transaction'));
-        return $pdf->stream();
+        // return $pdf->stream();
+        return $pdf->download("$txid-delivery-receipt.pdf");
     }
 
-    public function jobOrder()
+    public function jobOrder($txid)
     {
+        $transaction = 1;
+        $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
+        // return view('printout.charge-invoice.index', compact('transaction'));
 
+        $pdf->loadView('printout.job-order.index', compact('transaction'));
+        // return $pdf->stream();
+        return $pdf->download("$txid-job-order.pdf");
     }
 
     public function officialReceipt($txid)
@@ -63,8 +82,46 @@ class PrintoutController extends Controller
         // return view('printout.official-receipt.index', compact('data', 'transaction'));
 
         $pdf->loadView('printout.official-receipt.index', compact('transaction'));
-        return $pdf->stream();
-        // return $pdf->download('tutsmake.pdf');
+        // return $pdf->stream();
+        return $pdf->download("$txid-official-receipt.pdf");
     }
 
+    public function test_dl()
+    {
+        $now = \Carbon\Carbon::now()->format('mdy:his');
+        $pdfFolder = storage_path("app/tmp/$now");
+
+        File::ensureDirectoryExists($pdfFolder);
+
+        // $bladeFiles = ['file1', 'file2', 'file3']; // Replace with your own Blade files
+        $bladeFiles = [
+            'charge-invoice.index',
+            'cash-invoice.index',
+            'delivery-fee.index',
+            'official-receipt.index',
+        ]; // Replace with your own Blade files
+
+        foreach ($bladeFiles as $bladeFile) {
+            $pdf = PDF::loadView("printout.$bladeFile");
+            $pdf->save($pdfFolder . "/$bladeFile.pdf");
+        }
+
+        $pdfZipFileName = 'pdfs.zip';
+
+        $zip = new ZipArchive();
+
+        if ($zip->open($pdfZipFileName, ZipArchive::CREATE) === TRUE) {
+
+            $pdfFiles = File::files($pdfFolder);
+
+            foreach ($pdfFiles as $file) {
+                $fileName = $file->getRelativePathname();
+                $zip->addFile($file, $fileName);
+            }
+
+            $zip->close();
+        }
+
+        return response()->download($pdfZipFileName)->deleteFileAfterSend(true);
+    }
 }
