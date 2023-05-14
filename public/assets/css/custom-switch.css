@@ -67,13 +67,3 @@
   .outlinedBtn:hover {
     background: #e7e7e7;
   }
-  .statusCompleted {
-    color: #54D294;
-  }
-  .statusProcuring {
-    color: #52BBFF;
-  }
-  .statusWaiting {
-    color: orange;
-  }
-  /* switch button  */

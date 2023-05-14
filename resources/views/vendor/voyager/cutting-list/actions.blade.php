@@ -47,7 +47,7 @@
                             </td>
                             <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
                                 {{checkMeasurement($item->quantity, $item->linear_meters)}} {{ $item->branchProduct->product->measurementUnit->name }}
-                                {{-- || actual: {{ $item->quantity}}  {{ $item->branchProduct->product->measurementUnit->name }} --}}
+                                {{-- || actual: {{ $item->quantity}} {{ $item->linear_meters}} {{ $item->branchProduct->product->measurementUnit->name }} --}}
                             </td>
                             <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
                                 {{ $item->jobOrder->note }}
@@ -71,6 +71,13 @@
                             <td style="padding: 0 10px;">No record at this moment</td>
                         </tr>
                     @endforelse
+                    <tr>
+                        <td style="padding: 0 10px;" colspan="5">
+                            <center>
+                                <a class="btn btn-dark" href="{{ ENV('APP_URL') }}/admin/transactions" readonly>Return to Table</a>
+                            </center>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <br>
