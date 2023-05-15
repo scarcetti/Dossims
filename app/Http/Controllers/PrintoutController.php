@@ -15,55 +15,60 @@ class PrintoutController extends Controller
     {
         $transaction = 1;
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
-        // return view('printout.charge-invoice.index', compact('transaction'));
 
         $pdf->loadView('printout.charge-invoice.index', compact('transaction'));
-        // return $pdf->stream();
-        return $pdf->download("$txid-charge-invoice.pdf");
+
+        return env('APP_DEBUG', false) ?
+                    $pdf->stream() :
+                    $pdf->download("$txid-charge-invoice.pdf");
     }
 
     public function cashInvoice($txid)
     {
         $transaction = 1;
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
-        // return view('printout.charge-invoice.index', compact('transaction'));
 
         $pdf->loadView('printout.cash-invoice.index', compact('transaction'));
-        // return $pdf->stream();
-        return $pdf->download("$txid-cash-invoice.pdf");
+
+        return env('APP_DEBUG', false) ?
+                    $pdf->stream() :
+                    $pdf->download("$txid-cash-invoice.pdf");
     }
 
     public function cuttingList($txid)
     {
         $transaction = 1;
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
-        // return view('printout.charge-invoice.index', compact('transaction'));
 
         $pdf->loadView('printout.cutting-list', compact('transaction'));
-        // return $pdf->stream();
-        return $pdf->download("$txid-cutting-list.pdf");
+
+        return env('APP_DEBUG', false) ?
+                    $pdf->stream() :
+                    $pdf->download("$txid-cutting-list.pdf");
     }
 
     public function deliveryReceipt($txid)
     {
         $transaction = 1;
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
-        // return view('printout.charge-invoice.index', compact('transaction'));
 
         $pdf->loadView('printout.delivery-fee.index', compact('transaction'));
-        // return $pdf->stream();
-        return $pdf->download("$txid-delivery-receipt.pdf");
+
+        return env('APP_DEBUG', false) ?
+                    $pdf->stream() :
+                    $pdf->download("$txid-delivery-receipt.pdf");
     }
 
     public function jobOrder($txid)
     {
         $transaction = 1;
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
-        // return view('printout.charge-invoice.index', compact('transaction'));
 
         $pdf->loadView('printout.job-order.index', compact('transaction'));
-        // return $pdf->stream();
-        return $pdf->download("$txid-job-order.pdf");
+
+        return env('APP_DEBUG', false) ?
+                    $pdf->stream() :
+                    $pdf->download("$txid-job-order.pdf");
     }
 
     public function officialReceipt($txid)
@@ -79,11 +84,12 @@ class PrintoutController extends Controller
         if( is_null($transaction ) ) abort(404);
 
         $pdf = PDF::setPaper('a4', 'landscape')->setWarnings(false);
-        // return view('printout.official-receipt.index', compact('data', 'transaction'));
 
         $pdf->loadView('printout.official-receipt.index', compact('transaction'));
-        // return $pdf->stream();
-        return $pdf->download("$txid-official-receipt.pdf");
+
+        return env('APP_DEBUG', false) ?
+                    $pdf->stream() :
+                    $pdf->download("$txid-official-receipt.pdf");
     }
 
     public function test_dl()
