@@ -63,7 +63,7 @@
         <span v-if="transaction.status == 'procuring' && item.discount" v-on:click="discountDialogShow(item.id)" class="btn btn-warning edit">View discount</span>
         <span v-if="transaction.status == 'procuring' && !item.discount" class="btn" readonly style="background: #cbc0b3; color: white;">Not discounted</span>
     </div>
-    {{-- @{{item.discount}} --}}
+    {{-- @{{item}} --}}
     <div class="modal fade" :id="`discountDialog${item.id}`" tabindex="-1" role="dialog" aria-labelledby="dialogLabel" aria-hidden="true">
         <div class="modal-success-dialog modal-dialog" role="document" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
             <div class="modal-content">
@@ -126,7 +126,7 @@
                             <div class="slider round"></div>
                         </label>
                     </div>
-                    <div v-if="transaction.status == 'waiting for payment' && !item.discount && value[index].pre_discount > 0" style="text-align-last: right;">
+                    <div v-if="transaction.status == 'waiting for payment' && !item.discount && value[index].pre_discount > 0 && value[index].discount_type" style="text-align-last: right;">
                         <span v-on:click="applyDiscount(item, index)" class="btn btn-success edit" data-dismiss="modal" aria-label="Close">Apply discount</span>
                         <span v-on:click="removeDiscount(item.id, index)" class="btn btn-danger edit" data-dismiss="modal" aria-label="Close">Remove discount</span>
                     </div>

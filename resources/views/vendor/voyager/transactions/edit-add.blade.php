@@ -41,6 +41,11 @@
                         </span>
                     @endif
                     @include('voyager::transactions.edit-add-modules.totals')
+                    {{-- {{ $dataTypeContent }} --}}
+
+                    @if( isset($dataTypeContent->id) && !in_array($dataTypeContent->status, ['waiting for payment']) )
+                        @include('voyager::transactions.edit-add-modules.print-buttons')
+                    @endif
                 </div>
             </div>
             <br>
@@ -140,7 +145,8 @@
                 },
                 addBilling() {
                     const tendered = this.amountTendered ? this.amountTendered : this.downpaymentAmount
-                    const balance = this.downpaymentAmount ? parseFloat(this.productsTotal) + parseFloat(this.grandTotal_) - parseFloat(tendered)   : null
+                    const balance = this.downpaymentAmount ? parseFloat(this.productsTotal) + parseFloat(this.grandTotal_) - parseFloat(this.downpaymentAmount)   : null
+                    // const balance = this.downpaymentAmount ? parseFloat(this.productsTotal) + parseFloat(this.grandTotal_) - parseFloat(tendered)   : null
 
                     const payload = {
                             payment: {
@@ -162,7 +168,8 @@
                     axios.post(`${window.location.origin}/admin/transaction/billing`, payload)
                         .then(response => {
                             window.location.reload()
-                            // console.log(response.data)
+
+                            alert('Payment completed!')
                         })
                         .catch(x => {
                             const y = Object.keys(x.response.data.errors)
@@ -255,7 +262,7 @@
                         this.transaction = JSON.parse(txn)
                         this.value = this.transaction.transaction_items
 
-                        console.log(this.transaction)
+                        // console.log(this.transaction)
                         this.getTotalValue()
                     }
                     else {

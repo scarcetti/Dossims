@@ -738,12 +738,11 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                         ],
                         [
                             'value'               => $item['discount_value'],
-                            'per_item'            => $item['discount_per_item'] ? $item['discount_per_item'] : false,
+                            'per_item'            => $item['discount_per_item'] ?? false,
                             'fixed_amount'        => $item['discount_type'] == 'fixed',
                             'percentage'          => $item['discount_type'] == 'percentage',
                         ]
                     );
-
             }
 
             $branch_product = \App\Models\BranchProduct::find($item['branch_product_id']);
