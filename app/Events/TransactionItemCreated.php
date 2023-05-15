@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\JobOrder;
+use App\Models\Product;
 use App\Models\TransactionItem;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -23,10 +24,17 @@ class TransactionItemCreated
      */
     public function __construct(TransactionItem $transaction_item)
     {
-        JobOrder::create([
-            'transaction_item_id' => $transaction_item->id,
-            'status' => 'pending'
-        ]);
+        // function checks if readymade
+        $product = Product::whereHas('branch_product.transaction_item', function($q) use($transaction_item) {
+            $q->where('id', $transaction_item->id)->where('ready_made', false);
+        })->first('ready_made');
+
+        if( $x->ready_made ?? true ) {
+            JobOrder::create([
+                'transaction_item_id' => $transaction_item->id,
+                'status' => 'pending'
+            ]);
+        }
     }
 
     /**
