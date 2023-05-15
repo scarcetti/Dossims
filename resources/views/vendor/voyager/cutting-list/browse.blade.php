@@ -33,7 +33,7 @@
                         </td>
                         <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
                             {{ \Carbon\Carbon::parse($item->updated_at)->format('M d, Y h:i A'); }}
-                        </td>  
+                        </td>
                         <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
                             {{-- {{ $item->jobOrder->note }} --}}
                             <i><small>[ PENDING_COUNT ] [ IN_PROGRESS_COUNT ] [ COMPLETED_COUNT ]</small></i>
@@ -42,7 +42,7 @@
                             {{-- <span class="btn btn-primary" @click="updateItemStatus()" readonly>Item prepared</span> --}}
                             <a href="{{ ENV('APP_URL') }}/admin/cutting-list/{{ $item->id }}" title="View" class="btn btn-sm btn-primary pull-right view">
                                 <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View Cutting list</span>
-                            </a> 
+                            </a>
                         </td>
                     </tr>
                 @empty
@@ -63,7 +63,7 @@
 <script type="module">
     var app = new Vue({
         el: '#app',
-        /*components: { 
+        /*components: {
             Multiselect: window.VueMultiselect.default,
         },*/
         data () {
@@ -72,8 +72,15 @@
         methods: {
         	updateItemStatus() {
         		console.log('btn clicked')
-        	}
+        	},
+
         },
-    })
+
+    });
+
+
+</script>
+<script>
+
 </script>
 @endsection

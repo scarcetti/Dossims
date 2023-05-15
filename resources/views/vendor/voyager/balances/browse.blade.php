@@ -40,6 +40,9 @@
             <br><br>
             {{-- {{ $branch_products->links() }} --}}
         </div>
+        <center>
+            <a class="btn btn-dark" href="{{ ENV('APP_URL') }}/admin" readonly>Return to Dashboard</a>
+        </center>
     </section>
 </div>
 

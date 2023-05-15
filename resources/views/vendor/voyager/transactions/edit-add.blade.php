@@ -55,6 +55,9 @@
                     <i style="color: red;">Fields with * are required</i>
                 </span>
             @endif
+            <center>
+                <a class="btn btn-dark" href="{{ ENV('APP_URL') }}/admin" readonly>Return</a>
+            </center>
         </section>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

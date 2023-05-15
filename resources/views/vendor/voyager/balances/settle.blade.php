@@ -74,6 +74,9 @@
                     </span>
                 </div>
             </div>
+            <center>
+                <a class="btn btn-dark" href="{{ ENV('APP_URL') }}/admin/balances/" readonly>Return</a>
+            </center>
         </section>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
