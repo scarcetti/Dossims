@@ -25,11 +25,12 @@ class TransactionItemCreated
     public function __construct(TransactionItem $transaction_item)
     {
         // function checks if readymade
-        $product = Product::whereHas('branch_product.transaction_item', function($q) use($transaction_item) {
-            $q->where('id', $transaction_item->id)->where('ready_made', false);
-        })->first('ready_made');
+        $ready_made = Product::whereHas('branch_product.transaction_item', function($q) use($transaction_item) {
+            // $q->where('id', $transaction_item->id)->where('ready_made', false);
+            $q->where('id', $transaction_item->id);
+        })->first('ready_made')->ready_made;
 
-        if( $x->ready_made ?? true ) {
+        if( !$ready_made ) {
             JobOrder::create([
                 'transaction_item_id' => $transaction_item->id,
                 'status' => 'pending'

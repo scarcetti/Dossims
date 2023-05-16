@@ -60,12 +60,13 @@ class JobOrderTesting extends Command
         //     ])
         // ])->select('products.id')->get();
 
-        $x = Product::whereHas('branch_product.transaction_item', function($q) {
-            $q->where('id', 4)->where('ready_made', false);
-        })->first('ready_made');
+        $ready_made = Product::whereHas('branch_product.transaction_item', function($q) {
+            $q->where('id', 2);
+        })->first('ready_made')->ready_made;
 
 
 
-        $this->info($x->ready_made ?? true);
+        // $this->info($x->ready_made ?? true);
+        $this->info($ready_made);
     }
 }
