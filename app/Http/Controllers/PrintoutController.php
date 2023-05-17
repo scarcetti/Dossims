@@ -29,8 +29,8 @@ class PrintoutController extends Controller
         // return view('printout.charge-invoice.index', compact('transaction'));
 
         $pdf->loadView('printout.cash-invoice.index', compact('transaction'));
-        // return $pdf->stream();
-        return $pdf->download("$txid-cash-invoice.pdf");
+        return $pdf->stream();
+        // return $pdf->download("$txid-cash-invoice.pdf");
     }
 
     public function cuttingList($txid)
