@@ -24,14 +24,31 @@ class PredictionController extends Controller
         }
     }
 
+    function branches()
+    {
+        $role_id = Auth::user()->role->id;
+        $current_branch = $this->getBranch('id');
+
+        return Branch::when( $role_id == 4 , function($q) use($current_branch) {
+                    $q->where('id', $current_branch);
+                })
+                ->select('id','name')
+                ->orderBy('name', 'asc')
+                ->get();
+    }
+
     public function index()
     {
-        $sales1 = $this->monthly_sales();
-        $sales2 = $this->monthly_sales(3);
+        foreach($this->branches() as $item) {
+            $sales = $this->monthly_sales($item->id);
 
-        $toril = $this->format_for_chart($sales1, 'Toril Main Branch');
-        $tagum = $this->format_for_chart($sales2, 'Tagum Branch');
-        return view('voyager::predictions.index', compact('toril', 'tagum'));
+            $branches[] = [
+                'branch' => strtolower(str_replace(' ', '_', $item->name)),
+                'set' => $this->format_for_chart($sales, $item->name),
+            ];
+        }
+
+        return view('voyager::predictions.index', compact('branches'));
     }
 
         function monthly_sales($branch_id=4)
@@ -170,7 +187,8 @@ class PredictionController extends Controller
                 ),
               );
 
-            return json_encode($vueChartOption);
+            // return json_encode($vueChartOption);
+            return $vueChartOption;
         }
 
     public function top_5_selling()

@@ -144,7 +144,6 @@
                         })
                 },
                 addBilling() {
-                    const tendered = this.amountTendered ? this.amountTendered : this.downpaymentAmount
                     const balance = this.downpaymentAmount ? parseFloat(this.productsTotal) + parseFloat(this.grandTotal_) - parseFloat(this.downpaymentAmount)   : null
                     // const balance = this.downpaymentAmount ? parseFloat(this.productsTotal) + parseFloat(this.grandTotal_) - parseFloat(tendered)   : null
 
@@ -153,7 +152,7 @@
                                 payment_type_id: this.paymentType.id,
                                 payment_method_id: this.paymentMethod.id,
                                 downpayment_amount: this.downpaymentAmount,
-                                amount_tendered: tendered,
+                                amount_tendered: this.amountTendered,
                                 balance: balance,
                                 grand_total: this.grandTotal_,
                                 customer_id: this.transaction.customer_id,
