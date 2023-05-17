@@ -40,19 +40,14 @@ class CreateBillingValidation extends FormRequest
             'payment.payment_method_id'  => 'required',
 
             'payment.downpayment_amount'  => 'exclude_unless:payment.payment_type_id,1|numeric|gte:payment.grand_total',
-            'payment.amount_tendered'  => 'required|numeric|gte:payment.grand_total',
         ];
 
-        /*if( $this->payment['payment_type_id'] == 1 ) {
-            $base_fields = array_merge($base_fields, [
-                'payment.amount_tendered'  => 'required|numeric|gte:payment.grand_total',
-            ]);
+        if($this->payment['payment_type_id'] == 2) {
+            $base_fields['payment.amount_tendered'] = 'required|numeric|gte:payment.grand_total';
         }
-        if( $this->payment['payment_type_id'] == 2 ) {
-            $base_fields = array_merge($base_fields, [
-                'payment.amount_tendered'  => 'required|numeric|gte:payment.grand_total',
-            ]);
-        }*/
+        if($this->payment['payment_method_id'] == 1 &&  $this->payment['payment_type_id'] == 1) {
+            $base_fields['payment.amount_tendered'] = 'required|numeric|gte:payment.grand_total|gte:payment.downpayment_amount';
+        }
 
         return $base_fields;
     }
@@ -72,7 +67,7 @@ class CreateBillingValidation extends FormRequest
             'payment.downpayment_amount.gte'  => 'Downpayment amount must be greater than or equal to the grand total.',
 
             'payment.amount_tendered.required'  => 'Amount tendered is required',
-            'payment.amount_tendered.gte'  => 'Amount tendered must be greater than or equal to the grand total.',
+            'payment.amount_tendered.gte'  => 'Amount tendered must be greater than or equal to the grand total or amount tendered.',
         ];
     }
 }

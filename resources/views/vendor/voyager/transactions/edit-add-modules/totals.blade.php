@@ -45,9 +45,15 @@
                                 <h4>-&nbsp;&nbsp;&nbsp;₱@{{ valueFixed(amountTendered) }}</h4>
                             </div>
                             <div v-if="amountTendered && (amountTendered - grandTotal_) > 0">
+                                {{-- !(paymentMethod.id == 1 && paymentType.id == 1) --}}
                                 <span style="font-weight: bold;">Change</span>
-                                <h4 style="font-weight: bold;">₱@{{ valueFixed( amountTendered - grandTotal_ ) }}</h4>
+                                <h4 v-if="!(paymentMethod.id == 1 && paymentType.id == 1)" style="font-weight: bold;">₱@{{ valueFixed( amountTendered - grandTotal_ ) }}</h4>
+                                <h4 v-else style="font-weight: bold;">₱@{{ valueFixed( amountTendered - downpaymentAmount ) }}</h4>
                             </div>
+                            {{-- <div v-else>
+                                <span style="font-weight: bold;">Change</span>
+                                <h4 style="font-weight: bold;">₱@{{ valueFixed( downpaymentAmount - amountTendered ) }}</h4>
+                            </div> --}}
 
                         </div>
 
