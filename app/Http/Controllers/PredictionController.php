@@ -33,6 +33,7 @@ class PredictionController extends Controller
                     $q->where('id', $current_branch);
                 })
                 ->select('id','name')
+                ->orderBy('name', 'asc')
                 ->get();
     }
 
