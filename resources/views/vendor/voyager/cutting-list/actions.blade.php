@@ -14,7 +14,6 @@
 @endphp
 @extends('voyager::master')
 @section('content')
-    {{-- {{ $txns->transactionItems }} --}}
     <div id="app" row>
         <div class="col-md-12 paginator_ containers_" style="overflow: auto; max-height: 500px;">
             <table style="width: 100%;">
@@ -40,14 +39,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($txns->transactionItems as $item)
+                    @forelse ($tx_items as $item)
                         <tr style="border-top: solid #5c5c5c29 1px;">
                             <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
                                 {{ $item->branchProduct->product->name }}
                             </td>
                             <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
                                 {{checkMeasurement($item->quantity, $item->linear_meters)}} {{ $item->branchProduct->product->measurementUnit->name }}
-                                {{-- || actual: {{ $item->quantity}} {{ $item->linear_meters}} {{ $item->branchProduct->product->measurementUnit->name }} --}}
                             </td>
                             <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
                                 {{ $item->jobOrder->note }}

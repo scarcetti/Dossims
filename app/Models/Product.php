@@ -19,4 +19,9 @@ class Product extends Model
     {
         return $this->belongsTo(MeasurementUnit::class);
     }
+
+    public function branch_product()
+    {
+        return $this->hasMany(BranchProduct::class);
+    }
 }

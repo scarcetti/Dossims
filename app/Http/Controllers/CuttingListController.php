@@ -21,8 +21,12 @@ class CuttingListController extends Controller
 
     public function cuttingList($id)
     {
-        $txns = Transaction::where('id', $id)->with('transactionItems.jobOrder', 'transactionItems.branchProduct.product.measurementUnit')->first();
-        return view('voyager::cutting-list.actions', compact('txns'));
+        $tx_items = TransactionItem::where('transaction_id', $id)
+                    ->with('jobOrder', 'branchProduct.product.measurementUnit')
+                    ->whereHas('jobOrder')
+                    ->get();
+
+        return view('voyager::cutting-list.actions', compact('tx_items'));
     }
 
     public function updateStatus($transaction_id, $job_order_id)

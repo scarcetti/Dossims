@@ -24,4 +24,9 @@ class BranchProduct extends Model
     {
         return $this->belongsTo(Branch::class);
     }
+
+    public function transaction_item()
+    {
+        return $this->hasMany(TransactionItem::class);
+    }
 }
