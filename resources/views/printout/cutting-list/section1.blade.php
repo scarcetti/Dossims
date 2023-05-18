@@ -1,10 +1,3 @@
-{{-- @php
-    function toWord($x)
-    {
-        $f = new \NumberFormatter('en', NumberFormatter::SPELLOUT);
-        return strtoupper( $f->format($x) );
-    }
-@endphp --}}
 <div class="row" style="">
     <span>
         <img alt="asd" src="{{ public_path('images/domings.png') }}" style="width: 350px; margin-top: -20px">
@@ -28,17 +21,6 @@
 <br>
 <div class="row" style=" position: relative;">
     <div style="font-size: 25px; font-weight: bold;">
-        CHARGE INVOICE
-    </div>
-    <div style="position: absolute; right: 0; top: 5px;">
-        <table>
-            <tbody>
-                <tr>
-                    <td class="nob">Date</td>
-                    <td class="ob" width="80%" style="padding-left: 20px;">{{ \Carbon\Carbon::parse($transaction->created_at)->format('M d, Y') }}</td>
-                </tr>
-            </tbody>
-            {{-- Date ____________ --}}
-        </table>
+        CUTTING LIST
     </div>
 </div>

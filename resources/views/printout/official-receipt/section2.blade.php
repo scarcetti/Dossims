@@ -48,7 +48,8 @@
             <tr>
                 <td class="nob" style="width: 15%">Received from</td>
                 <td class="ob">
-                    {{ $transaction->cashier->first_name }} {{ $transaction->cashier->last_name }}
+                    {{ $transaction->customer->first_name }} {{ $transaction->customer->last_name }}
+                    {{-- {{ $transaction->cashier->first_name }} {{ $transaction->cashier->last_name }} --}}
                 </td>
             </tr>
             <tr>
@@ -116,7 +117,9 @@
         @foreach (range(1, 10) as $i)
             &nbsp;
         @endforeach
-        Cashier / Authorized Representative
+        <center>
+            Cashier / Authorized Representative
+        </center>
     </div>
 </div>
 </div>

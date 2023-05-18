@@ -14,16 +14,16 @@
                     <table width="100%" >
                         <tbody>
                             <tr>
-                                <td class="ob"></td>
-                                <td class="ob"></td>
-                                <td class="ob"></td>
-                                <td class="ob"></td>
+                                <td class="ob" align="center">{{ $transaction->cashier->first_name }} {{ $transaction->cashier->last_name }}</td>
+                                <td class="ob" align="center"></td>
+                                <td class="ob" align="center"></td>
+                                <td class="ob" align="center">{{ \Carbon\Carbon::parse($transaction->created_at)->format('M d, Y') }}</td>
                             </tr>
                             <tr>
-                                <td class="nob">CASHIER'S NAME & SIGNATURE</td>
-                                <td class="nob">PREPARED BY</td>
-                                <td class="nob">RELEASED BY DATE</td>
-                                <td class="nob">RECEIVED BY DATE</td>
+                                <td class="nob" align="center">CASHIER'S NAME & SIGNATURE</td>
+                                <td class="nob" align="center">PREPARED BY</td>
+                                <td class="nob" align="center">RELEASED BY DATE</td>
+                                <td class="nob" align="center">RECEIVED BY DATE</td>
                             </tr>
                         </tbody>
                     </table>

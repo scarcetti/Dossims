@@ -13,7 +13,15 @@ class PrintoutController extends Controller
 {
     public function chargeInvoice($txid)
     {
-        $transaction = 1;
+        $transaction = Transaction::with(
+            'transactionItems.branchProduct.product',
+            'customer',
+            'cashier',
+            'businessCustomer',
+            'payment.payment_method',
+        )->find($txid);;
+        if( is_null($transaction ) ) abort(404);
+
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
         $pdf->loadView('printout.charge-invoice.index', compact('transaction'));
@@ -25,7 +33,14 @@ class PrintoutController extends Controller
 
     public function cashInvoice($txid)
     {
-        $transaction = 1;
+        $transaction = Transaction::with(
+            'transactionItems.branchProduct.product',
+            'customer',
+            'cashier',
+            'businessCustomer',
+            'payment.payment_method',
+        )->find($txid);;
+        if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
         $pdf->loadView('printout.cash-invoice.index', compact('transaction'));
@@ -37,8 +52,17 @@ class PrintoutController extends Controller
 
     public function cuttingList($txid)
     {
-        $transaction = 1;
+        $transaction = Transaction::with(
+            'transactionItems.branchProduct.product',
+            'customer',
+            'cashier',
+            'businessCustomer',
+            'payment.payment_method',
+        )->find($txid);;
+        if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
+
+        return view('printout.cutting-list', compact('transaction'));
 
         $pdf->loadView('printout.cutting-list', compact('transaction'));
 
@@ -49,7 +73,14 @@ class PrintoutController extends Controller
 
     public function deliveryReceipt($txid)
     {
-        $transaction = 1;
+        $transaction = Transaction::with(
+            'transactionItems.branchProduct.product',
+            'customer',
+            'cashier',
+            'businessCustomer',
+            'payment.payment_method',
+        )->find($txid);;
+        if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
         $pdf->loadView('printout.delivery-fee.index', compact('transaction'));
@@ -61,7 +92,14 @@ class PrintoutController extends Controller
 
     public function jobOrder($txid)
     {
-        $transaction = 1;
+        $transaction = Transaction::with(
+            'transactionItems.branchProduct.product',
+            'customer',
+            'cashier',
+            'businessCustomer',
+            'payment.payment_method',
+        )->find($txid);;
+        if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
         $pdf->loadView('printout.job-order.index', compact('transaction'));

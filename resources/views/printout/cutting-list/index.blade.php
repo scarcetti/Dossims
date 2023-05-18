@@ -1,8 +1,8 @@
 <div class="row">
-	@include('printout.job-order.section1')
+	@include('printout.cutting-list.section1')
 </div>
 <div class="row">
-	@include('printout.job-order.section2')
+	@include('printout.cutting-list.section2')
 </div>
 
 <style type="text/css">
