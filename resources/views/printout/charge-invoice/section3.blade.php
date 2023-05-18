@@ -32,6 +32,10 @@
                 <td class="nob"  colspan="2"></td>
             </tr>
             <tr>
+                <td class="nob" style="width: 33%; bo" align="center">{{ $transaction->cashier->first_name }} {{ $transaction->cashier->last_name }}</td>
+                <td class="nob"  colspan="2"></td>
+            </tr>
+            <tr>
                 <td class="nob" style="width: 33%" align="center"> Cashier/ Authorized Representative</td>
                 <td class="nob"  colspan="2"></td>
             </tr>

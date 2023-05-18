@@ -35,7 +35,7 @@
             <tbody>
                 <tr>
                     <td class="nob">Date</td>
-                    <td class="ob" width="80%" style="padding-left: 20px;">02 / 23 / 2023</td>
+                    <td class="ob" width="80%" style="padding-left: 20px;">{{ \Carbon\Carbon::parse($transaction->created_at)->format('M d, Y') }}</td>
                 </tr>
             </tbody>
             {{-- Date ____________ --}}
