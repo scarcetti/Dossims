@@ -9,8 +9,14 @@
             <a title="Remove Item" class="btn btn-sm btn-primary pull-right delete"  href="{{ env('APP_URL') }}/printouts/cash-invoice/{{ $dataTypeContent->txno }}">
                 <i class="voyager-download"></i> <span class="hidden-xs hidden-sm">Cash Invoice</span>
             </a>
+            <a title="Remove Item" class="btn btn-sm btn-primary pull-right delete"  href="{{ env('APP_URL') }}/printouts/cutting-list/{{ $dataTypeContent->txno }}">
+                <i class="voyager-download"></i> <span class="hidden-xs hidden-sm">Cutting List</span>
+            </a>
             <a title="Remove Item" class="btn btn-sm btn-primary pull-right delete"  href="{{ env('APP_URL') }}/printouts/delivery-receipt/{{ $dataTypeContent->txno }}">
                 <i class="voyager-download"></i> <span class="hidden-xs hidden-sm">Delivery Receipt</span>
+            </a>
+            <a title="Remove Item" class="btn btn-sm btn-primary pull-right delete"  href="{{ env('APP_URL') }}/printouts/job-order/{{ $dataTypeContent->txno }}">
+                <i class="voyager-download"></i> <span class="hidden-xs hidden-sm">Job order</span>
             </a>
             <a title="Remove Item" class="btn btn-sm btn-primary pull-right delete"  href="{{ env('APP_URL') }}/printouts/official-receipt/{{ $dataTypeContent->txno }}">
                 <i class="voyager-download"></i> <span class="hidden-xs hidden-sm">Official Receipt</span>

@@ -19,7 +19,9 @@ class PrintoutController extends Controller
             'cashier',
             'businessCustomer',
             'payment.payment_method',
-        )->find($txid);
+        )
+        ->where('txno', $txid)
+        ->first();
         if( is_null($transaction ) ) abort(404);
 
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
@@ -39,7 +41,9 @@ class PrintoutController extends Controller
             'cashier',
             'businessCustomer',
             'payment.payment_method',
-        )->find($txid);
+        )
+        ->where('txno', $txid)
+        ->first();
         if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
@@ -58,7 +62,9 @@ class PrintoutController extends Controller
             'cashier',
             'businessCustomer',
             'payment.payment_method',
-        )->find($txid);
+        )
+        ->where('txno', $txid)
+        ->first();
         if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
@@ -79,7 +85,9 @@ class PrintoutController extends Controller
             'cashier',
             'businessCustomer',
             'payment.payment_method',
-        )->find($txid);
+        )
+        ->where('txno', $txid)
+        ->first();
         if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
@@ -98,7 +106,9 @@ class PrintoutController extends Controller
             'cashier',
             'businessCustomer',
             'payment.payment_method',
-        )->find($txid);
+        )
+        ->where('txno', $txid)
+        ->first();
         if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
@@ -117,7 +127,9 @@ class PrintoutController extends Controller
             'cashier',
             'businessCustomer',
             'payment.payment_method',
-        )->find($txid);
+        )
+        ->where('txno', $txid)
+        ->first();
 
         if( is_null($transaction ) ) abort(404);
 

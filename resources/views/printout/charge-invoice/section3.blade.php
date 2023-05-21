@@ -12,7 +12,7 @@
             </tr>
             <tr style="height:100px;">
                 <td class="nob" style="width: 33%;" valign="middle" align="center">
-                    <h4 style="color:brown; font-size: 30px; ">21842069</h4>
+                    <h4 style="color:brown; font-size: 30px; ">{{ $transaction->txno }}</h4>
                 </td>
                 <td class="nob" style="width: 50%" valign="top" align="right" colspan="2">
                     <h6>Received the goods above in good order and condiitions. </h6>

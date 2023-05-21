@@ -1,5 +1,5 @@
 @php
-$total =0
+$total =0;
 @endphp
 <div style=" position: relative; font-size:18px">
     <table width="100%">
@@ -36,7 +36,7 @@ $total =0
             @foreach( $transaction->transactionItems as $products )
                 <tr>
                     <td align="center">{{ $products->quantity }}</td>
-                    <td align="center">{{ $products->tbd }}</td>
+                    <td align="center">{{ $products->linear_meters }}</td>
                     <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
                     <td align="center"></td>
                     <td align="center">P{{ intval($products->quantity)*floatval($products->branchProduct->price) }}</td>

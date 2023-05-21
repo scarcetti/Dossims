@@ -63,5 +63,5 @@ $total =0
 
         </tbody>
     </table>
-    {{$transaction}}
+    {{-- {{$transaction}} --}}
 </div>
