@@ -26,7 +26,7 @@
         </div>
         <div>
             <small>Subtotal: </small>
-            <span v-if="item.discount_value" style="display: flex;">
+            <span v-if="item.pre_discount" style="display: flex;">
                 <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</s></h4>&nbsp;&nbsp;&nbsp;
                 <h4 class="subtotal" style="margin: 0">₱ @{{ item.discount_value }}</h4>
             </span>

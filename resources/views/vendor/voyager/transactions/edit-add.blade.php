@@ -338,16 +338,16 @@
                 getDiscountedSubtotal(cardValues, fields) {
                     let x = 0
                     if(fields.isFixed && fields.isPerItem) {
-                        x = ((parseFloat(cardValues.price_at_purchase) - fields.value) * cardValues.quantity)/* - (fields.value * cardValues.quantity)*/
+                        x = ((parseFloat(cardValues.price_at_purchase) - fields.value) * (cardValues.quantity * parseFloat(cardValues.linear_meters)))
                     }
                     else if(fields.isFixed && !fields.isPerItem) {
-                        x = (parseFloat(cardValues.price_at_purchase) * cardValues.quantity) - fields.value
+                        x = (parseFloat(cardValues.price_at_purchase) * (cardValues.quantity * parseFloat(cardValues.linear_meters))) - fields.value
                     }
                     else if(fields.isPercentage && fields.isPerItem) {
-                        x = (parseFloat(cardValues.price_at_purchase) * cardValues.quantity) - ((fields.value / 100) * (parseFloat(cardValues.price_at_purchase) * cardValues.quantity))
+                        x = (parseFloat(cardValues.price_at_purchase) * (cardValues.quantity * parseFloat(cardValues.linear_meters))) - ((fields.value / 100) * (parseFloat(cardValues.price_at_purchase) * cardValues.quantity))
                     }
                     else if(fields.isPercentage && !fields.isPerItem) {
-                        x = (parseFloat(cardValues.price_at_purchase) * cardValues.quantity) - ((fields.value / 100) * (parseFloat(cardValues.price_at_purchase) * cardValues.quantity))
+                        x = (parseFloat(cardValues.price_at_purchase) * (cardValues.quantity * parseFloat(cardValues.linear_meters))) - ((fields.value / 100) * (parseFloat(cardValues.price_at_purchase) * (cardValues.quantity * parseFloat(cardValues.linear_meters))))
                     }
                     return x.toFixed(2)
                 },
@@ -364,10 +364,9 @@
                     let total = 0
                     this.value.forEach(item => {
                         item.discount_value ?
-                            total += parseFloat(item.discount_value) * (item.linear_meters ? item.linear_meters : 1) :
-                            total += (parseFloat(item.price_at_purchase) * item.quantity) * (item.linear_meters ? item.linear_meters : 1)
+                            total += parseFloat(item.discount_value) :
+                            total += (parseFloat(item.price_at_purchase) * item.quantity) * parseFloat(item.linear_meters)
                     })
-
 
 
                     if(this.paymentType) {
