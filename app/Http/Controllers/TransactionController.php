@@ -59,12 +59,12 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         $search = (object) ['value' => $request->get('s'), 'key' => $request->get('key'), 'filter' => $request->get('filter')];
 
-        $searchNames = [];
-        if ($dataType->server_side) {
-            $searchNames = $dataType->browseRows->mapWithKeys(function ($row) {
-                return [$row['field'] => $row->getTranslatedAttribute('display_name')];
-            });
-        }
+        // $searchNames = [];
+        // if ($dataType->server_side) {
+        //     $searchNames = $dataType->browseRows->mapWithKeys(function ($row) {
+        //         return [$row['field'] => $row->getTranslatedAttribute('display_name')];
+        //     });
+        // }
 
         $orderBy = $request->get('order_by', $dataType->order_column);
         $sortOrder = $request->get('sort_order', $dataType->order_direction);
@@ -100,10 +100,11 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
                 $searchField = $dataType->name.'.'.$search->key;
                 if ($row = $this->findSearchableRelationshipRow($dataType->rows->where('type', 'relationship'), $search->key)) {
-                    $query->whereIn(
-                        $searchField,
-                        $row->details->model::where($row->details->label, $search_filter, $search_value)->pluck('id')->toArray()
-                    );
+                    // $query->whereIn(
+                    //     $searchField,
+                    //     $row->details->model::where($row->details->label, $search_filter, $search_value)->pluck('id')->toArray()
+                    // );
+                    $query->whereRelation($row->relation, $row->field, $search_filter, $search_value);
                 } else {
                     if ($dataType->browseRows->pluck('field')->contains($search->key)) {
                         $query->where($searchField, $search_filter, $search_value);
@@ -171,6 +172,13 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             // If Model doesn't exist, get data from table name
             $dataTypeContent = call_user_func([DB::table($dataType->name), $getter]);
             $model = false;
+        }
+
+        $searchNames = [];
+        if ($dataType->server_side) {
+            $searchNames = $dataType->browseRows->mapWithKeys(function ($row) {
+                return [$row['field'] => $row->getTranslatedAttribute('display_name')];
+            });
         }
 
         // Check if BREAD is Translatable
@@ -243,6 +251,72 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             'showCheckboxColumn'
         ));
     }
+
+        public function update_order(Request $request)
+        {
+            $slug = $this->getSlug($request);
+
+            $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+
+            // Check permission
+            $this->authorize('edit', app($dataType->model_name));
+
+            $model = app($dataType->model_name);
+
+            $order = json_decode($request->input('order'));
+            $column = $dataType->order_column;
+            foreach ($order as $key => $item) {
+                if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
+                    $i = $model->withTrashed()->findOrFail($item->id);
+                } else {
+                    $i = $model->findOrFail($item->id);
+                }
+                $i->$column = ($key + 1);
+                $i->save();
+            }
+        }
+
+        protected function findSearchableRelationshipRow($relationshipRows, $searchKey)
+        {
+            $row = $relationshipRows->filter(function ($item) use ($searchKey) {
+                if ($item->field != $searchKey) {
+                    return false;
+                }
+                if ($item->details->type != 'belongsTo') {
+                    return false;
+                }
+
+                return !$this->relationIsUsingAccessorAsLabel($item->details);
+            })->first();
+
+            if(!$row) return $row;
+
+            $relation = $row->details->relation ?? \Str::camel(class_basename(app($row->details->model)));
+
+            return (object) ['relation' => $relation, 'field' => $row->details->label];
+        }
+
+        protected function getSortableColumns($rows)
+        {
+            return $rows->filter(function ($item) {
+                if ($item->type != 'relationship') {
+                    return true;
+                }
+                if ($item->details->type != 'belongsTo') {
+                    return false;
+                }
+
+                return !$this->relationIsUsingAccessorAsLabel($item->details);
+            })
+            ->pluck('field')
+            ->toArray();
+        }
+
+
+        protected function relationIsUsingAccessorAsLabel($details)
+        {
+            return in_array($details->label, app($details->model)->additional_attributes ?? []);
+        }
 
     public function show(Request $request, $id)
     {
