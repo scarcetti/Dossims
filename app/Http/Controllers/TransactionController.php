@@ -159,7 +159,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             $branch_id = $this->getBranch('id');
             $dataTypeContent = call_user_func([$query
                 ->when($branch_id, function($q) use ($branch_id) {
-                    return $q->where('branch_id', $branch_id);
+                    return $q->where('transactions.branch_id', $branch_id);
                 })
                 ->whereNotIn('status', $hidden_field_filters),
             $getter]);
