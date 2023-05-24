@@ -14,7 +14,9 @@ class CustomerObserver
      */
     public function created(Customer $customer)
     {
-        //
+        Customer::where('id', $customer->id)->update([
+            'full_name' => "$customer->first_name $customer->last_name",
+        ]);
     }
 
     /**
@@ -25,7 +27,9 @@ class CustomerObserver
      */
     public function updated(Customer $customer)
     {
-        //
+        Customer::where('id', $customer->id)->update([
+            'full_name' => "$customer->first_name $customer->last_name",
+        ]);
     }
 
     /**
