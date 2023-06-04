@@ -37,11 +37,18 @@ class AnalyticsController extends Controller
             $filter_by = (isset($request->filter_value) || !is_null($request->filter_value)) ? $request->filter_value : 'Weekly';
             // 'Weekly', 'Monthly', 'Yearly', 'All-time'
 
+            if( isset($request->order_by) ) {
+                $order = $request->order_by == 'Most selling' ? 'desc' : 'asc';
+            }
+            else {
+                $order = 'desc';
+            }
+
             $branch_id = $this->getBranch('id');
 
             $top_items = TransactionItem::selectRaw('branch_product_id, count(id) as count_')
                             ->groupBy('branch_product_id')
-                            ->orderBy('count_', 'desc')
+                            ->orderBy('count_', $order)
                             ->with('branchProduct.product')
                             ->when($filter_by == 'Weekly', function($q) {
                                 $now = Carbon::now();

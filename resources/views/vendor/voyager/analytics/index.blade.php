@@ -15,12 +15,29 @@
         <div id="dashboard" class="clearfix container-fluid row">
             <div>
                 <form method="get" class="form-search">
-                    <div>
+                    <div style="display: flex">
                         <div style="margin: 22px">
                             <label>FIlter products</label>
                             <input type="text" name="filter_value" :value="value" hidden>
                             <multiselect v-model="value" :options="options" :searchable="false"
                                 @input="submitFilter()" :close-on-select="true" :show-labels="false"></multiselect>
+                        </div>
+                        <div style="margin: 22px">
+                            <label>Order by</label>
+                            <input type="text" name="order_by" :value="order_by" hidden>
+                            <multiselect v-model="order_by" :options="['Most selling', 'Least selling']" :searchable="false"
+                                @input="submitFilter()" :close-on-select="true" :show-labels="false"></multiselect>
+                        </div>
+                        <div style="margin: 22px; display: flex; flex-direction: column;">
+                            <label>Hide tables</label>
+                            <label class="switch">
+                                @if(isset(Request::all()['hide_tables']))
+                                    <input name="hide_tables" type="checkbox" checked onclick="submit()">
+                                @else
+                                    <input name="hide_tables" type="checkbox" onclick="submit()">
+                                @endif
+                                <div class="slider round"></div>
+                            </label>
                         </div>
                     </div>
                 </form>
@@ -38,27 +55,40 @@
                         <thead>
                             <tr />
                             <th>Ranking</th>
-                            <th>Predictions</th>
-                            {{-- <th>Sales</th> --}}
+                            @if(isset(Request::all()['hide_tables']))
+                                <th>Product</th>
+                            @else
+                                <th>Predictions</th>
+                            @endif
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($top_products as $key => $value)
+                            @if(isset(Request::all()['hide_tables']))
                                 <tr style="border-top: solid #5c5c5c29 1px" @click="rankingClicked({{ $value }})">
-                                    <td><h3>#&nbsp;{{ $key + 1 }}</h3></td>
-                                    {{-- <td>{{ $value->branchProduct->product->name }}</td> --}}
-                                    {{-- <td>{{ $value->count_ }}</td> --}}
-                                </tr>
-                                <tr class="graph-{{ $value->branch_product_id }}" branch_product_id={{ $value->branch_product_id }}>
-                                    <td colspan="2">
-                                        <div class="col-lg-11 col-md-11">
-                                            <div class="chart-container-width-basis"></div>
-                                            <figure class="chart-container">
-                                                <div id="chart-{{$value->branch_product_id}}" class="chart"></div>
-                                            </figure>
-                                        </div>
+                                    <td><p>#&nbsp;{{ $key + 1 }}</p></td>
+                                    <td>
+                                        {{-- {{ $value->branch_product->product }} --}}
+                                        {{ $value->branchProduct->product->name }}
                                     </td>
                                 </tr>
+                            @else
+                                    <tr style="border-top: solid #5c5c5c29 1px" @click="rankingClicked({{ $value }})">
+                                        <td><h3>#&nbsp;{{ $key + 1 }}</h3></td>
+                                        {{-- <td>{{ $value->branchProduct->product->name }}</td> --}}
+                                        {{-- <td>{{ $value->count_ }}</td> --}}
+                                    </tr>
+                                    <tr class="graph-{{ $value->branch_product_id }}" branch_product_id={{ $value->branch_product_id }}>
+                                        <td colspan="2">
+                                            <div class="col-lg-11 col-md-11">
+                                                <div class="chart-container-width-basis"></div>
+                                                <figure class="chart-container">
+                                                    <div id="chart-{{$value->branch_product_id}}" class="chart"></div>
+                                                </figure>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
                             @empty
                                 <tr>
                                     <td colspan="2">No record</td>
@@ -87,6 +117,7 @@
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/predictions.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom-switch.css') }}">
     <script>
         var vm = new Vue({
             el: '#dashboard',
@@ -101,6 +132,7 @@
                     vueChart: "",
                     vueChartOption: null,
                 },
+                order_by: ['{{ Request::all()['order_by'] ?? 'Most selling' }}'],
             },
             created() {
                 this.$nextTick(() => {})
