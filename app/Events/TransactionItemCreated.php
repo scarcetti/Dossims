@@ -33,7 +33,7 @@ class TransactionItemCreated
         if( !$ready_made ) {
             JobOrder::create([
                 'transaction_item_id' => $transaction_item->id,
-                'status' => 'pending'
+                'status' => 'in progress'
             ]);
         }
     }
