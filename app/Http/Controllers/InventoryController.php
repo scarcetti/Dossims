@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Branch;
 use App\Models\BranchProduct;
+use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
 {
@@ -17,7 +18,7 @@ class InventoryController extends Controller
         $branch_products = BranchProduct::leftJoin('products', 'products.id', '=', 'branch_products.product_id')
                             ->when(isset($request['search_input']), function($x) use($request) {
                                 $x->whereHas('product', function ($q) use ($request) {
-                                    $q->where('branch_products.name', 'ilike', '%'.$request['search_input'].'%');
+                                    $q->where('products.name', 'ilike', '%'.$request['search_input'].'%');
                                 });
                             })
                             ->when(isset($request['branch_id']), function($q) use ($request) {
@@ -26,7 +27,7 @@ class InventoryController extends Controller
 
                             })/*
                             ->when(!isset($request['branch_id']), function($q) use ($request) {
-                                
+
                             })*/
                             ->with('product', 'branch')
                             ->get();
@@ -35,12 +36,23 @@ class InventoryController extends Controller
         return view('voyager::inventory.index', compact('branches','branch_products'));
     }
 
-        function branches() {
+        function branches($no_current = false) {
+            if($no_current) {
+                $user = Auth::user();
+                $x = \App\Models\Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
+                    $q->where('id', $user->id);
+                })->first();
+            }
+
+            // dd($x);
             return Branch::select('id', 'name')->get();
         }
 
     public function inboundAndTransfers()
     {
-        return view('voyager::inventory.inbound-and-transfers.index');
+        $branches = $this->branches();
+
+
+        return view('voyager::inventory.inbound-and-transfers.index', compact('branches'));
     }
 }
