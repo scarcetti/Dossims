@@ -22,36 +22,70 @@
                 <span class="btn btn-primary" @click="createOutboundButtonClicked()" readonly>Create Outbound</span>
             </div>
 
-            <div style="display: flex; flex-direction: row; width: 100%; margin: 20px 0 0 15px;">
-                <h4>
-                    Inbounds
-                </h4>
-            </div>
-            <div class="paginator_ containers_">
-                <table style="width: 100%;">
-                    <thead>
-                        <tr />
-                        <th v-if="!activeBranch.id">Branch</th>
-                        <th>Product name</th>
-                        <th>Stocks</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{-- @forelse($branch_products ?? '' as $item)
+            <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; margin-top: 20px;">
+                <div class="col-md-7 col-xs-12 paginator_ containers_">
+                    <div style="display: flex; flex-direction: row; width: 100%; margin: 0 0 15px 15px;">
+                        <h4>
+                            Inbounds
+                        </h4>
+                    </div>
+                    <table style="width: 100%;">
+                        <thead>
+                            <tr />
+                            <th>From</th>
+                            <th>Referrer</th>
+                            <th>Arrival date</th>
+                            <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- @forelse($branch_products ?? '' as $item)
                             <tr style="border-top: solid #5c5c5c29 1px">
                                 <td v-if="!activeBranch.id">{{ $item->branch->name }}</td>
                                 <td>{{ $item->product->name }}</td>
                                 <td>{{ $item->quantity }}</td>
                             </tr>
                         @empty --}}
-                        <tr>
-                            <td colspan="2">No record</td>
-                        </tr>
-                        {{-- @endforelse --}}
-                    </tbody>
-                </table>
-                <br><br>
-                {{-- {{ $branch_products ?? ''->links() }} --}}
+                            <tr>
+                                <td colspan="4">No record</td>
+                            </tr>
+                            {{-- @endforelse --}}
+                        </tbody>
+                    </table>
+                    <br><br>
+                    {{-- {{ $branch_products ?? ''->links() }} --}}
+                </div>
+                <div class="col-md-5 col-xs-12 paginator_ containers_">
+                    <div style="display: flex; flex-direction: row; width: 100%; margin: 0 0 15px 15px;">
+                        <h4>
+                            Outbounds
+                        </h4>
+                    </div>
+                    <table style="width: 100%;">
+                        <thead>
+                            <tr />
+                            <th>Referrer</th>
+                            <th>Arrival date</th>
+                            <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{-- @forelse($branch_products ?? '' as $item)
+                            <tr style="border-top: solid #5c5c5c29 1px">
+                                <td v-if="!activeBranch.id">{{ $item->branch->name }}</td>
+                                <td>{{ $item->product->name }}</td>
+                                <td>{{ $item->quantity }}</td>
+                            </tr>
+                        @empty --}}
+                            <tr>
+                                <td colspan="3">No record</td>
+                            </tr>
+                            {{-- @endforelse --}}
+                        </tbody>
+                    </table>
+                    <br><br>
+                    {{-- {{ $branch_products ?? ''->links() }} --}}
+                </div>
             </div>
         </section>
     </div>
