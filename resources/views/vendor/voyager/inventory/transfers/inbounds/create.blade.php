@@ -23,6 +23,11 @@
                     <input class="form-control" placeholder="+639 ..." type="text" min="0"
                         style="margin: 0 0 6px 0">
                 </div>
+                <br><br>
+                <div class="col-md-12" style="height: 300px; overflow: scroll;">
+                    <small class="rr">Stocks</small>
+                    @include('voyager::inventory.transfers.inbounds.dynamic-list')
+                </div>
             </div>
         </div>
     </div>

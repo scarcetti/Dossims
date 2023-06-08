@@ -39,7 +39,7 @@ class InventoryController extends Controller
         function branches($no_current = false) {
             if($no_current) {
                 $user = Auth::user();
-                $x = \App\Models\Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
+                $x = Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
                     $q->where('id', $user->id);
                 })->first()->id;
 
@@ -50,10 +50,26 @@ class InventoryController extends Controller
             return Branch::select('id', 'name')->get();
         }
 
+        function branch_stocks() {
+            $user = Auth::user();
+            $branch_id = Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
+                $q->where('id', $user->id);
+            })->first()->id;
+
+            $branch_products = BranchProduct::leftJoin('products', 'products.id', '=', 'branch_products.product_id')
+                            ->where('branch_products.branch_id', $branch_id)
+                            ->orderBy('products.name', 'ASC')
+                            ->with('product', 'branch')
+                            ->get();
+
+            return $branch_products;
+        }
+
     public function inboundAndTransfers()
     {
         $branches = $this->branches(true);
+        $branch_stocks = $this->branch_stocks();
 
-        return view('voyager::inventory.transfers.index', compact('branches'));
+        return view('voyager::inventory.transfers.index', compact('branches', 'branch_stocks'));
     }
 }

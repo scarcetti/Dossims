@@ -14,8 +14,8 @@
 @section('content')
     <div id="app">
         <section>
-            @include('voyager::inventory.transfers.outbounds.create')
             @include('voyager::inventory.transfers.inbounds.create')
+            @include('voyager::inventory.transfers.outbounds.create')
 
             <div style="margin: 20px 0 0 30px;">
                 <span class="btn btn-primary" @click="createInboundButtonClicked()" readonly>Create Inbound</span>
@@ -105,9 +105,9 @@
             },
             data() {
                 return {
-                    searchinput: '',
                     activeBranch: [],
                     branches: {!! $branches ?? '' !!},
+                    inboundStocks: {!! $branch_stocks ?? '' !!},
                 }
             },
             methods: {
@@ -123,6 +123,18 @@
                         keyboard: false
                     });
                 },
+                initialInboundStock() {
+                    const x = {
+                        branch_product_id: '',
+                        quantity: 1,
+                        linear_meters: 1,
+                        tbd: 1,
+                    }
+                    this.inboundStocks = [x]
+                },
+            },
+            created() {
+                // this.initialInboundStock()
             }
         })
     </script>
