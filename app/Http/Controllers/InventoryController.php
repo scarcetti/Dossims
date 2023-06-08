@@ -41,7 +41,9 @@ class InventoryController extends Controller
                 $user = Auth::user();
                 $x = \App\Models\Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
                     $q->where('id', $user->id);
-                })->first();
+                })->first()->id;
+
+                return Branch::select('id', 'name')->where('id', '!=', $x)->get();
             }
 
             // dd($x);
@@ -50,9 +52,8 @@ class InventoryController extends Controller
 
     public function inboundAndTransfers()
     {
-        $branches = $this->branches();
+        $branches = $this->branches(true);
 
-
-        return view('voyager::inventory.inbound-and-transfers.index', compact('branches'));
+        return view('voyager::inventory.transfers.index', compact('branches'));
     }
 }

@@ -1,0 +1,95 @@
+@php
+    function branch_()
+    {
+        $user = Auth::user();
+        $x = \App\Models\Branch::select('id')
+            ->whereHas('branchEmployees.employee.user', function ($q) use ($user) {
+                $q->where('id', $user->id);
+            })
+            ->first();
+        return is_null($x) ? false : $x->id;
+    }
+@endphp
+@extends('voyager::master')
+@section('content')
+    <div id="app">
+        <section>
+            @include('voyager::inventory.transfers.outbounds.create')
+            @include('voyager::inventory.transfers.inbounds.create')
+
+            <div style="margin: 20px 0 0 30px;">
+                <span class="btn btn-primary" @click="createInboundButtonClicked()" readonly>Create Inbound</span>
+                <span class="btn btn-primary" @click="createOutboundButtonClicked()" readonly>Create Outbound</span>
+            </div>
+
+            <div style="display: flex; flex-direction: row; width: 100%; margin: 20px 0 0 15px;">
+                <h4>
+                    Inbounds
+                </h4>
+            </div>
+            <div class="paginator_ containers_">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr />
+                        <th v-if="!activeBranch.id">Branch</th>
+                        <th>Product name</th>
+                        <th>Stocks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{-- @forelse($branch_products ?? '' as $item)
+                            <tr style="border-top: solid #5c5c5c29 1px">
+                                <td v-if="!activeBranch.id">{{ $item->branch->name }}</td>
+                                <td>{{ $item->product->name }}</td>
+                                <td>{{ $item->quantity }}</td>
+                            </tr>
+                        @empty --}}
+                        <tr>
+                            <td colspan="2">No record</td>
+                        </tr>
+                        {{-- @endforelse --}}
+                    </tbody>
+                </table>
+                <br><br>
+                {{-- {{ $branch_products ?? ''->links() }} --}}
+            </div>
+        </section>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory.css') }}">
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            components: {
+                Multiselect: window.VueMultiselect.default,
+            },
+            data() {
+                return {
+                    searchinput: '',
+                    activeBranch: [],
+                    branches: {!! $branches ?? '' !!},
+                }
+            },
+            methods: {
+                createInboundButtonClicked() {
+                    $(`#createInboundDialog`).modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                },
+                createOutboundButtonClicked() {
+                    $(`#createOutboundDialog`).modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                },
+            }
+        })
+    </script>
+@endsection
