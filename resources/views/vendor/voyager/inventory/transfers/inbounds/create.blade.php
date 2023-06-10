@@ -25,7 +25,7 @@
                 </div>
                 <br><br>
                 <div class="col-md-12" style="height: 300px; overflow: scroll;">
-                    <small class="rr">Stocks</small>
+                    {{-- <small class="rr">Stocks</small> --}}
                     @include('voyager::inventory.transfers.inbounds.dynamic-list')
                 </div>
             </div>

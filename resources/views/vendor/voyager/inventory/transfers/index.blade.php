@@ -95,7 +95,8 @@
     <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory.css') }}">
+    {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory.css') }}"> --}}
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory-transfers.css') }}">
 
     <script>
         var app = new Vue({
