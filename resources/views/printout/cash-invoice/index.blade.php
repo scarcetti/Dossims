@@ -80,9 +80,9 @@
 <div style="position: relative; height: 400px;">
     @include('printout.cash-invoice.section2')
 </div>
-<div style="position: relative; height: 400px;">
+{{-- <div style="position: relative; height: 400px;">
     @include('printout.cash-invoice.section3')
-</div>
+</div> --}}
 
 
 

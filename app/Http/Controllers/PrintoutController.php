@@ -68,9 +68,9 @@ class PrintoutController extends Controller
         if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
-        return view('printout.cutting-list', compact('transaction'));
+        // return view('printout.cutting-list', compact('transaction'));
 
-        $pdf->loadView('printout.cutting-list', compact('transaction'));
+        $pdf->loadView('printout.cutting-list.index', compact('transaction'));
 
         return env('APP_DEBUG', false) ?
                     $pdf->stream() :

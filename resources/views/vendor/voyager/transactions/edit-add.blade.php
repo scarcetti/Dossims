@@ -143,6 +143,12 @@
                             }
                         })
                 },
+                createLog() {
+                    const payload = {
+                        employee_id: this.employee.value && this.employee.value.employee_id,
+                        remarks: ""
+                    }
+                },
                 addBilling() {
                     const balance = this.downpaymentAmount ? parseFloat(this.productsTotal) + parseFloat(this.grandTotal_) - parseFloat(this.downpaymentAmount)   : null
                     // const balance = this.downpaymentAmount ? parseFloat(this.productsTotal) + parseFloat(this.grandTotal_) - parseFloat(tendered)   : null

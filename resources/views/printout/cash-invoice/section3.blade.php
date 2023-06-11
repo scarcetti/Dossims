@@ -1,5 +1,5 @@
 
-<div style=" position: relative; font-size:18px; top: 110px;">
+{{-- <div style=" position: relative; font-size:18px;">
     <table width="100%" >
         <tbody>
             <tr>
@@ -34,4 +34,4 @@
         </tbody>
     </table>
 </div>
-
+ --}}

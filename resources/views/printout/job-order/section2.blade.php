@@ -27,10 +27,11 @@ $total =0
                 <td>Amount</td>
             </tr>
             @foreach( $transaction->transactionItems as $products )
-                @if ($products->branchProduct->product->ready_made = "true")
+
+                @if ($products->branchProduct->product->ready_made == false)
                     <tr>
                         <td align="center">{{ $products->quantity }}</td>
-                        @if ($products->branchProduct->product->ready_made = "true")
+                        @if ($products->branchProduct->product->ready_made == false)
                             <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
                         @endif
 
@@ -41,13 +42,13 @@ $total =0
                         @endphp
                     </tr>
                 @endif
-
-
             @endforeach
+
             <tr>
                 <td class="basta" colspan="4">Total </td>
                 <td class="basta" style="text-align: center">P{{$total}}</td>
             </tr>
+
         {{--     <tr>
                 <td class="basta" colspan="4">AMOUNT P</td>
                 <td class="basta" style="text-align: center">218</td>
