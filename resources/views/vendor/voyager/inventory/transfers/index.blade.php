@@ -22,7 +22,8 @@
                 <span class="btn btn-primary" @click="createOutboundButtonClicked()" readonly>Create Outbound</span>
             </div>
 
-            <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; margin-top: 20px;">
+            <div
+                style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; margin-top: 20px;">
                 <div class="col-md-7 col-xs-12 paginator_ containers_">
                     <div style="display: flex; flex-direction: row; width: 100%; margin: 0 0 15px 15px;">
                         <h4>
@@ -31,11 +32,11 @@
                     </div>
                     <table style="width: 100%;">
                         <thead>
-                            <tr />
-                            <th>From</th>
-                            <th>Referrer</th>
-                            <th>Arrival date</th>
-                            <th>Action</th>
+                            <tr>
+                                <th>From</th>
+                                <th>Referrer</th>
+                                <th>Arrival date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,10 +64,10 @@
                     </div>
                     <table style="width: 100%;">
                         <thead>
-                            <tr />
-                            <th>Referrer</th>
-                            <th>Arrival date</th>
-                            <th>Action</th>
+                            <tr>
+                                <th>Referrer</th>
+                                <th>Arrival date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>

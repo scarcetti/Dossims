@@ -1,14 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CuttingListController;
-use App\Http\Controllers\PrintoutController;
-use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\PredictionController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\BalancesController;
-
+use App\Http\Controllers\CuttingListController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\PrintoutController;
+use App\Http\Controllers\TransactionController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes

@@ -2,6 +2,13 @@
 .outbound-stocks {
     width: 100%;
     margin-top: 20px;
+    position: relative;
+}
+
+.inbound-stocks thead,
+.outbound-stocks thead {
+    position: sticky;
+    top: 0;
 }
 
 .inbound-stocks tr:nth-child(even),
@@ -12,6 +19,16 @@
 .inbound-stocks tr:nth-child(odd),
 .outbound-stocks tr:nth-child(odd) {
     background-color: #ffffff;
+}
+
+.inbound-stocks input[type="number"],
+.outbound-stocks input[type="number"] {
+    margin: 0 10px 10px 0;
+    border: 1px solid #b1b1b1;
+    border-radius: 3px;
+    color: #8c8c8c;
+    font-weight: bold;
+    width: 100px;
 }
 
 .containers_ {
@@ -27,5 +44,22 @@
     .modal-dialog {
         margin: 30px auto;
         width: 800px;
+        /* width: 1033px; */
     }
+}
+
+
+/* table {
+  border-collapse: collapse;
+  width: 100%;
+} */
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  background-color: #008CBA;
+  color: white;
 }
