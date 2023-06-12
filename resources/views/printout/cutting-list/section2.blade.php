@@ -1,3 +1,6 @@
+@php
+$total =0;
+@endphp
 <div style=" position: relative; font-size:18px">
     <table width="100%">
         <tbody>
@@ -16,56 +19,56 @@
 </div>
 <div style=" position: relative; font-size:18px; top: 20px;">
     <table width="100%" >
-        {{-- {{ $transaction }} --}}
         <tbody>
-            {{-- <tr style="font-weight: bold;" align="center">
-                <td>PROFILE:</td>
-                <td>COLOR:</td>
-            </tr>
             @foreach( $transaction->transactionItems as $products )
-
                 @if ($products->branchProduct->product->ready_made == false)
-                    <tr>
-                        <td align="center">{{ $products->quantity }}</td>
-                        @if ($products->branchProduct->product->ready_made == false)
-                            <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
-                        @endif
+                    <tr align="center">
+                        <td style="font-weight: bold;" colspan="2"> {{ $products->branchProduct->product->productCategory->name }} </td>
+                        <td colspan="2">{{ $products->branchProduct->product->name }}</td>
+                        <td style="font-weight: bold;">Color:</td>
+                        <td></td>
                     </tr>
-                @endif
-            @endforeach --}}
-
-            <tr style="font-weight: bold;" align="center">
-                <td colspan="2">Panel Type:</td>
-                <td colspan="2"></td>
-                <td>Color:</td>
-                <td></td>
-            </tr>
-            <tr style="font-weight: bold;" align="center">
-                <td>QTY</td>
-                <td>UNIT</td>
-                <td colspan="2">MEASUREMENT</td>
-                <td>UNIT<br>PRICE</td>
-                <td>TOTAL<br>PRICE</td>
-            </tr>
-            <tr align="center">
-                @foreach( $transaction->transactionItems as $products )
-                    @if ($products->branchProduct->product->ready_made == false)
+                    <tr style="font-weight: bold;" align="center">
                         <td>QTY</td>
                         <td>UNIT</td>
                         <td colspan="2">MEASUREMENT</td>
                         <td>UNIT<br>PRICE</td>
                         <td>TOTAL<br>PRICE</td>
-                    @endif
-                @endforeach
-            </tr>
-            <tr style="font-weight: bold;" align="center">
-                <td colspan="2">BENDED:</td>
-                <td colspan="2"></td>
-                <td>Color:</td>
-                <td></td>
-            </tr>
-
+                    </tr>
+                    <tr>
+                        <td align="center">{{ $products->quantity }}  </td>
+                        <td align="center">{{ $products->branchProduct->product->measurementUnit->name }}</td>
+                        <td align="center" colspan="2">{{ $products->linear_meters }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
+                        <td align="center">P{{ $products->branchProduct->price }}</td>
+                        <td align="center">P{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)  }}</td>
+                    </tr>
+                    @php
+                    $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)
+                @endphp
+                @endif
+            @endforeach
 
         </tbody>
     </table>
+    <table width="100%">
+        <tbody>
+            <tr>
+                <td class="nob">Delivery Fee:</td>
+                <td  align="center" class="ob">P{{ $transaction->payment->delivery_fees->total }}</td>
+            </tr>
+            <tr>
+                <td class="nob">Laboratory Installation:</td>
+                <td  align="center" class="ob"></td>
+            </tr>
+            <tr>
+                <td class="nob">Grand Total:</td>
+                <td  align="center" class="ob">P{{ $total }}</td>
+            </tr>
+            <tr>
+                <td class="nob">Prepared by:</td>
+                <td  align="center" class="ob">{{ $transaction->cashier->first_name }} {{ $transaction->cashier->last_name }}</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+{{-- {{ $transaction }} --}}

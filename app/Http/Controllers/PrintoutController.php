@@ -57,11 +57,13 @@ class PrintoutController extends Controller
     public function cuttingList($txid)
     {
         $transaction = Transaction::with(
-            'transactionItems.branchProduct.product',
+            'transactionItems.branchProduct.product.productCategory',
+            'transactionItems.branchProduct.product.measurementUnit',
             'customer',
             'cashier',
             'businessCustomer',
             'payment.payment_method',
+            'payment.delivery_fees',
         )
         ->where('txno', $txid)
         ->first();
