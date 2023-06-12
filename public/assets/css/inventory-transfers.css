@@ -24,11 +24,19 @@
 .inbound-stocks input[type="number"],
 .outbound-stocks input[type="number"] {
     margin: 0 10px 10px 0;
-    border: 1px solid #b1b1b1;
+    /* border: 1px solid #b1b1b1; */
     border-radius: 3px;
     color: #8c8c8c;
     font-weight: bold;
     width: 100px;
+}
+
+tr[class^="qty_validate"] input {
+    border: 1px solid #b1b1b1;
+}
+
+tr[class^="qty_validate"].error input {
+    border: 1px solid red;
 }
 
 .containers_ {

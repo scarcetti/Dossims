@@ -134,6 +134,51 @@
                     }
                     this.inboundStocks = [x]
                 },
+                stock_validate(branchProductId) {
+                    const query = `tr.qty_validate_${branchProductId} input`
+                    const elements = document.querySelectorAll(query)
+
+                    // console.log(container)
+                    let values = []
+                    elements.forEach(element => {
+                        const minValue = parseInt(element.min);
+                        const maxValue = parseInt(element.max);
+                        const currentValue = parseInt(element.value);
+
+                        values.push(currentValue)
+
+                        if (elements.length == 1) {
+                            if (currentValue < minValue || currentValue > maxValue) {
+                                document.querySelector(`tr.qty_validate_${branchProductId}`).classList.add(
+                                    "error");
+                            } else {
+                                document.querySelector(`tr.qty_validate_${branchProductId}`).classList
+                                    .remove("error");
+                            }
+                        } else if (elements.length == 2) {
+                            const x = parseInt(elements[0].value)
+                            const y = parseInt(elements[1].value)
+                            const total = x * y
+                            if ((x < 0 || y < 0) || (total < minValue || total > maxValue)) {
+                                document.querySelector(`tr.qty_validate_${branchProductId}`).classList.add(
+                                    "error");
+                            } else {
+                                document.querySelector(`tr.qty_validate_${branchProductId}`).classList
+                                    .remove("error");
+                            }
+                        }
+                        // const add_err = currentValue < minValue || currentValue > maxValue
+                        // this.handle_error(query, add_err)
+                    })
+                    console.log(values)
+                },
+                createInbound() {
+                    const form = document.querySelector(`tr[class^="qty_validate"] input`);
+                    const inputsGreaterThanZero = Array.from(form.querySelectorAll('input')).filter(input => input
+                        .value > 0);
+
+                    console.log(inputsGreaterThanZero)
+                }
             },
             created() {
                 // this.initialInboundStock()

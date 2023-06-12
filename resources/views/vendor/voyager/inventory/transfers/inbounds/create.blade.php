@@ -24,10 +24,10 @@
                         style="margin: 0 0 6px 0">
                 </div>
                 <br><br>
-                <div class="col-md-12" style="height: 300px; overflow: scroll;">
-                    {{-- <small class="rr">Stocks</small> --}}
+                <div class="col-md-12" style="height: 55vh; overflow: scroll;">
                     @include('voyager::inventory.transfers.inbounds.dynamic-list')
                 </div>
+                <span class="btn btn-warning" @click="createInbound()" readonly>Create Inbound</span>
             </div>
         </div>
     </div>
