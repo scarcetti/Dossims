@@ -110,6 +110,8 @@
                     activeBranch: [],
                     branches: {!! $branches ?? '' !!},
                     inboundStocks: {!! $branch_stocks ?? '' !!},
+                    confirmInboundStatus: false,
+                    confirmInboundList: [],
                 }
             },
             methods: {
@@ -159,7 +161,7 @@
                             const x = parseInt(elements[0].value)
                             const y = parseInt(elements[1].value)
                             const total = x * y
-                            if ((x < 0 || y < 0) || (total < minValue || total > maxValue)) {
+                            if ((x < 1 || y < 0) || (total < minValue || total > maxValue)) {
                                 document.querySelector(`tr.qty_validate_${branchProductId}`).classList.add(
                                     "error");
                             } else {
@@ -173,12 +175,22 @@
                     console.log(values)
                 },
                 createInbound() {
-                    const form = document.querySelector(`tr[class^="qty_validate"] input`);
-                    const inputsGreaterThanZero = Array.from(form.querySelectorAll('input')).filter(input => input
-                        .value > 0);
-
-                    console.log(inputsGreaterThanZero)
-                }
+                    this.confirmInboundList = []
+                    const hasValues = this.inboundStocks.filter(item => item.hasOwnProperty('pcs') || item.hasOwnProperty('meters'))
+                    hasValues.forEach(item => {
+                        this.confirmInboundList.push({
+                            'id': item.id,
+                            'name': item.product.name,
+                            'pcs': item.pcs ? item.pcs : null,
+                            'meters': item.meters ? item.meters : null,
+                        })
+                    })
+                    this.confirmInboundStatus = true
+                },
+                confirmInbounds() {
+                    this.confirmInboundStatus = false
+                    alert('Inbounds created!')
+                },
             },
             created() {
                 // this.initialInboundStock()

@@ -24,10 +24,14 @@
                         style="margin: 0 0 6px 0">
                 </div>
                 <br><br>
-                <div class="col-md-12" style="height: 55vh; overflow: scroll;">
+                <div class="col-md-12" v-if="confirmInboundStatus" style="height: 55vh; overflow: scroll;">
+                    @include('voyager::inventory.transfers.inbounds.confirm-list')
+                </div>
+                <div class="col-md-12" v-else style="height: 55vh; overflow: scroll;">
                     @include('voyager::inventory.transfers.inbounds.dynamic-list')
                 </div>
-                <span class="btn btn-warning" @click="createInbound()" readonly>Create Inbound</span>
+                <span v-if="confirmInboundStatus" class="btn btn-success" @click="confirmInbounds()" readonly>Confirm receive inbounds</span>
+                <span v-else class="btn btn-warning" @click="createInbound()" readonly>Create Inbound</span>
             </div>
         </div>
     </div>
