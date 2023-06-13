@@ -448,9 +448,11 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                     'transactionItems.jobOrder',
                     'transactionItems.discount',
                     'customer',
+                    'customer.balance',
                     'businessCustomer',
                     'cashier',
                     'employee',
+                    'payment.delivery_fees',
                 )->find($id);
             foreach ($transaction->transactionItems as $key => $value) {
                 // return $value

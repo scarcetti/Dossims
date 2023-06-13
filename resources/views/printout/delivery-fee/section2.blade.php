@@ -3,19 +3,19 @@
         <tbody>
             <tr>
                 <td class="nob" style="width: 20%">Customer/ Company:</td>
-                <td class="ob" style="width: 25%" colspan="2">Elon Moist</td>
+                <td class="ob" style="width: 25%" colspan="2">{{ $transaction->customer->first_name }} {{ $transaction->customer->last_name }}</td>
                 <td class="nob" style="width: 15%">Date</td>
-                <td class="ob" style="width: 25%">02 / 18 / 00</td>
+                <td class="ob" style="width: 25%">{{ \Carbon\Carbon::parse($transaction->created_at)->format('M d, Y') }}</td>
             </tr>
             <tr>
                 <td class="nob">Address:</td>
-                <td class="ob"colspan="2">Unahan sa Tumoy</td>
+                <td class="ob"colspan="2"></td>
                 <td class="nob">Reffered by:</td>
-                <td class="ob">Eminem</td>
+                <td class="ob"></td>
             </tr>
             <tr>
                 <td class="nob">Tel/Fax/E-mail:</td>
-                <td class="ob" colspan="3"></td>
+                <td class="ob" colspan="4">{{ $transaction->customer->contact_no }}</td>
             </tr>
         </tbody>
     </table>

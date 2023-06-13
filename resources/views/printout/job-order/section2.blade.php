@@ -12,7 +12,7 @@ $total =0
             </tr>
             <tr>
                 <td class="nob">Address:</td>
-                <td class="ob"colspan="4">Unahan sa Tumoy</td>
+                <td class="ob"colspan="4"></td>
             </tr>
         </tbody>
     </table>
@@ -36,7 +36,7 @@ $total =0
                         @endif
 
                         <td align="center"></td>
-                        <td align="center">P{{ intval($products->quantity)*floatval($products->branchProduct->price) }}</td>
+                        <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price) }}</td>
                         @php
                             $total+=intval($products->quantity)*floatval($products->branchProduct->price)
                         @endphp

@@ -55,6 +55,8 @@
                     <i style="color: red;">Fields with * are required</i>
                 </span>
             @endif
+            {{ $transaction }}
+           {{-- {{ $balances }} --}}
             <center>
                 <a class="btn btn-dark" href="{{ ENV('APP_URL') }}/admin" readonly>Return</a>
             </center>

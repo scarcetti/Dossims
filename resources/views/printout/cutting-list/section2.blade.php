@@ -1,5 +1,6 @@
 @php
-$total =0;
+$total = 0;
+$deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->payment->delivery_fees->total : "0";
 @endphp
 <div style=" position: relative; font-size:18px">
     <table width="100%">
@@ -39,8 +40,8 @@ $total =0;
                         <td align="center">{{ $products->quantity }}  </td>
                         <td align="center">{{ $products->branchProduct->product->measurementUnit->name }}</td>
                         <td align="center" colspan="2">{{ $products->linear_meters }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
-                        <td align="center">P{{ $products->branchProduct->price }}</td>
-                        <td align="center">P{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)  }}</td>
+                        <td align="center">₱{{ $products->branchProduct->price }}</td>
+                        <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)  }}</td>
                     </tr>
                     @php
                     $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)
@@ -54,7 +55,7 @@ $total =0;
         <tbody>
             <tr>
                 <td class="nob">Delivery Fee:</td>
-                <td  align="center" class="ob">P{{ $transaction->payment->delivery_fees->total }}</td>
+                <td  align="center" class="ob">₱{{ $deliveryFee }}</td>
             </tr>
             <tr>
                 <td class="nob">Laboratory Installation:</td>
@@ -62,7 +63,7 @@ $total =0;
             </tr>
             <tr>
                 <td class="nob">Grand Total:</td>
-                <td  align="center" class="ob">P{{ $total }}</td>
+                <td  align="center" class="ob">₱{{ $total }}</td>
             </tr>
             <tr>
                 <td class="nob">Prepared by:</td>

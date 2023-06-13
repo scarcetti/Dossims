@@ -49,7 +49,7 @@ $total =0
                     <td align="center">{{ $products->linear_meters }}</td>
                     <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
                     <td align="center"></td>
-                    <td align="center">P{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters) }}</td>
+                    <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters) }}</td>
                     @php
                         $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)
                     @endphp
