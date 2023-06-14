@@ -23,12 +23,12 @@
                 <br><br><br>
                 <div class="col-md-6">
                     <small class="rr">Referrer</small>
-                    <input class="form-control" placeholder="enter referrer's name" type="text" min="0"
+                    <input v-model="inboundsForm.referrer" class="form-control" placeholder="enter referrer's name" type="text" min="0"
                         style="margin: 0 0 6px 0">
                 </div>
                 <div class="col-md-6">
                     <small class="rr">Referrer Contact</small>
-                    <input class="form-control" placeholder="+639 ..." type="text" min="0"
+                    <input v-model="inboundsForm.referrer_contact" class="form-control" placeholder="+639 ..." type="text" min="0"
                         style="margin: 0 0 6px 0">
                 </div>
                 <br><br>

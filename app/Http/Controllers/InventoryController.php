@@ -76,4 +76,14 @@ class InventoryController extends Controller
 
         return view('voyager::inventory.transfers.index', compact('branches', 'branch_stocks'));
     }
+
+    public function createInbound(Request $request)
+    {
+        # code...
+    }
+
+    public function createOutbound(Request $request)
+    {
+        # code...
+    }
 }

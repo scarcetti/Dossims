@@ -24,7 +24,7 @@
 
             <div
                 style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; margin-top: 20px;">
-                <div class="col-md-7 col-xs-12 paginator_ containers_">
+                <div class="col-md-6 col-xs-12 paginator_ containers_">
                     <div style="display: flex; flex-direction: row; width: 100%; margin: 0 0 15px 15px;">
                         <h4>
                             Inbounds
@@ -56,7 +56,7 @@
                     <br><br>
                     {{-- {{ $branch_products ?? ''->links() }} --}}
                 </div>
-                <div class="col-md-5 col-xs-12 paginator_ containers_">
+                <div class="col-md-6 col-xs-12 paginator_ containers_">
                     <div style="display: flex; flex-direction: row; width: 100%; margin: 0 0 15px 15px;">
                         <h4>
                             Outbounds
@@ -65,6 +65,7 @@
                     <table style="width: 100%;">
                         <thead>
                             <tr>
+                                <th>To</th>
                                 <th>Referrer</th>
                                 <th>Arrival date</th>
                                 <th>Action</th>
@@ -79,7 +80,7 @@
                             </tr>
                         @empty --}}
                             <tr>
-                                <td colspan="3">No record</td>
+                                <td colspan="4">No record</td>
                             </tr>
                             {{-- @endforelse --}}
                         </tbody>
@@ -115,6 +116,8 @@
                     confirmInboundList: [],
                     confirmOutboundStatus: false,
                     confirmOutboundList: [],
+                    inboundsForm: {},
+                    outboundsForm: {},
                 }
             },
             methods: {
@@ -248,6 +251,9 @@
                     this.confirmOutboundStatus = false
                     alert('Outbounds created!')
                     window.location.reload()
+                },
+                branchSelected() {
+
                 },
             },
             created() {

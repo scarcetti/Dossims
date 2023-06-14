@@ -43,6 +43,13 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::group(['prefix' => 'transfers'], function () {
             Route::get('/', [InventoryController::class,'inboundAndTransfers']);
+
+            Route::group(['prefix' => 'inbounds'], function () {
+                Route::get('/create', [InventoryController::class,'createInbound']);
+            });
+            Route::group(['prefix' => 'oubtounds'], function () {
+                Route::get('/create', [InventoryController::class,'createOutbound']);
+            });
         });
     });
 
