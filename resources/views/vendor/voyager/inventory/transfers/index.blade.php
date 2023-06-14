@@ -110,18 +110,23 @@
                     activeBranch: [],
                     branches: {!! $branches ?? '' !!},
                     inboundStocks: {!! $branch_stocks ?? '' !!},
+                    outboundStocks: {!! $branch_stocks ?? '' !!},
                     confirmInboundStatus: false,
                     confirmInboundList: [],
+                    confirmOutboundStatus: false,
+                    confirmOutboundList: [],
                 }
             },
             methods: {
                 createInboundButtonClicked() {
+                    this.reset_inbounds()
                     $(`#createInboundDialog`).modal({
                         backdrop: 'static',
                         keyboard: false
                     });
                 },
                 createOutboundButtonClicked() {
+                    this.reset_outbounds()
                     $(`#createOutboundDialog`).modal({
                         backdrop: 'static',
                         keyboard: false
@@ -135,6 +140,29 @@
                         tbd: 1,
                     }
                     this.inboundStocks = [x]
+                },
+                initialOutboundStock() {
+                    const x = {
+                        branch_product_id: '',
+                        quantity: 1,
+                        linear_meters: 1,
+                        tbd: 1,
+                    }
+                    this.outboundStocks = [x]
+                },
+                reset_inbounds() {
+                    const inputs = document.querySelectorAll('.inbound-stocks input')
+                    inputs.forEach(input => {
+                        input.value = ''
+                    })
+                    this.confirmInboundStatus = false
+                },
+                reset_outbounds() {
+                    const inputs = document.querySelectorAll('.outbound-stocks input')
+                    inputs.forEach(input => {
+                        input.value = ''
+                    })
+                    this.confirmOutboundStatus = false
                 },
                 stock_validate(branchProductId) {
                     const query = `tr.qty_validate_${branchProductId} input`
@@ -161,7 +189,7 @@
                             const x = parseInt(elements[0].value)
                             const y = parseInt(elements[1].value)
                             const total = x * y
-                            if ((x < 1 || y < 0) || (total < minValue || total > maxValue)) {
+                            if ((x < 0 || y < 0) || (total < minValue || total > maxValue)) {
                                 document.querySelector(`tr.qty_validate_${branchProductId}`).classList.add(
                                     "error");
                             } else {
@@ -185,11 +213,32 @@
                             'meters': item.meters ? item.meters : null,
                         })
                     })
+                    console.log([this.confirmInboundList, this.confirmOutboundList])
                     this.confirmInboundStatus = true
                 },
                 confirmInbounds() {
                     this.confirmInboundStatus = false
                     alert('Inbounds created!')
+                    window.location.reload()
+                },
+                createOutbound() {
+                    this.confirmOutboundList = []
+                    const hasValues = this.outboundStocks.filter(item => item.hasOwnProperty('pcs') || item.hasOwnProperty('meters'))
+                    hasValues.forEach(item => {
+                        this.confirmOutboundList.push({
+                            'id': item.id,
+                            'name': item.product.name,
+                            'pcs': item.pcs ? item.pcs : null,
+                            'meters': item.meters ? item.meters : null,
+                        })
+                    })
+                    console.log([this.confirmInboundList, this.confirmOutboundList])
+                    this.confirmOutboundStatus = true
+                },
+                confirmOutbounds() {
+                    this.confirmOutboundStatus = false
+                    alert('Outbounds created!')
+                    window.location.reload()
                 },
             },
             created() {

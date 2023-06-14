@@ -5,7 +5,7 @@
         <div class="modal-content">
             <div class="modal-header" style="display: flex; align-items: center;">
                 <h5 class="modal-title" id="dialogLabel">Create Inbound</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="reset_inbounds()"
                     style="margin-left: auto;">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -30,7 +30,10 @@
                 <div class="col-md-12" v-else style="height: 55vh; overflow: scroll;">
                     @include('voyager::inventory.transfers.inbounds.dynamic-list')
                 </div>
-                <span v-if="confirmInboundStatus" class="btn btn-success" @click="confirmInbounds()" readonly>Confirm receive inbounds</span>
+                <span v-if="confirmInboundStatus" class="btn btn-success" @click="confirmInbounds()" readonly>Confirm
+                    receive inbounds</span>
+                <span v-if="confirmInboundStatus" class="btn btn-danger" @click="confirmInboundStatus = false"
+                    readonly>Cancel</span>
                 <span v-else class="btn btn-warning" @click="createInbound()" readonly>Create Inbound</span>
             </div>
         </div>
