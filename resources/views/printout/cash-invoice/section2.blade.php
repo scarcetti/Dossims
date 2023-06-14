@@ -36,9 +36,9 @@ $total =0;
             @foreach( $transaction->transactionItems as $products )
                 <tr>
                     <td align="center">{{ $products->quantity }}</td>
-                    <td align="center">{{ $products->linear_meters }}</td>
+                    <td align="center">{{ $products->linear_meters }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
                     <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
-                    <td align="center"></td>
+                    <td align="center">₱{{ $products->price_at_purchase }}</td>
                     <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters) }}</td>
                     @php
                         $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)
@@ -94,7 +94,7 @@ $total =0;
                 <td colspan="3">
                     <p align="justify" style="padding: 10px;">
                         <center>
-                            It is understood that DOMING's STEEL TRADING assumes no luiability for any damages as a result of service(s) ordered. Items not claimed within 30 days from due date
+                            It is understood that DOMING's STEEL TRADING assumes no liability for any damages as a result of service(s) ordered. Items not claimed within 30 days from due date
                         shall be disposed of.<br>
                         <b>FULL PAYMENT UPON ORDER</b>
                         </center>

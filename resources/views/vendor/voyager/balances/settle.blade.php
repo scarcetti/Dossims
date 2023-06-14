@@ -70,12 +70,13 @@
                 </div>
                 <div v-if="(payload.payment_method && payload.payment_method.id != 1) || payload.amount_tendered">
                     <span class="btn btn-primary" @click="addBilling()" readonly>
-                        Print Official Receipt
+                        Receive payment
                     </span>
                 </div>
             </div>
             <center>
                 <a class="btn btn-dark" href="{{ ENV('APP_URL') }}/admin/balances/" readonly>Return</a>
+                <a class="btn btn-dark" @click="addBilling()" readonly>TEST</a>
             </center>
         </section>
     </div>
@@ -124,12 +125,15 @@
                     this.payload.cashier_id = this.cashier.value ? this.cashier.value.id : null
                     this.payload.balances_ = this.balances_
 
-                    console.log(this.payload)
+                    // console.log(this.payload)
+                    // $transaction_items = json_decode($transaction_items, true);
 
                     axios.post(`${window.location.origin}/admin/balances/settle`, this.payload)
                         .then(response => {
+                            $transaction_items = json_decode($transaction_items, true);
+
                             alert('Transaction completed!')
-                            location.href = `${location.origin}/admin`
+                            location.href = `${location.origin}/admin/transactions`
                         })
                         .catch(x => {
                             const y = Object.keys(x.response.data.errors)

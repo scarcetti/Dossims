@@ -55,8 +55,6 @@
                     <i style="color: red;">Fields with * are required</i>
                 </span>
             @endif
-            {{ $transaction }}
-           {{-- {{ $balances }} --}}
             <center>
                 <a class="btn btn-dark" href="{{ ENV('APP_URL') }}/admin" readonly>Return</a>
             </center>
@@ -135,7 +133,8 @@
                     axios.post(`${window.location.origin}/admin/transaction/create`, payload)
                         .then(response => {
                             alert('Quotation created!')
-                            window.location.reload()
+                            location.href = `${location.origin}/admin/transactions`
+                            // window.location.reload()
                         })
                         .catch(x => {
                             const y = Object.keys(x.response.data.errors)

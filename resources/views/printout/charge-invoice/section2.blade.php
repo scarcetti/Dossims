@@ -46,9 +46,9 @@ $total =0
             @foreach( $transaction->transactionItems as $products )
                 <tr>
                     <td align="center">{{ $products->quantity }}</td>
-                    <td align="center">{{ $products->linear_meters }}</td>
+                    <td align="center">{{ $products->linear_meters }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
                     <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
-                    <td align="center"></td>
+                    <td align="center">₱{{ $products->price_at_purchase }}</td>
                     <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters) }}</td>
                     @php
                         $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)

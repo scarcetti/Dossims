@@ -7,8 +7,8 @@ $showDeliveryReceipt = false;
 $showJobOrder = false;
 $showOfficialReceipt = false;
 $showDeliveryReceipt = $transaction->payment->delivery_fees != null ? $transaction->payment->delivery_fees->total != 0 :true;
-// $showChargeInvoice = $transaction->customer->balance != null ? $transaction->customer->balance->outstanding_balance != 0 : true;
-// $showOfficialReceipt = $transaction->customer->balance == null ? $transaction->customer->balance->outstanding_balance == 0 : true;
+$showChargeInvoice = $transaction->customer->balance != null ? $transaction->customer->balance->outstanding_balance != 0 : true;
+$showOfficialReceipt = $transaction->customer->balance != null ? $transaction->customer->balance->outstanding_balance == 0 : true;
 // $showOfficialReceipt = $transaction->payment->payment_method_id == 1 ? true:false;
 
 foreach( $transaction->transactionItems as $products ){
