@@ -155,6 +155,11 @@
                     inputs.forEach(input => {
                         input.value = ''
                     })
+
+                    const tableRows = document.querySelectorAll('.inbound-stocks tr')
+                    tableRows.forEach(input => {
+                        input.classList.remove('error')
+                    })
                     this.confirmInboundStatus = false
                 },
                 reset_outbounds() {
@@ -162,13 +167,17 @@
                     inputs.forEach(input => {
                         input.value = ''
                     })
+
+                    const tableRows = document.querySelectorAll('.outbound-stocks tr')
+                    tableRows.forEach(input => {
+                        input.classList.remove('error')
+                    })
                     this.confirmOutboundStatus = false
                 },
-                stock_validate(branchProductId) {
-                    const query = `tr.qty_validate_${branchProductId} input`
+                stock_validate(tableClass, branchProductId) {
+                    const query = `table.${tableClass} tr.qty_validate_${branchProductId} input`
                     const elements = document.querySelectorAll(query)
 
-                    // console.log(container)
                     let values = []
                     elements.forEach(element => {
                         const minValue = parseInt(element.min);
@@ -179,10 +188,10 @@
 
                         if (elements.length == 1) {
                             if (currentValue < minValue || currentValue > maxValue) {
-                                document.querySelector(`tr.qty_validate_${branchProductId}`).classList.add(
+                                document.querySelector(`table.${tableClass} tr.qty_validate_${branchProductId}`).classList.add(
                                     "error");
                             } else {
-                                document.querySelector(`tr.qty_validate_${branchProductId}`).classList
+                                document.querySelector(`table.${tableClass} tr.qty_validate_${branchProductId}`).classList
                                     .remove("error");
                             }
                         } else if (elements.length == 2) {
@@ -190,10 +199,10 @@
                             const y = parseInt(elements[1].value)
                             const total = x * y
                             if ((x < 0 || y < 0) || (total < minValue || total > maxValue)) {
-                                document.querySelector(`tr.qty_validate_${branchProductId}`).classList.add(
+                                document.querySelector(`table.${tableClass} tr.qty_validate_${branchProductId}`).classList.add(
                                     "error");
                             } else {
-                                document.querySelector(`tr.qty_validate_${branchProductId}`).classList
+                                document.querySelector(`table.${tableClass} tr.qty_validate_${branchProductId}`).classList
                                     .remove("error");
                             }
                         }
