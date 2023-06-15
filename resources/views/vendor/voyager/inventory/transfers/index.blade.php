@@ -17,18 +17,14 @@
             @include('voyager::inventory.transfers.inbounds.create')
             @include('voyager::inventory.transfers.outbounds.create')
 
-            <div style="margin: 20px 0 0 30px;">
-                <span class="btn btn-primary" @click="createInboundButtonClicked()" readonly>Create Inbound</span>
-                <span class="btn btn-primary" @click="createOutboundButtonClicked()" readonly>Create Outbound</span>
-            </div>
-
             <div
                 style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; margin-top: 20px;">
                 <div class="col-md-6 col-xs-12 paginator_ containers_">
-                    <div style="display: flex; flex-direction: row; width: 100%; margin: 0 0 15px 15px;">
+                    <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin: 0 0 15px 15px;">
                         <h4>
                             Inbounds
                         </h4>
+                        <span class="btn btn-primary" @click="createInboundButtonClicked()" readonly style="margin-left: 10px;">Create Inbound</span>
                     </div>
                     <table style="width: 100%;">
                         <thead>
@@ -57,10 +53,11 @@
                     {{-- {{ $branch_products ?? ''->links() }} --}}
                 </div>
                 <div class="col-md-6 col-xs-12 paginator_ containers_">
-                    <div style="display: flex; flex-direction: row; width: 100%; margin: 0 0 15px 15px;">
+                    <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin: 0 0 15px 15px;">
                         <h4>
                             Outbounds
                         </h4>
+                        <span class="btn btn-primary" @click="createOutboundButtonClicked()" readonly style="margin-left: 10px;">Create Outbound</span>
                     </div>
                     <table style="width: 100%;">
                         <thead>
@@ -112,6 +109,8 @@
                     branches: {!! $branches ?? '' !!},
                     inboundStocks: {!! $branch_stocks ?? '' !!},
                     outboundStocks: {!! $branch_stocks ?? '' !!},
+                    inboundStocks_: [],
+                    outboundStocks_: [],
                     confirmInboundStatus: false,
                     confirmInboundList: [],
                     confirmOutboundStatus: false,
@@ -164,6 +163,7 @@
                         input.classList.remove('error')
                     })
                     this.confirmInboundStatus = false
+                    this.inboundStocks_ = JSON.parse(JSON.stringify(this.inboundStocks))
                 },
                 reset_outbounds() {
                     const inputs = document.querySelectorAll('.outbound-stocks input')
@@ -176,6 +176,7 @@
                         input.classList.remove('error')
                     })
                     this.confirmOutboundStatus = false
+                    this.outboundStocks_ = JSON.parse(JSON.stringify(this.inboundStocks))
                 },
                 stock_validate(tableClass, branchProductId) {
                     const query = `table.${tableClass} tr.qty_validate_${branchProductId} input`
@@ -214,15 +215,18 @@
                     })
                     console.log(values)
                 },
+                getMax() {
+                    console.log(123123)
+                },
                 createInbound() {
                     this.confirmInboundList = []
-                    const hasValues = this.inboundStocks.filter(item => item.hasOwnProperty('pcs') || item.hasOwnProperty('meters'))
+                    const hasValues = this.inboundStocks_.filter(item => (item.hasOwnProperty('pcs') || item.hasOwnProperty('meters')) && item.pcs > 0)
                     hasValues.forEach(item => {
                         this.confirmInboundList.push({
-                            'id': item.id,
-                            'name': item.product.name,
-                            'pcs': item.pcs ? item.pcs : null,
-                            'meters': item.meters ? item.meters : null,
+                            id: item.id,
+                            name: item.product.name,
+                            pcs: item.pcs ? item.pcs : null,
+                            meters: item.meters ? item.meters : null,
                         })
                     })
                     console.log([this.confirmInboundList, this.confirmOutboundList])
@@ -235,14 +239,26 @@
                 },
                 createOutbound() {
                     this.confirmOutboundList = []
-                    const hasValues = this.outboundStocks.filter(item => item.hasOwnProperty('pcs') || item.hasOwnProperty('meters'))
+                    const hasValues = this.outboundStocks_.filter(item => (item.hasOwnProperty('pcs') || item.hasOwnProperty('meters') && Number(item.pcs) <= item.quantity))
                     hasValues.forEach(item => {
-                        this.confirmOutboundList.push({
-                            'id': item.id,
-                            'name': item.product.name,
-                            'pcs': item.pcs ? item.pcs : null,
-                            'meters': item.meters ? item.meters : null,
-                        })
+                        if (item.hasOwnProperty('meters')) {
+                            if((Number(item.meters) * Number(item.pcs)) <= item.quantity) {
+                                this.confirmOutboundList.push({
+                                    id: item.id,
+                                    name: item.product.name,
+                                    pcs: item.pcs ? item.pcs : null,
+                                    meters: item.meters ? item.meters : null,
+                                })
+                            }
+                        }
+                        else {
+                            this.confirmOutboundList.push({
+                                id: item.id,
+                                name: item.product.name,
+                                pcs: item.pcs ? item.pcs : null,
+                                meters: item.meters ? item.meters : null,
+                            })
+                        }
                     })
                     console.log([this.confirmInboundList, this.confirmOutboundList])
                     this.confirmOutboundStatus = true
