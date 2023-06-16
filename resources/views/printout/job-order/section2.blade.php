@@ -68,7 +68,6 @@ $balance = $transaction->customer->balance !== null ? $transaction->customer->ba
 
         </tbody>
     </table>
-    {{-- {{$transaction}} --}}
 </div>
 <div style=" position: relative; font-size:18px;">
     <table width="100%" >

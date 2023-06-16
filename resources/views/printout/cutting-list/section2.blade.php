@@ -72,4 +72,3 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
         </tbody>
     </table>
 </div>
-{{-- {{ $transaction }} --}}

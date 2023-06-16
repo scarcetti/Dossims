@@ -76,7 +76,6 @@
             </div>
             <center>
                 <a class="btn btn-dark" href="{{ ENV('APP_URL') }}/admin/balances/" readonly>Return</a>
-                <a class="btn btn-dark" @click="addBilling()" readonly>TEST</a>
             </center>
         </section>
     </div>
