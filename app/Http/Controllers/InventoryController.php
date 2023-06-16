@@ -59,7 +59,7 @@ class InventoryController extends Controller
             $branch_products = BranchProduct::leftJoin('products', 'products.id', '=', 'branch_products.product_id')
                             ->where('branch_products.branch_id', $branch_id)
                             ->orderBy('products.name', 'ASC')
-                            ->with('product', 'branch')
+                            ->with('product.measurementUnit', 'branch')
                             ->get();
 
             return $branch_products;
@@ -67,9 +67,23 @@ class InventoryController extends Controller
 
     public function inboundAndTransfers()
     {
+        if(is_null( \Illuminate\Support\Facades\Auth::user() )) {
+            return redirect()->intended('/admin');
+        }
+
         $branches = $this->branches(true);
         $branch_stocks = $this->branch_stocks();
 
         return view('voyager::inventory.transfers.index', compact('branches', 'branch_stocks'));
+    }
+
+    public function createInbound(Request $request)
+    {
+        # code...
+    }
+
+    public function createOutbound(Request $request)
+    {
+        # code...
     }
 }

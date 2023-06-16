@@ -1,14 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CuttingListController;
-use App\Http\Controllers\PrintoutController;
-use App\Http\Controllers\InventoryController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\PredictionController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\BalancesController;
-
+use App\Http\Controllers\CuttingListController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\PredictionController;
+use App\Http\Controllers\PrintoutController;
+use App\Http\Controllers\TransactionController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -43,6 +43,13 @@ Route::group(['prefix' => 'admin'], function () {
 
         Route::group(['prefix' => 'transfers'], function () {
             Route::get('/', [InventoryController::class,'inboundAndTransfers']);
+
+            Route::group(['prefix' => 'inbounds'], function () {
+                Route::get('/create', [InventoryController::class,'createInbound']);
+            });
+            Route::group(['prefix' => 'oubtounds'], function () {
+                Route::get('/create', [InventoryController::class,'createOutbound']);
+            });
         });
     });
 
