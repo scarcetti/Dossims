@@ -36,21 +36,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @forelse($branch_products ?? '' as $item)
-                            <tr style="border-top: solid #5c5c5c29 1px">
-                                <td v-if="!activeBranch.id">{{ $item->branch->name }}</td>
-                                <td>{{ $item->product->name }}</td>
-                                <td>{{ $item->quantity }}</td>
-                            </tr>
-                        @empty --}}
-                            <tr>
-                                <td colspan="4">No record</td>
-                            </tr>
-                            {{-- @endforelse --}}
+                            @forelse($inbounds ?? '' as $item)
+                                <tr style="border-top: solid #5c5c5c29 1px">
+                                    <td>{{ $item->sender->name ?? '---' }}</td>
+                                    <td>{{ $item->referrer }}</td>
+                                    <td>{{ $item->arrival_date }}</td>
+                                    <td></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4">No record</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                     <br><br>
-                    {{-- {{ $branch_products ?? ''->links() }} --}}
+                    {{ $inbounds->links() }}
                 </div>
                 <div class="col-md-6 col-xs-12 paginator_ containers_">
                     <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin: 0 0 15px 15px;">
@@ -69,21 +70,22 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{-- @forelse($branch_products ?? '' as $item)
-                            <tr style="border-top: solid #5c5c5c29 1px">
-                                <td v-if="!activeBranch.id">{{ $item->branch->name }}</td>
-                                <td>{{ $item->product->name }}</td>
-                                <td>{{ $item->quantity }}</td>
-                            </tr>
-                        @empty --}}
-                            <tr>
-                                <td colspan="4">No record</td>
-                            </tr>
-                            {{-- @endforelse --}}
+                            @forelse($outbounds ?? '' as $item)
+                                <tr style="border-top: solid #5c5c5c29 1px">
+                                    <td>{{ $item->receiver->name ?? '---' }}</td>
+                                    <td>{{ $item->referrer }}</td>
+                                    <td>{{ $item->arrival_date }}</td>
+                                    <td></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4">No record</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                     <br><br>
-                    {{-- {{ $branch_products ?? ''->links() }} --}}
+                    {{ $outbounds->links() }}
                 </div>
             </div>
         </section>

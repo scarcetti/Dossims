@@ -46,11 +46,9 @@ Route::group(['prefix' => 'admin'], function () {
 
             Route::group(['prefix' => 'inbound'], function () {
                 Route::post('create', [InventoryController::class,'createInbound']);
-                Route::get('fetch', [InventoryController::class,'fetchInbound']);
             });
-            Route::group(['prefix' => 'oubtound'], function () {
+            Route::group(['prefix' => 'outbound'], function () {
                 Route::post('create', [InventoryController::class,'createOutbound']);
-                Route::get('fetch', [InventoryController::class,'fetchOutbound']);
             });
         });
     });

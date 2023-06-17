@@ -22,4 +22,14 @@ class InventoryTransfer extends Model
     {
         return $this->hasMany(InventoryTransferBatch::class);
     }
+
+    public function sender()
+    {
+        return $this->belongsTo(Branch::class, 'sender_branch_id', 'id');
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(Branch::class, 'receiver_branch_id', 'id');
+    }
 }

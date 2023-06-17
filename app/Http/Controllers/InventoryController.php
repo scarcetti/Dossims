@@ -38,28 +38,18 @@ class InventoryController extends Controller
         return view('voyager::inventory.index', compact('branches','branch_products'));
     }
 
-        function branches($no_current = false) {
+        function branches($no_current = false)
+        {
             if($no_current) {
-                $user = Auth::user();
-                $x = Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
-                    $q->where('id', $user->id);
-                })->first()->id;
-
-                return Branch::select('id', 'name')->where('id', '!=', $x)->get();
+                return Branch::select('id', 'name')->where('id', '!=', $this->current_branch())->get();
             }
-
-            // dd($x);
             return Branch::select('id', 'name')->get();
         }
 
-        function branch_stocks() {
-            $user = Auth::user();
-            $branch_id = Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
-                $q->where('id', $user->id);
-            })->first()->id;
-
+        function branch_stocks()
+        {
             $branch_products = BranchProduct::leftJoin('products', 'products.id', '=', 'branch_products.product_id')
-                            ->where('branch_products.branch_id', $branch_id)
+                            ->where('branch_products.branch_id', $this->current_branch())
                             ->orderBy('products.name', 'ASC')
                             ->with('product.measurementUnit', 'branch')
                             ->get();
@@ -67,17 +57,45 @@ class InventoryController extends Controller
             return $branch_products;
         }
 
-    public function inboundAndTransfers()
+        function current_branch()
+        {
+            $user = Auth::user();
+            $branch_id = Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
+                $q->where('id', $user->id);
+            })->first()->id;
+
+            return $branch_id;
+        }
+
+    public function inboundAndTransfers(Request $request)
     {
         if(is_null( \Illuminate\Support\Facades\Auth::user() )) {
             return redirect()->intended('/admin');
         }
 
+        $inbounds = $this->fetchInbound($request);
+        $outbounds = $this->fetchOutbound($request);
         $branches = $this->branches(true);
         $branch_stocks = $this->branch_stocks();
 
-        return view('voyager::inventory.transfers.index', compact('branches', 'branch_stocks'));
+        return view('voyager::inventory.transfers.index', compact('branches', 'branch_stocks', 'inbounds', 'outbounds'));
     }
+
+        function fetchInbound($request)
+        {
+            $inventory_transfer = InventoryTransfer::where('receiver_branch_id', $this->current_branch())
+                    ->with('sender')
+                    ->paginate($perPage = 15, $columns = ['*'], $pageName = 'inbounds');
+            return $inventory_transfer;
+        }
+
+        function fetchOutbound($request)
+        {
+            $inventory_transfer = InventoryTransfer::where('sender_branch_id', $this->current_branch())
+                    ->with('receiver')
+                    ->paginate($perPage = 15, $columns = ['*'], $pageName = 'outbounds');
+            return $inventory_transfer;
+        }
 
     public function createInbound(Request $request)
     {
@@ -91,17 +109,5 @@ class InventoryController extends Controller
         $payload = $request->all();
         $inventory_transfer = InventoryTransfer::create($payload)->batch()->createMany($request->products);
         return response()->json(compact('inventory_transfer'));
-    }
-
-    public function fetchInbound()
-    {
-        $inventory_transfer = InventoryTransfer::where('direction', 'inbound')->get();
-        return $inventory_transfer;
-    }
-
-    public function fetchOutbound()
-    {
-        $inventory_transfer = InventoryTransfer::where('direction', 'outbound')->get();
-        return $inventory_transfer;
     }
 }
