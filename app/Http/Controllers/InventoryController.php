@@ -82,7 +82,6 @@ class InventoryController extends Controller
     public function createInbound(Request $request)
     {
         $payload = $request->all();
-        $payload['arrival_date'] = Carbon::parse($request->arrival_date);
         $inventory_transfer = InventoryTransfer::create($payload)->batch()->createMany($request->products);
         return response()->json(compact('inventory_transfer'));
     }
@@ -90,7 +89,7 @@ class InventoryController extends Controller
     public function createOutbound(Request $request)
     {
         $payload = $request->all();
-        $inventory_transfer = InventoryTransfer::create($payload);
+        $inventory_transfer = InventoryTransfer::create($payload)->batch()->createMany($request->products);
         return response()->json(compact('inventory_transfer'));
     }
 
