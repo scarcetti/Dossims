@@ -29,4 +29,9 @@ class TransactionPayment extends Model
     {
         return $this->belongsTo(PaymentMethod::class);
     }
+
+    public function delivery_fees()
+    {
+        return $this->hasOne(DeliveryFees::class);
+    }
 }

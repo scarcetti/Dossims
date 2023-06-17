@@ -80,9 +80,6 @@
 <div style="position: relative; height: 400px;">
     @include('printout.delivery-fee.section2')
 </div>
-<div style="position: relative; height: 400px;">
-    @include('printout.delivery-fee.section3')
-</div>
 
 
 
