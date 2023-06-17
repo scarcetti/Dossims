@@ -133,7 +133,8 @@
                     axios.post(`${window.location.origin}/admin/transaction/create`, payload)
                         .then(response => {
                             alert('Quotation created!')
-                            window.location.reload()
+                            location.href = `${location.origin}/admin/transactions`
+                            // window.location.reload()
                         })
                         .catch(x => {
                             const y = Object.keys(x.response.data.errors)
@@ -142,6 +143,12 @@
                                 break
                             }
                         })
+                },
+                createLog() {
+                    const payload = {
+                        employee_id: this.employee.value && this.employee.value.employee_id,
+                        remarks: ""
+                    }
                 },
                 addBilling() {
                     const balance = this.downpaymentAmount ? parseFloat(this.productsTotal) + parseFloat(this.grandTotal_) - parseFloat(this.downpaymentAmount)   : null

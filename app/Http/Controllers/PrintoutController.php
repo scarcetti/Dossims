@@ -57,20 +57,22 @@ class PrintoutController extends Controller
     public function cuttingList($txid)
     {
         $transaction = Transaction::with(
-            'transactionItems.branchProduct.product',
+            'transactionItems.branchProduct.product.productCategory',
+            'transactionItems.branchProduct.product.measurementUnit',
             'customer',
             'cashier',
             'businessCustomer',
             'payment.payment_method',
+            'payment.delivery_fees',
         )
         ->where('txno', $txid)
         ->first();
         if( is_null($transaction ) ) abort(404);
         $pdf = PDF::setPaper('a4', 'portrait')->setWarnings(false);
 
-        return view('printout.cutting-list', compact('transaction'));
+        // return view('printout.cutting-list', compact('transaction'));
 
-        $pdf->loadView('printout.cutting-list', compact('transaction'));
+        $pdf->loadView('printout.cutting-list.index', compact('transaction'));
 
         return env('APP_DEBUG', false) ?
                     $pdf->stream() :

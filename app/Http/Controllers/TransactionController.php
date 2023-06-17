@@ -252,71 +252,71 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         ));
     }
 
-        public function update_order(Request $request)
-        {
-            $slug = $this->getSlug($request);
+    public function update_order(Request $request)
+    {
+        $slug = $this->getSlug($request);
 
-            $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+        $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
 
-            // Check permission
-            $this->authorize('edit', app($dataType->model_name));
+        // Check permission
+        $this->authorize('edit', app($dataType->model_name));
 
-            $model = app($dataType->model_name);
+        $model = app($dataType->model_name);
 
-            $order = json_decode($request->input('order'));
-            $column = $dataType->order_column;
-            foreach ($order as $key => $item) {
-                if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
-                    $i = $model->withTrashed()->findOrFail($item->id);
-                } else {
-                    $i = $model->findOrFail($item->id);
-                }
-                $i->$column = ($key + 1);
-                $i->save();
+        $order = json_decode($request->input('order'));
+        $column = $dataType->order_column;
+        foreach ($order as $key => $item) {
+            if ($model && in_array(SoftDeletes::class, class_uses_recursive($model))) {
+                $i = $model->withTrashed()->findOrFail($item->id);
+            } else {
+                $i = $model->findOrFail($item->id);
             }
+            $i->$column = ($key + 1);
+            $i->save();
         }
+    }
 
-        protected function findSearchableRelationshipRow($relationshipRows, $searchKey)
-        {
-            $row = $relationshipRows->filter(function ($item) use ($searchKey) {
-                if ($item->field != $searchKey) {
-                    return false;
-                }
-                if ($item->details->type != 'belongsTo') {
-                    return false;
-                }
+    protected function findSearchableRelationshipRow($relationshipRows, $searchKey)
+    {
+        $row = $relationshipRows->filter(function ($item) use ($searchKey) {
+            if ($item->field != $searchKey) {
+                return false;
+            }
+            if ($item->details->type != 'belongsTo') {
+                return false;
+            }
 
-                return !$this->relationIsUsingAccessorAsLabel($item->details);
-            })->first();
+            return !$this->relationIsUsingAccessorAsLabel($item->details);
+        })->first();
 
-            if(!$row) return $row;
+        if(!$row) return $row;
 
-            $relation = $row->details->relation ?? \Str::camel(class_basename(app($row->details->model)));
+        $relation = $row->details->relation ?? \Str::camel(class_basename(app($row->details->model)));
 
-            return (object) ['relation' => $relation, 'field' => $row->details->label];
-        }
+        return (object) ['relation' => $relation, 'field' => $row->details->label];
+    }
 
-        protected function getSortableColumns($rows)
-        {
-            return $rows->filter(function ($item) {
-                if ($item->type != 'relationship') {
-                    return true;
-                }
-                if ($item->details->type != 'belongsTo') {
-                    return false;
-                }
+    protected function getSortableColumns($rows)
+    {
+        return $rows->filter(function ($item) {
+            if ($item->type != 'relationship') {
+                return true;
+            }
+            if ($item->details->type != 'belongsTo') {
+                return false;
+            }
 
-                return !$this->relationIsUsingAccessorAsLabel($item->details);
-            })
-            ->pluck('field')
-            ->toArray();
-        }
+            return !$this->relationIsUsingAccessorAsLabel($item->details);
+        })
+        ->pluck('field')
+        ->toArray();
+    }
 
 
-        protected function relationIsUsingAccessorAsLabel($details)
-        {
-            return in_array($details->label, app($details->model)->additional_attributes ?? []);
-        }
+    protected function relationIsUsingAccessorAsLabel($details)
+    {
+        return in_array($details->label, app($details->model)->additional_attributes ?? []);
+    }
 
     public function show(Request $request, $id)
     {
@@ -427,132 +427,134 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_types', 'payment_methods', 'transaction', 'branch_employees', 'logged_employee'));
     }
 
-        function fetchPaymentTypes($create=false)
-        {
-            return \App\Models\PaymentType::
-                when($create, function($q) {
-                    $q->whereIn('id', [1,2]); # Full payment & Downpayment
-                })
-                ->get();
+    function fetchPaymentTypes($create=false)
+    {
+        return \App\Models\PaymentType::
+            when($create, function($q) {
+                $q->whereIn('id', [1,2]); # Full payment & Downpayment
+            })
+            ->get();
+    }
+
+    function fetchPaymentMethods()
+    {
+        return \App\Models\PaymentMethod::whereIn('name', ['Cash', 'Check'])->get();
+    }
+
+    public function fetchTx($id)
+    {
+        $transaction = \App\Models\Transaction::with(
+                'transactionItems.branchProduct.product.measurementUnit',
+                'transactionItems.jobOrder',
+                'transactionItems.discount',
+                'customer',
+                'customer.balance',
+                'businessCustomer',
+                'cashier',
+                'employee',
+                'payment.delivery_fees',
+            )->find($id);
+        foreach ($transaction->transactionItems as $key => $value) {
+            // return $value
+            $transaction->transactionItems[$key]->product_name = $value->branchProduct->product->name;
+            $transaction->transactionItems[$key]->price = $value->branchProduct->product->price;
         }
+        return $transaction;
+    }
 
-        function fetchPaymentMethods()
-        {
-            return \App\Models\PaymentMethod::whereIn('name', ['Cash', 'Check'])->get();
+    function allTransactionItems($transaction_id)
+    {
+        $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct.product.measurementUnit', 'jobOrder', 'discount', 'transaction')->get();
+        foreach ($transaction_items as $key => $value) {
+            $transaction_items[$key]->product_name = $value->branchProduct->product->name;
+            $transaction_items[$key]->price = $value->branchProduct->product->price;
         }
+        return $transaction_items;
+    }
 
-        public function fetchTx($id)
-        {
-            $transaction = \App\Models\Transaction::with(
-                    'transactionItems.branchProduct.product.measurementUnit',
-                    'transactionItems.jobOrder',
-                    'transactionItems.discount',
-                    'customer',
-                    'businessCustomer',
-                    'cashier',
-                    'employee',
-                )->find($id);
-            foreach ($transaction->transactionItems as $key => $value) {
-                // return $value
-                $transaction->transactionItems[$key]->product_name = $value->branchProduct->product->name;
-                $transaction->transactionItems[$key]->price = $value->branchProduct->product->price;
-            }
-            return $transaction;
-        }
+    function updateTransactionStatus($id)
+    {
+        return \App\Models\Transaction::where('id', $id)->update(['status' => 'procuring']);
+    }
 
-        function allTransactionItems($transaction_id)
-        {
-            $transaction_items = \App\Models\TransactionItem::where('transaction_id', $transaction_id)->with('branchProduct.product.measurementUnit', 'jobOrder', 'discount', 'transaction')->get();
-            foreach ($transaction_items as $key => $value) {
-                $transaction_items[$key]->product_name = $value->branchProduct->product->name;
-                $transaction_items[$key]->price = $value->branchProduct->product->price;
-            }
-            return $transaction_items;
-        }
+    function saveDiscounts($request)
+    {
+        # regex patterns
+        $value_ = '/(item-)(\d*)(-discount-value)/';
+        $discount_type_ = '/(item-)(\d*)(-discount-type)/';
+        $per_item_ = '/(item-)(\d*)(-discount-type-per-item)/';
 
-        function updateTransactionStatus($id)
-        {
-            return \App\Models\Transaction::where('id', $id)->update(['status' => 'procuring']);
-        }
+        foreach( $request->all() as $key => $value ) {
+            if(preg_match($value_, $key)) {
+                $transaction_item_id = intval( explode('-', $key)[1] );
 
-        function saveDiscounts($request)
-        {
-            # regex patterns
-            $value_ = '/(item-)(\d*)(-discount-value)/';
-            $discount_type_ = '/(item-)(\d*)(-discount-type)/';
-            $per_item_ = '/(item-)(\d*)(-discount-type-per-item)/';
-
-            foreach( $request->all() as $key => $value ) {
-                if(preg_match($value_, $key)) {
-                    $transaction_item_id = intval( explode('-', $key)[1] );
-
-                    if(intval($value) > 0) {
-                        $transaction_item_discounts[$transaction_item_id] = (object) [
-                            'transaction_item_id' => $transaction_item_id,
-                            'value' => intval($value),
-                        ];
-                    }
-                }
-                if( preg_match($discount_type_, $key) ) {
-                    $transaction_item_id = intval( explode('-', $key)[1] );
-
-                    $fixed = $value == 'fixed';
-                    $percentage = $value == 'percentage';
-
-                    if(isset($transaction_item_discounts[$transaction_item_id])) {
-                        $transaction_item_discounts[$transaction_item_id]->fixed_amount = $fixed;
-                        $transaction_item_discounts[$transaction_item_id]->percentage = $percentage;
-                    }
-                }
-                if( preg_match($per_item_, $key) ) {
-                    $transaction_item_id = intval( explode('-', $key)[1] );
-
-                    if(isset($transaction_item_discounts[$transaction_item_id])) {
-                        $transaction_item_discounts[$transaction_item_id]->per_item = boolval($value);
-                    }
-                }
-
-            }
-
-            if(isset($transaction_item_discounts)) {
-                $transaction_item_discounts = json_decode( json_encode($transaction_item_discounts), true);
-
-                foreach($transaction_item_discounts as $item) {
-                    $transaction_item = \App\Models\Discount::
-                        updateOrCreate(
-                            [
-                                'transaction_item_id' => $item['transaction_item_id'],
-                            ],
-                            [
-                                'value'               => isset($item['value']) ? $item['value'] : null,
-                                'per_item'            => isset($item['per_item']) ? $item['per_item'] : null,
-                                'fixed_amount'        => isset($item['fixed_amount']) ? $item['fixed_amount'] : null,
-                                'percentage'          => isset($item['percentage']) ? $item['percentage'] : null,
-                            ]
-                        );
+                if(intval($value) > 0) {
+                    $transaction_item_discounts[$transaction_item_id] = (object) [
+                        'transaction_item_id' => $transaction_item_id,
+                        'value' => intval($value),
+                    ];
                 }
             }
+            if( preg_match($discount_type_, $key) ) {
+                $transaction_item_id = intval( explode('-', $key)[1] );
+
+                $fixed = $value == 'fixed';
+                $percentage = $value == 'percentage';
+
+                if(isset($transaction_item_discounts[$transaction_item_id])) {
+                    $transaction_item_discounts[$transaction_item_id]->fixed_amount = $fixed;
+                    $transaction_item_discounts[$transaction_item_id]->percentage = $percentage;
+                }
+            }
+            if( preg_match($per_item_, $key) ) {
+                $transaction_item_id = intval( explode('-', $key)[1] );
+
+                if(isset($transaction_item_discounts[$transaction_item_id])) {
+                    $transaction_item_discounts[$transaction_item_id]->per_item = boolval($value);
+                }
+            }
+
         }
 
-        function saveTransactionPayments($request)
-        {
+        if(isset($transaction_item_discounts)) {
+            $transaction_item_discounts = json_decode( json_encode($transaction_item_discounts), true);
 
-            if(intval($request->payment_type_id) == 1) {
-
+            foreach($transaction_item_discounts as $item) {
+                $transaction_item = \App\Models\Discount::
+                    updateOrCreate(
+                        [
+                            'transaction_item_id' => $item['transaction_item_id'],
+                        ],
+                        [
+                            'value'               => isset($item['value']) ? $item['value'] : null,
+                            'per_item'            => isset($item['per_item']) ? $item['per_item'] : null,
+                            'fixed_amount'        => isset($item['fixed_amount']) ? $item['fixed_amount'] : null,
+                            'percentage'          => isset($item['percentage']) ? $item['percentage'] : null,
+                        ]
+                    );
             }
-            elseif(intval($request->payment_type_id) == 2) {
-
-            }
-            elseif(intval($request->payment_type_id) == 3) {
-
-            }
-            elseif(intval($request->payment_type_id) == 4) {
-
-            }
-
-
-            // return $transaction_payment;
         }
+    }
+
+    function saveTransactionPayments($request)
+    {
+
+        if(intval($request->payment_type_id) == 1) {
+
+        }
+        elseif(intval($request->payment_type_id) == 2) {
+
+        }
+        elseif(intval($request->payment_type_id) == 3) {
+
+        }
+        elseif(intval($request->payment_type_id) == 4) {
+
+        }
+
+
+        // return $transaction_payment;
+    }
 
     public function create(Request $request)
     {
@@ -601,101 +603,101 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         return Voyager::view($view, compact('dataType', 'dataTypeContent', 'isModelTranslatable', 'branches', 'branch_products', 'payment_methods', 'payment_types', 'customers', 'business_customers', 'branch_employees', 'logged_employee'));
     }
 
-        function fetchBranches()
-        {
-            return \App\Models\Branch::get();
+    function fetchBranches()
+    {
+        return \App\Models\Branch::get();
+    }
+
+    function fetchCustomers()
+    {
+        return \App\Models\Customer::orderBy('first_name', 'ASC')
+                    ->with('balance')
+                    ->get();
+    }
+
+    function fetchBusinessCustomers()
+    {
+        return \App\Models\BusinessCustomer::orderBy('name', 'ASC')->get();
+    }
+
+    function fetchBranchEmployees()
+    {
+        $branch_id = $this->getBranch('id');
+        return \App\Models\BranchEmployee::when($branch_id, function($q) use($branch_id) {
+                        $q->where('branch_id', $branch_id);
+                    })
+                    ->with('employee')
+                    ->get();
+    }
+
+    function fetchBranchProducts()
+    {
+        $branch_id = $this->getBranch('id');
+
+        $branch_products = \App\Models\BranchProduct::when($branch_id, function($q) use ($branch_id) {
+                return $q->where('branch_id', $branch_id);
+            })
+            ->with('product.measurementUnit')
+            ->get();
+        foreach ($branch_products as $key => $value) {
+            $branch_products[$key]->product_name = $value->product->name;
         }
+        return $branch_products;
+    }
 
-        function fetchCustomers()
-        {
-            return \App\Models\Customer::orderBy('first_name', 'ASC')
-                        ->with('balance')
-                        ->get();
-        }
+    function saveProducts($request, $transaction_id)
+    {
+        $pattern_ = '/^(item_)(\d*)$/';
 
-        function fetchBusinessCustomers()
-        {
-            return \App\Models\BusinessCustomer::orderBy('name', 'ASC')->get();
-        }
+        foreach ( $request->all() as $key => $value ) {
+            if( preg_match($pattern_, $key) ) {
 
-        function fetchBranchEmployees()
-        {
-            $branch_id = $this->getBranch('id');
-            return \App\Models\BranchEmployee::when($branch_id, function($q) use($branch_id) {
-                            $q->where('branch_id', $branch_id);
-                        })
-                        ->with('employee')
-                        ->get();
-        }
+                $params = json_decode($value);
 
-        function fetchBranchProducts()
-        {
-            $branch_id = $this->getBranch('id');
+                $transaction_item = \App\Models\TransactionItem::
 
-            $branch_products = \App\Models\BranchProduct::when($branch_id, function($q) use ($branch_id) {
-                    return $q->where('branch_id', $branch_id);
-                })
-                ->with('product.measurementUnit')
-                ->get();
-            foreach ($branch_products as $key => $value) {
-                $branch_products[$key]->product_name = $value->product->name;
-            }
-            return $branch_products;
-        }
+                updateOrCreate(
+                    [
+                        'transaction_id'    => $transaction_id,
+                        'branch_product_id' => intval($params->branch_product_id),
+                    ],
+                    [
+                        'price_at_purchase' => floatval($params->selection->price),
+                        'quantity'          => $params->quantity,
+                        'tbd'               => $params->tbd,
+                        'linear_meters'     => isset($params->linear_meters) ? $params->linear_meters : null,
+                    ]
+                );
 
-        function saveProducts($request, $transaction_id)
-        {
-            $pattern_ = '/^(item_)(\d*)$/';
-
-            foreach ( $request->all() as $key => $value ) {
-                if( preg_match($pattern_, $key) ) {
-
-                    $params = json_decode($value);
-
-                    $transaction_item = \App\Models\TransactionItem::
-
-                    updateOrCreate(
-                        [
-                            'transaction_id'    => $transaction_id,
-                            'branch_product_id' => intval($params->branch_product_id),
-                        ],
-                        [
-                            'price_at_purchase' => floatval($params->selection->price),
-                            'quantity'          => $params->quantity,
-                            'tbd'               => $params->tbd,
-                            'linear_meters'     => isset($params->linear_meters) ? $params->linear_meters : null,
-                        ]
-                    );
-
-                    \App\Models\JobOrder::create([
-                        'transaction_item_id' => $transaction_item['id'],
-                        'status'              => 'pending',
-                    ]);
-                }
-            }
-        }
-
-        function otherTxnFields($txid)
-        {
-            $branch_id = $this->getBranch('id');
-
-            if($branch_id) {
-                \App\Models\Transaction::where('id', $txid)->update(['branch_id' => $branch_id]);
+                \App\Models\JobOrder::create([
+                    'transaction_item_id' => $transaction_item['id'],
+                    'status'              => 'pending',
+                ]);
             }
         }
+    }
 
-        function createTx($request)
-        {
-            return \App\Models\Transaction::create([
-                'customer_id'               => $request->customer_id,
-                'employee_id'               => $request->employee_id,
-                'branch_id'                 => $this->getBranch('id'),
-                'transaction_payment_id'    => null,
-                'business_customer_id'      => $request->business_customer_id,
-                'status'                    => 'pending',
-                'transaction_placement'     => null,
-            ]);
+    function otherTxnFields($txid)
+    {
+        $branch_id = $this->getBranch('id');
+
+        if($branch_id) {
+            \App\Models\Transaction::where('id', $txid)->update(['branch_id' => $branch_id]);
         }
+    }
+
+    function createTx($request)
+    {
+        return \App\Models\Transaction::create([
+            'customer_id'               => $request->customer_id,
+            'employee_id'               => $request->employee_id,
+            'branch_id'                 => $this->getBranch('id'),
+            'transaction_payment_id'    => null,
+            'business_customer_id'      => $request->business_customer_id,
+            'status'                    => 'pending',
+            'transaction_placement'     => null,
+        ]);
+    }
 
 
     public function destroy(Request $request, $id)
@@ -764,15 +766,15 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         return redirect()->route("voyager.{$dataType->slug}.index")->with($data);
     }
 
-        function check_password_($password, $dataType)
-        {
-            $cred = [ 'id' => Auth::user()->id, 'password' => $password ];
+    function check_password_($password, $dataType)
+    {
+        $cred = [ 'id' => Auth::user()->id, 'password' => $password ];
 
-            if(!Auth::guard('web')->attempt($cred)) {
-                // return true if password is incorrect
-                return true;
-            }
+        if(!Auth::guard('web')->attempt($cred)) {
+            // return true if password is incorrect
+            return true;
         }
+    }
 
 
     public function storeTx(CreateQuotationValidation $request)
@@ -836,64 +838,64 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         return response(null, 200);
     }
-        function savePaymentInfo($payment, $delivery_fee)
-        {
-            #    Payment types value:
-            #       1 Downpayment
-            #       2 Full payment
-            #       3 Periodic payment
-            #       4 Final payment
+    function savePaymentInfo($payment, $delivery_fee)
+    {
+        #    Payment types value:
+        #       1 Downpayment
+        #       2 Full payment
+        #       3 Periodic payment
+        #       4 Final payment
 
-            $is_downpayment = ($payment['payment_type_id'] == 1);
-            $txn_payment = \App\Models\TransactionPayment::create([
-                'amount_paid' => $is_downpayment ? floatval($payment['amount_tendered']) : floatval($payment['grand_total']),
-                'payment_type_id' => $payment['payment_type_id'],
-                'payment_method_id' => $payment['payment_method_id'],
+        $is_downpayment = ($payment['payment_type_id'] == 1);
+        $txn_payment = \App\Models\TransactionPayment::create([
+            'amount_paid' => $is_downpayment ? floatval($payment['amount_tendered']) : floatval($payment['grand_total']),
+            'payment_type_id' => $payment['payment_type_id'],
+            'payment_method_id' => $payment['payment_method_id'],
+        ]);
+
+        if( $is_downpayment ) {
+            \App\Models\Balance::create([
+                'customer_id' => $payment['customer_id'],
+                'updated_at_payment_id' => $txn_payment->id,
+                'outstanding_balance' => floatval($payment['balance']),
             ]);
-
-            if( $is_downpayment ) {
-                \App\Models\Balance::create([
-                    'customer_id' => $payment['customer_id'],
-                    'updated_at_payment_id' => $txn_payment->id,
-                    'outstanding_balance' => floatval($payment['balance']),
-                ]);
-            }
-
-            $this->delivieryFees($delivery_fee, $txn_payment->id);
-
-            return $txn_payment->id;
         }
 
-        function delivieryFees($request, $txid)
-        {
-            if( isset($request) ) {
-                $fees = $request;
-                \App\Models\DeliveryFees::create([
-                    'transaction_payment_id' => $txid,
-                    'outside_brgy'           => $fees['outside'],
-                    'long'                   => $fees['long'],
-                    'distance'               => intval($fees['distance']),
-                    'total'                  => doubleval($fees['shippingTotal']),
-                ]);
-            }
+        $this->delivieryFees($delivery_fee, $txn_payment->id);
+
+        return $txn_payment->id;
+    }
+
+    function delivieryFees($request, $txid)
+    {
+        if( isset($request) ) {
+            $fees = $request;
+            \App\Models\DeliveryFees::create([
+                'transaction_payment_id' => $txid,
+                'outside_brgy'           => $fees['outside'],
+                'long'                   => $fees['long'],
+                'distance'               => intval($fees['distance']),
+                'total'                  => doubleval($fees['shippingTotal']),
+            ]);
+        }
+    }
+
+    function createTxno($branch_id=null)
+    {
+        $tx = Transaction::where('branch_id', $branch_id ?? $this->getBranch('id'))
+            ->whereNotNull('txno')
+            ->latest('id')
+            ->first('txno');
+
+        if( is_null($tx) ) {
+            return '000001';
         }
 
-        function createTxno($branch_id=null)
-        {
-            $tx = Transaction::where('branch_id', $branch_id ?? $this->getBranch('id'))
-                ->whereNotNull('txno')
-                ->latest('id')
-                ->first('txno');
-
-            if( is_null($tx) ) {
-                return '000001';
-            }
-
-            $x = intval($tx->txno) + 1;
-            while ( strlen(strval($x)) < 6 ) {
-                $x = '0' . strval($x);
-            }
-
-            return $x;
+        $x = intval($tx->txno) + 1;
+        while ( strlen(strval($x)) < 6 ) {
+            $x = '0' . strval($x);
         }
+
+        return $x;
+    }
 }

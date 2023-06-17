@@ -80,10 +80,6 @@
 <div style="position: relative; height: 400px;">
     @include('printout.charge-invoice.section2')
 </div>
-<div style="position: relative; height: 400px;">
-    @include('printout.charge-invoice.section3')
-</div>
-
 
 
 

@@ -1,9 +1,4 @@
-<div class="row">
-	@include('printout.cutting-list.section1')
-</div>
-<div class="row">
-	@include('printout.cutting-list.section2')
-</div>
+
 
 <style type="text/css">
     table {
@@ -85,3 +80,9 @@
 
     input[type="checkbox"] {}
 </style>
+<div class="row">
+	@include('printout.cutting-list.section1')
+</div>
+<div class="row">
+	@include('printout.cutting-list.section2')
+</div>
