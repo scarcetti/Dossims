@@ -14,6 +14,12 @@ class InventoryTransfer extends Model
         'referrer',
         'referrer_contact',
         'distributor_id',
-        'branch_id',
+        'receiver_branch_id',
+        'sender_branch_id',
     ];
+
+    public function batch()
+    {
+        return $this->hasMany(InventoryTransferBatch::class);
+    }
 }

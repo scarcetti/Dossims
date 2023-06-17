@@ -23,12 +23,16 @@
                 <br><br><br>
                 <div class="col-md-6">
                     <small class="rr">Referrer</small>
-                    <input v-model="inboundsForm.referrer" class="form-control" placeholder="enter referrer's name" type="text" min="0"
+                    <br v-if="confirmOutboundStatus">
+                    <label v-if="confirmOutboundStatus" style="font-weight: bold">@{{ outboundsForm.referrer }}</label>
+                    <input v-model="outboundsForm.referrer" class="form-control" placeholder="enter referrer's name" type="text" min="0"
                         style="margin: 0 0 6px 0">
                 </div>
                 <div class="col-md-6">
                     <small class="rr">Referrer Contact</small>
-                    <input v-model="inboundsForm.referrer_contact" class="form-control" placeholder="+639 ..." type="text" min="0"
+                    <br v-if="confirmOutboundStatus">
+                    <label v-if="confirmOutboundStatus" style="font-weight: bold">@{{ outboundsForm.referrer_contact }}</label>
+                    <input v-model="outboundsForm.referrer_contact" class="form-control" placeholder="+639 ..." type="text" min="0"
                         style="margin: 0 0 6px 0">
                 </div>
                 <br><br>
@@ -42,7 +46,7 @@
                     release outbounds</span>
                 <span v-if="confirmOutboundStatus" class="btn btn-danger" @click="confirmOutboundStatus = false"
                     readonly>Cancel</span>
-                <span v-else class="btn btn-warning" @click="createOutbound()" readonly>Create Outbound</span>
+                <span v-else-if="activeBranch.id" class="btn btn-warning" @click="createOutboundDialog()" readonly>Create Outbound</span>
             </div>
         </div>
     </div>

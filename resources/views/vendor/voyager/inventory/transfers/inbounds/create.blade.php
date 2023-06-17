@@ -15,12 +15,16 @@
                 {{-- <input name="branch_id" value="{{ branch_() }}" hidden /> --}}
                 <div class="col-md-6">
                     <small class="rr">Referrer</small>
-                    <input v-model="inboundsForm.referrer" class="form-control" placeholder="enter referrer's name" type="text" min="0"
-                        style="margin: 0 0 6px 0">
+                    <br v-if="confirmInboundStatus">
+                    <label v-if="confirmInboundStatus" style="font-weight: bold">@{{ inboundsForm.referrer }}</label>
+                    <input v-else v-model="inboundsForm.referrer" class="form-control" placeholder="enter referrer's name" type="text" min="0"
+                    style="margin: 0 0 6px 0">
                 </div>
                 <div class="col-md-6">
                     <small class="rr">Referrer Contact</small>
-                    <input v-model="inboundsForm.referrer_contact" class="form-control" placeholder="+639 ..." type="text" min="0"
+                    <br v-if="confirmInboundStatus">
+                    <label v-if="confirmInboundStatus" style="font-weight: bold">@{{ inboundsForm.referrer_contact }}</label>
+                    <input v-else v-model="inboundsForm.referrer_contact" class="form-control" placeholder="+639 ..." type="text" min="0"
                         style="margin: 0 0 6px 0">
                 </div>
                 <br><br>
@@ -34,7 +38,7 @@
                     receive inbounds</span>
                 <span v-if="confirmInboundStatus" class="btn btn-danger" @click="confirmInboundStatus = false"
                     readonly>Cancel</span>
-                <span v-else class="btn btn-warning" @click="createInbound()" readonly>Create Inbound</span>
+                <span v-else class="btn btn-warning" @click="createInboundDialog()" readonly>Create Inbound</span>
             </div>
         </div>
     </div>

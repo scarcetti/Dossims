@@ -12,10 +12,12 @@ class InventoryTransferBatch extends Model
         'product_id',
         'price',
         'inventory_transfer_id',
+        'pcs',
+        'meters',
     ];
 
     public function batches()
     {
-        return $this->hasMany(InventoryTransfer::class);
+        return $this->belongsTo(InventoryTransfer::class);
     }
 }

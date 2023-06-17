@@ -94,6 +94,7 @@
     <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js" integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory.css') }}"> --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory-transfers.css') }}">
 
@@ -105,7 +106,7 @@
             },
             data() {
                 return {
-                    activeBranch: [],
+                    activeBranch: {},
                     branches: {!! $branches ?? '' !!},
                     inboundStocks: {!! $branch_stocks ?? '' !!},
                     outboundStocks: {!! $branch_stocks ?? '' !!},
@@ -213,38 +214,37 @@
                         // const add_err = currentValue < minValue || currentValue > maxValue
                         // this.handle_error(query, add_err)
                     })
-                    console.log(values)
+                    // console.log(values)
                 },
                 getMax() {
-                    console.log(123123)
+                    // console.log(123123)
                 },
-                createInbound() {
+                createInboundDialog() {
                     this.confirmInboundList = []
                     const hasValues = this.inboundStocks_.filter(item => (item.hasOwnProperty('pcs') || item.hasOwnProperty('meters')) && item.pcs > 0)
                     hasValues.forEach(item => {
                         this.confirmInboundList.push({
-                            id: item.id,
+                            product_id: item.id,
                             name: item.product.name,
                             pcs: item.pcs ? item.pcs : null,
                             meters: item.meters ? item.meters : null,
                         })
                     })
-                    console.log([this.confirmInboundList, this.confirmOutboundList])
+                    // console.log([this.confirmInboundList, this.confirmOutboundList])
                     this.confirmInboundStatus = true
                 },
                 confirmInbounds() {
                     this.confirmInboundStatus = false
-                    alert('Inbounds created!')
-                    window.location.reload()
+                    this.createTransfer('inbound')
                 },
-                createOutbound() {
+                createOutboundDialog() {
                     this.confirmOutboundList = []
                     const hasValues = this.outboundStocks_.filter(item => (item.hasOwnProperty('pcs') || item.hasOwnProperty('meters') && Number(item.pcs) <= item.quantity))
                     hasValues.forEach(item => {
                         if (item.hasOwnProperty('meters')) {
                             if((Number(item.meters) * Number(item.pcs)) <= item.quantity) {
                                 this.confirmOutboundList.push({
-                                    id: item.id,
+                                    product_id: item.id,
                                     name: item.product.name,
                                     pcs: item.pcs ? item.pcs : null,
                                     meters: item.meters ? item.meters : null,
@@ -253,20 +253,46 @@
                         }
                         else {
                             this.confirmOutboundList.push({
-                                id: item.id,
+                                product_id: item.id,
                                 name: item.product.name,
                                 pcs: item.pcs ? item.pcs : null,
                                 meters: item.meters ? item.meters : null,
                             })
                         }
                     })
-                    console.log([this.confirmInboundList, this.confirmOutboundList])
+                    // console.log([this.confirmInboundList, this.confirmOutboundList])
                     this.confirmOutboundStatus = true
                 },
                 confirmOutbounds() {
                     this.confirmOutboundStatus = false
-                    alert('Outbounds created!')
-                    window.location.reload()
+                    this.createTransfer('outbound')
+                },
+                createTransfer(direction) {
+                    const isInbound = direction == 'inbound'
+                    const payload = {
+                        direction: direction,
+                        arrival_date: new Date().toISOString(),
+                        referrer: isInbound ? this.inboundsForm.referrer : this.outboundsForm.referrer,
+                        referrer_contact: isInbound ? this.inboundsForm.referrer_contact : this.outboundsForm.referrer_contact,
+                        distributor_id: isInbound ? null : null,
+                        receiver_branch_id: isInbound ? {!! branch_() !!} : this.activeBranch.id,
+                        sender_branch_id: isInbound ? null : {!! branch_() !!},
+                        products: isInbound ? this.confirmInboundList : this.confirmOutboundList,
+                    }
+
+                    axios.post(`${window.location.origin}/admin/inventory/transfers/${direction}/create`, payload)
+                        .then(response => {
+                            alert(`${direction == 'inbound' ? 'Inbounds' : 'Outbounds'} created!`)
+                            window.location.reload()
+                        })
+                        .catch(x => {
+                            // const y = Object.keys(x.response.data.errors)
+                            // for (let key of y) {
+                            //     alert(x.response.data.errors[key][0])
+                            //     break
+                            // }
+                            alert('err')
+                        })
                 },
                 branchSelected() {
 

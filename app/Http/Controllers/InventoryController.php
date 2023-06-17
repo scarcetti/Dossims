@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Branch;
 use App\Models\BranchProduct;
+use App\Models\InventoryTransfer;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
@@ -79,11 +81,28 @@ class InventoryController extends Controller
 
     public function createInbound(Request $request)
     {
-        # code...
+        $payload = $request->all();
+        $payload['arrival_date'] = Carbon::parse($request->arrival_date);
+        $inventory_transfer = InventoryTransfer::create($payload)->batch()->createMany($request->products);
+        return response()->json(compact('inventory_transfer'));
     }
 
     public function createOutbound(Request $request)
     {
-        # code...
+        $payload = $request->all();
+        $inventory_transfer = InventoryTransfer::create($payload);
+        return response()->json(compact('inventory_transfer'));
+    }
+
+    public function fetchInbound()
+    {
+        $inventory_transfer = InventoryTransfer::where('direction', 'inbound')->get();
+        return $inventory_transfer;
+    }
+
+    public function fetchOutbound()
+    {
+        $inventory_transfer = InventoryTransfer::where('direction', 'outbound')->get();
+        return $inventory_transfer;
     }
 }
