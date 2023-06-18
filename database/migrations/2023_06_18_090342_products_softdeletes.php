@@ -22,6 +22,9 @@ class ProductsSoftdeletes extends Migration
         Schema::table('transactions', function (Blueprint $table) {
             $table->softDeletes();
         });
+        Schema::table('customers', function (Blueprint $table) {
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -38,6 +41,9 @@ class ProductsSoftdeletes extends Migration
             $table->dropColumn('deleted_at');
         });
         Schema::table('transactions', function (Blueprint $table) {
+            $table->dropColumn('deleted_at');
+        });
+        Schema::table('customers', function (Blueprint $table) {
             $table->dropColumn('deleted_at');
         });
     }
