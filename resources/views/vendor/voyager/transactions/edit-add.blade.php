@@ -247,13 +247,13 @@
                     }
 
                     if(Number(qtyVal) < 1) {
-                        if(window.confirm('Remove item from list?')) {
-                            this.value.splice(index, 1)
-                        }
-                        else {
+                        // if(window.confirm('Remove item from list?')) {
+                        //     this.value.splice(index, 1)
+                        // }
+                        // else {
                             const qtyVal = document.querySelector(`.item-${index} [name=${qtyQuery}-quantity]`).value = 1
                             result = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal) * parseFloat(linearMeter)).toFixed(2)
-                        }
+                        // }
                     }
                     else {
                         result = '₱ ' + (Number(qtyVal) * Number(price) * parseFloat(tbdVal) * parseFloat(linearMeter)).toFixed(2)
