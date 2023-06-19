@@ -18,6 +18,7 @@ class Customer extends Model
         'contact_no',
         'branch_id',
         'full_name',
+        'address',
     ];
 
     // public function getFullNameAttribute()

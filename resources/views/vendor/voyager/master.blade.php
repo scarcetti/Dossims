@@ -13,6 +13,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <meta name="assets-path" content="{{ route('voyager.voyager_assets') }}"/>
 
+    <meta name="theme-color" content="#6777ef"/>
+    <link rel="apple-touch-icon" href="{{ asset('images/domings.png') }}">
+    <link rel="manifest" href="{{ asset('/manifest.json') }}">
+
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
 

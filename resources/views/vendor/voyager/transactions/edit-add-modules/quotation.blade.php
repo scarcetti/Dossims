@@ -60,6 +60,7 @@
 	        <input
                 v-model="value[index].linear_meters"
 	            class="form-control"
+                type="number"
 	            value="1"
 	            :name="`item-${value[index].selection.id}-linear-meters`"
 	            style="margin: 0 0 6px 0"

@@ -11,5 +11,6 @@ class BusinessCustomer extends Model
     protected $fillable = [
         'name',
         'contact_no',
+        'address',
     ];
 }
