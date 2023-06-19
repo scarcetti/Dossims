@@ -1,5 +1,6 @@
 @php
-$total =0
+$total =0;
+$lm = 1;
 @endphp
 <div style=" position: relative; font-size:18px">
     <table width="100%">
@@ -44,14 +45,19 @@ $total =0
             </tr>
 
             @foreach( $transaction->transactionItems as $products )
+                @if($products->linear_meters != null)
+                    {{ $lm = $products->linear_meters }}
+                @endif
+
                 <tr>
+                    {{ $products->linear_meters }}
                     <td align="center">{{ $products->quantity }}</td>
                     <td align="center">{{ $products->linear_meters }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
                     <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
                     <td align="center">₱{{ $products->price_at_purchase }}</td>
-                    <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters) }}</td>
+                    <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm) }}</td>
                     @php
-                        $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)
+                        $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)
                     @endphp
                 </tr>
 
