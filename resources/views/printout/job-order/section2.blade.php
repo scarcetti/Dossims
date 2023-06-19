@@ -1,5 +1,6 @@
 @php
 $total =0;
+$lm = 1;
 $balance = $transaction->customer->balance !== null ? $transaction->customer->balance->outstanding_balance : "0";
 // $showOfficialReceipt = $transaction->payment->payment_method_id == 1 ? true:false;
 @endphp
@@ -32,16 +33,19 @@ $balance = $transaction->customer->balance !== null ? $transaction->customer->ba
             @foreach( $transaction->transactionItems as $products )
 
                 @if ($products->branchProduct->product->ready_made == false)
+                @if($products->linear_meters != null)
+                    {{ $lm = $products->linear_meters }}
+                @endif
                     <tr>
                         <td align="center">{{ $products->quantity }}</td>
-                        <td align="center">{{ $products->linear_meters }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
+                        <td align="center">{{ $lm }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
                         @if ($products->branchProduct->product->ready_made == false)
                             <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
                         @endif
                         <td align="center">₱{{ $products->price_at_purchase }}</td>
-                        <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)  }}</td>
+                        <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)  }}</td>
                         @php
-                            $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)
+                            $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)
                         @endphp
                     </tr>
                 @endif

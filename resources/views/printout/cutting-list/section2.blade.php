@@ -1,5 +1,6 @@
 @php
-$total = 0;
+$total =0;
+$lm = 1;
 $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->payment->delivery_fees->total : "0";
 @endphp
 <div style=" position: relative; font-size:18px">
@@ -23,6 +24,9 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
         <tbody>
             @foreach( $transaction->transactionItems as $products )
                 @if ($products->branchProduct->product->ready_made == false)
+                @if($products->linear_meters != null)
+                    {{ $lm = $products->linear_meters }}
+                @endif
                     <tr align="center">
                         <td style="font-weight: bold;" colspan="2"> {{ $products->branchProduct->product->productCategory->name }} </td>
                         <td colspan="2">{{ $products->branchProduct->product->name }}</td>
@@ -39,17 +43,18 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
                     <tr>
                         <td align="center">{{ $products->quantity }}  </td>
                         <td align="center">{{ $products->branchProduct->product->measurementUnit->name }}</td>
-                        <td align="center" colspan="2">{{ $products->linear_meters }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
+                        <td align="center" colspan="2">{{ $lm }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
                         <td align="center">₱{{ $products->branchProduct->price }}</td>
-                        <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)  }}</td>
+                        <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)  }}</td>
                     </tr>
                     @php
-                    $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($products->linear_meters)
+                    $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)
                 @endphp
                 @endif
-            @endforeach
+                @endforeach
 
-        </tbody>
+            </tbody>
+            {{-- {{ $transaction }} --}}
     </table>
     <table width="100%">
         <tbody>
