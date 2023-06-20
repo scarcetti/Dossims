@@ -677,29 +677,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         }
     }
 
-    function otherTxnFields($txid)
-    {
-        $branch_id = $this->getBranch('id');
-
-        if($branch_id) {
-            \App\Models\Transaction::where('id', $txid)->update(['branch_id' => $branch_id]);
-        }
-    }
-
-    function createTx($request)
-    {
-        return \App\Models\Transaction::create([
-            'customer_id'               => $request->customer_id,
-            'employee_id'               => $request->employee_id,
-            'branch_id'                 => $this->getBranch('id'),
-            'transaction_payment_id'    => null,
-            'business_customer_id'      => $request->business_customer_id,
-            'status'                    => 'pending',
-            'transaction_placement'     => null,
-        ]);
-    }
-
-
     public function destroy(Request $request, $id)
     {
         $slug = $this->getSlug($request);
@@ -786,6 +763,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                 'quantity'          => $item['quantity'],
                 'tbd'               => $item['tbd'],
                 'linear_meters'     => $item['linear_meters'] ?? null,
+                'job_order_note'     => $item['job_order_note'] ?? null,
             ];
         }
 

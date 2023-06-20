@@ -33,7 +33,8 @@ class TransactionItemCreated
         if( !$ready_made ) {
             JobOrder::create([
                 'transaction_item_id' => $transaction_item->id,
-                'status' => 'in progress'
+                'status' => 'in progress',
+                'note' => json_encode((object) [ 'color' => $transaction_item->job_order_note]),
             ]);
         }
     }

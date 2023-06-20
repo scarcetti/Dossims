@@ -16,6 +16,7 @@ class TransactionItem extends Model
         'quantity',
         'linear_meters',
         'tbd',
+        'job_order_note',
     ];
 
     protected $dispatchesEvents = [

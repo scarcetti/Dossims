@@ -68,6 +68,16 @@
 	            v-on:input="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
 	        >
     	</div>
+    	<div v-if="value[index].selection.product.ready_made === false">
+	        <small>Color: </small>
+	        <input
+                v-model="value[index].job_order_note"
+	            class="form-control"
+	            type="text"
+	            :name="`item-${value[index].selection.id}-job_order_note`"
+	            style="margin: 0 0 6px 0"
+	        >
+    	</div>
     	<div v-show="false">
 	        <small>TBD field: </small>
 	        <input
