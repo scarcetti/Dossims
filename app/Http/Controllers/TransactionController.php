@@ -826,7 +826,8 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         $is_downpayment = ($payment['payment_type_id'] == 1);
         $txn_payment = \App\Models\TransactionPayment::create([
-            'amount_paid' => $is_downpayment ? floatval($payment['amount_tendered']) : floatval($payment['grand_total']),
+            // 'amount_paid' => $is_downpayment ? floatval($payment['amount_tendered']) : floatval($payment['grand_total']),
+            'amount_paid' => $is_downpayment ? floatval($payment['downpayment_amount']) : floatval($payment['grand_total']),
             'payment_type_id' => $payment['payment_type_id'],
             'payment_method_id' => $payment['payment_method_id'],
         ]);

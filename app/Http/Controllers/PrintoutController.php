@@ -187,10 +187,11 @@ class PrintoutController extends Controller
         $year = $date->format('Y');
         $branch_name = \App\Models\Branch::select('name')->find($request->branch_id)->name;
 
+
+        // return \App\Models\TransactionPayment::with('transaction')->get();
+
         $pdf = PDF::setPaper('a4', 'landscape')->setWarnings(false);
-
         $pdf->loadView('printout.salesreport.index', compact('month', 'year', 'branch_name'));
-
         return env('APP_DEBUG', false) ?
                     $pdf->stream() :
                     $pdf->download("$m_y-sales-report.pdf");
