@@ -84,7 +84,7 @@ class InventoryController extends Controller
         function fetchInbound($request)
         {
             $inventory_transfer = InventoryTransfer::where('receiver_branch_id', $this->current_branch())
-                    ->with('sender')
+                    ->with('sender', 'batch')
                     ->paginate($perPage = 15, $columns = ['*'], $pageName = 'inbounds');
             return $inventory_transfer;
         }
@@ -92,7 +92,7 @@ class InventoryController extends Controller
         function fetchOutbound($request)
         {
             $inventory_transfer = InventoryTransfer::where('sender_branch_id', $this->current_branch())
-                    ->with('receiver')
+                    ->with('receiver', 'batch')
                     ->paginate($perPage = 15, $columns = ['*'], $pageName = 'outbounds');
             return $inventory_transfer;
         }
@@ -100,6 +100,7 @@ class InventoryController extends Controller
     public function createInbound(Request $request)
     {
         $payload = $request->all();
+        !is_null($payload['arrival_date']) && $this->addStocks($request->products);
         $inventory_transfer = InventoryTransfer::create($payload)->batch()->createMany($request->products);
         return response()->json(compact('inventory_transfer'));
     }
@@ -107,7 +108,65 @@ class InventoryController extends Controller
     public function createOutbound(Request $request)
     {
         $payload = $request->all();
+        $this->subtractStocks($request->products);
         $inventory_transfer = InventoryTransfer::create($payload)->batch()->createMany($request->products);
         return response()->json(compact('inventory_transfer'));
     }
+
+    public function stockArrivalConfirm(Request $request)
+    {
+        $this->addStocks($request->batch);
+        $inventory_transfer = InventoryTransfer::where('id', $request->id)->update(['arrival_date' => Carbon::now()]);
+        return $inventory_transfer;
+    }
+
+    function addStocks($stocks)
+    {
+        foreach($stocks as $stock) {
+            $branch_product = BranchProduct::where('branch_id', $this->current_branch())
+                ->where('product_id', $stock['product_id'])
+                ->first();
+
+            if(is_null($branch_product)) {
+                $branch_product = $this->createBranchProduct($stock['product_id']);
+            }
+
+            if(is_null($stock['meters'])) {
+                $branch_product->quantity += floatval($stock['pcs']);
+                $branch_product->save();
+            }
+            else {
+                $branch_product->quantity += (floatval($stock['pcs']) * floatval($stock['meters']));
+                $branch_product->save();
+            }
+        }
+    }
+    function subtractStocks($stocks)
+    {
+        foreach($stocks as $stock) {
+            $branch_product = BranchProduct::where('branch_id', $this->current_branch())
+                ->where('product_id', $stock['product_id'])
+                ->first();
+
+            if(is_null($stock['meters'])) {
+                $branch_product->quantity -= floatval($stock['pcs']);
+                $branch_product->save();
+            }
+            else {
+                $branch_product->quantity -= (floatval($stock['pcs']) * floatval($stock['meters']));
+                $branch_product->save();
+            }
+        }
+    }
+
+    function createBranchProduct($product_id)
+    {
+        return BranchProduct::create([
+            'quantity' => 0,
+            'product_id' => $product_id,
+            'branch_id' => $this->current_branch(),
+            'price' => 0,
+        ]);
+    }
+
 }

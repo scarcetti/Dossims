@@ -46,6 +46,7 @@ Route::group(['prefix' => 'admin'], function () {
 
             Route::group(['prefix' => 'inbound'], function () {
                 Route::post('create', [InventoryController::class,'createInbound']);
+                Route::post('confirm', [InventoryController::class,'stockArrivalConfirm']);
             });
             Route::group(['prefix' => 'outbound'], function () {
                 Route::post('create', [InventoryController::class,'createOutbound']);
