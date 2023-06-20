@@ -67,6 +67,11 @@
 	            v-on:change="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
 	            v-on:input="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
 	        >
+	        <small class="rr">Color: </small>
+	        <input
+	            class="form-control"
+                type="text"
+	        >
     	</div>
     	<div v-show="false">
 	        <small>TBD field: </small>

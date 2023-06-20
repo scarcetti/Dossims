@@ -13,7 +13,7 @@ $lm = 1;
             </tr>
             <tr>
                 <td class="nob" style="width: 20%">Address:</td>
-                <td class="ob" style="width: 25%" colspan="2"></td>
+                <td class="ob" style="width: 25%" colspan="2">{{ $transaction->customer->address }}</td>
                 <td class="nob" style="width: 15%">Reffered by:</td>
                 <td class="ob" style="width: 25%"></td>
             </tr>

@@ -1,7 +1,9 @@
 <div>
     @if($transaction->customer)
         <div class="form-group  col-md-12" style="margin: 30px 0 15px 0;">
+            <h2 class="float-right" style="font-weight: bold;">Total: @{{ grandTotal }}</h2>
             <label class="control-label" for="name">Customer</label>
+
             <h5>
                 {{ $transaction->customer->first_name }} {{ $transaction->customer->last_name }} {{ $transaction->customer->contact ? '- '. $transaction->customer : '' }}
             </h5>

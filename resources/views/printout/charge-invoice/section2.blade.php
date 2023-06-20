@@ -14,7 +14,7 @@ $lm = 1;
             </tr>
             <tr>
                 <td class="nob">Address:</td>
-                <td class="ob"colspan="3"></td>
+                <td class="ob"colspan="3">{{ $transaction->customer->address }}</td>
             </tr>
             <tr>
                 <td class="nob" style="width: 20%">TIN/SC-TIN:</td>

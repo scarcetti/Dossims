@@ -58,7 +58,7 @@
             </tr>
             <tr>
                 <td class="nob">and address at</td>
-                <td class="ob"></td>
+                <td class="ob">{{ $transaction->customer->address }}</td>
             </tr>
             <tr>
                 <td class="nob">business style of</td>

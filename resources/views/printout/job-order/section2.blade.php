@@ -15,7 +15,7 @@ $balance = $transaction->customer->balance !== null ? $transaction->customer->ba
             </tr>
             <tr>
                 <td class="nob">Address:</td>
-                <td class="ob"colspan="4"></td>
+                <td class="ob"colspan="4">{{ $transaction->customer->address }}</td>
             </tr>
         </tbody>
     </table>

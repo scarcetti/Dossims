@@ -14,7 +14,7 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
             </tr>
             <tr>
                 <td class="nob">Address:</td>
-                <td class="ob"colspan="4"></td>
+                <td class="ob"colspan="4">{{ $transaction->customer->address }}</td>
             </tr>
         </tbody>
     </table>
@@ -24,9 +24,12 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
         <tbody>
             @foreach( $transaction->transactionItems as $products )
                 @if ($products->branchProduct->product->ready_made == false)
-                @if($products->linear_meters != null)
-                    {{ $lm = $products->linear_meters }}
-                @endif
+                    @if($products->linear_meters != null)
+                        @php
+                            $lm = $products->linear_meters
+                        @endphp
+                    @endif
+
                     <tr align="center">
                         <td style="font-weight: bold;" colspan="2"> {{ $products->branchProduct->product->productCategory->name }} </td>
                         <td colspan="2">{{ $products->branchProduct->product->name }}</td>
@@ -48,10 +51,10 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
                         <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)  }}</td>
                     </tr>
                     @php
-                    $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)
-                @endphp
+                        $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)
+                    @endphp
                 @endif
-                @endforeach
+            @endforeach
 
             </tbody>
             {{-- {{ $transaction }} --}}
@@ -77,3 +80,4 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
         </tbody>
     </table>
 </div>
+{{-- {{ $transaction }} --}}
