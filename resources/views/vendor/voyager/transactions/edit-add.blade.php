@@ -171,7 +171,7 @@
                             delivery_fee: this.deliveryFees,
                         }
 
-                    if(this.downpaymentAmount == (parseFloat(this.productsTotal) * 2)) {
+                    if(this.downpaymentAmount == (parseFloat(this.productsTotal) * 2 + this.deliveryFees.shippingTotal)) {
                         // Check the user's response
                         if (confirm("Payment is the same as overall total, change to full payment instead?")) {
                             this.paymentType = { "id": 2, "name": "Full payment" }
@@ -180,7 +180,7 @@
                             this.amountTendered = x
                         }
                     }
-                    else if(this.downpaymentAmount > (parseFloat(this.productsTotal) * 2)) {
+                    else if(this.downpaymentAmount > (parseFloat(this.productsTotal) * 2 + this.deliveryFees.shippingTotal)) {
                         alert("Downpayment amount exceeds full payment amount!")
                     }
                     else {
