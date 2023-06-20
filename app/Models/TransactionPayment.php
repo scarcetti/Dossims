@@ -13,6 +13,7 @@ class TransactionPayment extends Model
         'payment_type_id',
         'payment_method_id',
         'remarks',
+        'downpayment_id',
     ];
 
     public function transaction()
@@ -33,5 +34,16 @@ class TransactionPayment extends Model
     public function delivery_fees()
     {
         return $this->hasOne(DeliveryFees::class);
+    }
+
+    public function downpayment()
+    {
+        return $this->belongsTo(TransactionPayment::class, 'downpayment_id', 'id');
+    }
+
+    public function final_payment()
+    {
+        // return $this->hasOne(TransactionPayment::class, 'id', 'downpayment_id');
+        return $this->belongsTo(TransactionPayment::class, 'id', 'downpayment_id');
     }
 }

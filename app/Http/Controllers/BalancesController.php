@@ -6,6 +6,7 @@ use App\Models\Balance;
 use App\Models\Branch;
 use App\Models\Employee;
 use App\Models\Transaction;
+use App\Models\TransactionPayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -98,6 +99,25 @@ class BalancesController extends Controller
 
         $employee_id = Employee::findOrFail(Auth::user()->id)->id;
 
+        $transaction_payment_id = TransactionPayment::whereHas('transaction.customer', function($q) use($request) {
+                    $q->where('id', $request->balances_['customer_id']);
+                })
+                ->doesntHave('final_payment')
+                ->latest()
+                ->first()->id;
+
+
+        # fetch if unpaid
+        // $zczx = Transaction::where('customer_id', $request->balances_['customer_id'])
+        //             ->whereHas('payment', function($q) {
+        //                 $q->where('payment_type_id', 1);
+        //             })
+        //             ->doesntHave('payment.final_payment')
+        //             ->with('payment')
+        //             ->latest()
+        //             ->first('id');
+// dd($zczx);
+
         $transaction = [
             'customer_id'               => $request->balances_['customer_id'] ?? null,
             'branch_id'                 => $this->getBranch('id'),
@@ -107,10 +127,11 @@ class BalancesController extends Controller
             'txno'                      => $this->createTxno(),
         ];
 
-        $txn_payment = \App\Models\TransactionPayment::create([
-            'amount_paid' => $request->grand_total,
-            'payment_type_id' => 4,
+        $txn_payment = TransactionPayment::create([
+            'amount_paid'       => $request->grand_total,
+            'payment_type_id'   => 4,
             'payment_method_id' => $request->payment_method['id'],
+            'downpayment_id'    => $transaction_payment_id,
         ])->transaction()->create($transaction);
 
         $deleted = Balance::where('id', $request->balances_['id'])->delete();

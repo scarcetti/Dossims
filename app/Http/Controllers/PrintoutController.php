@@ -190,8 +190,25 @@ class PrintoutController extends Controller
 
         // return \App\Models\TransactionPayment::with('transaction')->get();
 
+        $transaction_payments = \App\Models\TransactionPayment::where('payment_type_id', '!=', 1)
+            ->whereHas('transaction.branch', function($q) use($request) {
+                $q->where('id', $request->branch_id);
+            })
+            ->whereHas('transaction', function($q) use($date) {
+                $q->whereMonth('created_at', $date->format('m'))
+                    ->whereYear('created_at', $date->format('Y'));
+            })
+            ->with('downpayment')
+            ->get();
+
+        $sum = 0;
+        foreach($transaction_payments as $item) {
+            $sum += floatval($item->amount_paid);
+            !is_null($item->downpayment) && $sum += floatval($item->downpayment->amount_paid);
+        }
+
         $pdf = PDF::setPaper('a4', 'landscape')->setWarnings(false);
-        $pdf->loadView('printout.salesreport.index', compact('month', 'year', 'branch_name'));
+        $pdf->loadView('printout.salesreport.index', compact('month', 'year', 'branch_name', 'sum'));
         return env('APP_DEBUG', false) ?
                     $pdf->stream() :
                     $pdf->download("$m_y-sales-report.pdf");

@@ -6,7 +6,7 @@
                     <p align="justify" style="padding: 10px;">
                         <b></b>
                         Sales report for the month of {{ $month }} , {{ $year }} for {{ $branch_name }} branch:
-                        Total Gross Sales: P<b>insert figure here</b>
+                        Total Gross Sales: ₱<b>{{ $sum }}</b>
                     </p>
                 </td>
             </tr>
