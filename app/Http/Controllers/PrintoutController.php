@@ -4,13 +4,43 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use PDF;
+use Carbon\Carbon;
 use ZipArchive;
 
 class PrintoutController extends Controller
 {
+    function getBranch($column=null)
+    {
+        $user = Auth::user();
+        $x = \App\Models\Branch::whereHas('branchEmployees.employee.user', function($q) use ($user) {
+                    $q->where('id', $user->id);
+                })->first();
+
+        if(is_null($column)) {
+            return is_null($x) ? false : $x;
+        }
+        else {
+            return is_null($x) ? false : $x->$column;
+        }
+    }
+
+    function branches()
+    {
+        $role_id = Auth::user()->role->id;
+        $current_branch = $this->getBranch('id');
+
+        return \App\Models\Branch::when( $role_id == 4 , function($q) use($current_branch) {
+                    $q->where('id', $current_branch);
+                })
+                ->select('id','name')
+                ->orderBy('name', 'asc')
+                ->get();
+    }
+
     public function chargeInvoice($txid)
     {
         $transaction = Transaction::with(
@@ -144,9 +174,31 @@ class PrintoutController extends Controller
                     $pdf->download("$txid-official-receipt.pdf");
     }
 
+    public function reports()
+    {
+        $branches = $this->branches();
+        return view('printout.salesreport', compact('branches'));
+    }
+
+    public function salesReport(Request $request)
+    {
+        $date = Carbon::createFromFormat('Y-m', $request->m_y);
+        $month = $date->format('F');
+        $year = $date->format('Y');
+        $branch_name = \App\Models\Branch::select('name')->find($request->branch_id)->name;
+
+        $pdf = PDF::setPaper('a4', 'landscape')->setWarnings(false);
+
+        $pdf->loadView('printout.salesreport.index', compact('month', 'year', 'branch_name'));
+
+        return env('APP_DEBUG', false) ?
+                    $pdf->stream() :
+                    $pdf->download("$m_y-sales-report.pdf");
+    }
+
     public function test_dl()
     {
-        $now = \Carbon\Carbon::now()->format('mdy:his');
+        $now = Carbon::now()->format('mdy:his');
         $pdfFolder = storage_path("app/tmp/$now");
 
         File::ensureDirectoryExists($pdfFolder);

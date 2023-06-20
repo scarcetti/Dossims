@@ -67,6 +67,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/', [AnalyticsController::class,'index']);
         Route::get('/chart/{branch_product_id}', [AnalyticsController::class,'chart']);
     });
+
+    Route::group(['prefix' => 'reports'], function () {
+        Route::get('/', [PrintoutController::class,'reports']);
+    });
 });
 
 Route::group(['prefix' => 'printouts'], function () {
@@ -76,5 +80,6 @@ Route::group(['prefix' => 'printouts'], function () {
    Route::get('/delivery-receipt/{txid}', [PrintoutController::class,'deliveryReceipt']);
    Route::get('/job-order/{txid}', [PrintoutController::class,'jobOrder']);
    Route::get('/official-receipt/{txid}', [PrintoutController::class,'officialReceipt']);
+   Route::get('/sales-report', [PrintoutController::class,'salesReport']);
 //    Route::get('/test', [PrintoutController::class,'test_dl']);
 });
