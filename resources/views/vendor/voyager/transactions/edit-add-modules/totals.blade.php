@@ -1,9 +1,10 @@
+
+
 <div v-if="transaction.transaction_items" class="payment_container">
     <div v-if="transaction.status == 'procuring'" class="total_container">
-        <h4>Grand total</h4>
-        <h2 style="font-weight: bold;">@{{ grandTotal }}</h2>
+        <h4>Grand total </h4>
+            <h2 style="font-weight: bold;">@{{ grandTotal }}</h2>
     </div>
-
     <div v-if="transaction.status == 'waiting for payment'">
         <span class="btn btn-primary" @click="paymentButtonClicked()" readonly>Add payment</span>
 
@@ -31,7 +32,7 @@
                                 <h4>₱ @{{ deliveryFees.shippingTotal.toFixed(2) }}</h4>
                             </div>
                             <div>
-                                <h4 v-if="paymentType">@{{ paymentType.id === 1 ? 'Minimum Payable' : 'Grand total'}}</h4>
+                                <h4 v-if="paymentType">@{{ paymentType.id === 1 ? 'Minimum Payable' : 'Grand Total'}}</h4>
                                 <h4 v-else>Grand total</h4>
                                 <h2>@{{ grandTotal }}</h2>
                                 <input type="text" name="grand_total" :value="grandTotal_" hidden>

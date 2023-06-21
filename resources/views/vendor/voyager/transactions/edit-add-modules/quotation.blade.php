@@ -67,14 +67,9 @@
 	            v-on:change="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
 	            v-on:input="valueChanged(`item-${value[index].selection.id}`, value[index].selection.price, index)"
 	        >
-	        <small class="rr">Color: </small>
-	        <input
-	            class="form-control"
-                type="text"
-	        >
     	</div>
     	<div v-if="value[index].selection.product.ready_made === false">
-	        <small>Color: </small>
+	        <small  class="rr">Color: </small>
 	        <input
                 v-model="value[index].job_order_note"
 	            class="form-control"

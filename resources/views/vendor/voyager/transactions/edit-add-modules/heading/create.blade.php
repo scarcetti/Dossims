@@ -2,8 +2,8 @@
     <div style="margin: 30px 0 15px 0;">
         <input v-if="customer.value" name="customer_id" :value="customer.value.id" hidden/>
         {{-- @{{ customer.value }} --}}
-        <a class="btn btn-success float-right" href="{{ ENV('APP_URL') }}/admin" readonly>New Customer</a>
-        {{-- <label :class="`control-label ${businessCustomer.value ? '' : 'rr'}`" for="name">Customer</label> --}}
+        {{-- <a class="btn btn-success float-right" href="{{ ENV('APP_URL') }}/admin" readonly>New Customer</a> --}}
+        <label :class="`control-label ${businessCustomer.value ? '' : 'rr'}`" for="name">Customer</label>
         <multiselect
             v-model="customer.value"
             @input="businessCustomer.value = null"

@@ -34,7 +34,11 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
                         <td style="font-weight: bold;" colspan="2"> {{ $products->branchProduct->product->productCategory->name }} </td>
                         <td colspan="2">{{ $products->branchProduct->product->name }}</td>
                         <td style="font-weight: bold;">Color:</td>
-                        <td></td>
+                        <td>
+                            @if($products->job_order_note != "[]")
+                                {{ $products->job_order_note }}
+                            @endif
+                        </td>
                     </tr>
                     <tr style="font-weight: bold;" align="center">
                         <td>QTY</td>

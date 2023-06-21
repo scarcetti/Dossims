@@ -51,7 +51,9 @@
                                 {{ $item->jobOrder->note }}
                             </td>
                             <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
-                                {{ $item->jobOrder->status }}
+                                @if($item->jobOrder->status != null)
+                                    {{ $item->jobOrder->status }}
+                                @endif
                             </td>
                             @if (is_admin())
                                 <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">

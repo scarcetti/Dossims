@@ -1,3 +1,4 @@
+
 <div>
     @if($transaction->customer)
         <div class="form-group  col-md-12" style="margin: 30px 0 15px 0;">
