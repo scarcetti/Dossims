@@ -51,7 +51,25 @@ class CuttingListController extends Controller
                     })->pluck('status')->count();
 
                 if($incomplete_jos == 0) {
-                    $transaction = Transaction::where('id', $transaction_id)->update(['status' => 'preparing for delivery']);
+                    if($this->to_pick_up($transaction_id)) {
+                        $msg = 'waiting for pickup';
+                    }
+                    else {
+                        $msg = 'preparing for delivery';
+                    }
+
+                    $transaction = Transaction::where('id', $transaction_id)->update(['status' => $msg]);
                 }
+            }
+
+            function to_pick_up($transaction_id)
+            {
+                $transaction = Transaction::where('id', $transaction_id)
+                    ->whereHas('payment.delivery_fees', function($q) {
+                        $q->where('total', '>', 0);
+                    })
+                    ->first();
+
+                return is_null($transaction);
             }
 }

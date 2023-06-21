@@ -281,6 +281,8 @@
                                                     <a href="{{ ENV('APP_URL') }}/admin/cutting-list/{{ $data->id }}" title="View" class="btn btn-sm btn-warning pull-right view" style="margin-right: 6px;">
                                                         <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Cutting list</span>
                                                     </a>
+                                                @elseif(in_array($data->status, ['preparing for delivery', 'waiting for pickup']))
+                                                    <button class="btn btn-info btn-lg" onclick="completeTx({{ $data->id }})">Complete transaction</button>
                                                 @endif
                                             @endif
                                         </td>
@@ -341,6 +343,7 @@
     <!-- DataTables -->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom-switch.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/transaction-browse.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js" integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @if(!$dataType->server_side && config('dashboard.data_tables.responsive'))
         <script src="{{ voyager_asset('lib/js/dataTables.responsive.min.js') }}"></script>
     @endif
@@ -362,6 +365,9 @@
                 elements[i].style.color = 'orange';
             }
             if (elements[i].innerText === 'preparing for delivery') {
+                elements[i].style.color = 'purple';
+            }
+            if (elements[i].innerText === 'waiting for pickup') {
                 elements[i].style.color = 'purple';
             }
         }
@@ -433,5 +439,22 @@
             });
             $('.selected_ids').val(ids);
         });
+        function completeTx(x) {
+            const payload = {
+                tx_id: x
+            }
+
+            const confirmStatus = confirm('Confirm transaction completion?')
+            if(confirmStatus) {
+                axios.post(`${window.location.origin}/admin/transaction/complete`, payload)
+                    .then(response => {
+                        alert(`Completed Transaction`)
+                        window.location.reload()
+                    })
+                    .catch(x => {
+                        alert('err')
+                    })
+            }
+        }
     </script>
 @stop

@@ -23,9 +23,9 @@
                     <div class="input-group col-md-12">
                         <input type="text" class="form-control" placeholder="Search Product" name="search_input" v-on:keyup.13="setFilters()" v-model="searchinput">
                         <span class="input-group-btn" style="width: 15px;">
-                            <apan class="btn btn-info btn-lg" @click="setFilters()" style="margin:0;">
+                            <span class="btn btn-info btn-lg" @click="setFilters()" style="margin:0;">
                                 <i class="voyager-search"></i>
-                            </apan>
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
 <script type="module">
     var app = new Vue({
         el: '#app',
-        components: { 
+        components: {
             Multiselect: window.VueMultiselect.default,
         },
         data () {
@@ -156,7 +156,7 @@
                 document.querySelector("input[name='page']").value = filter.page
 
                 if (!current_page) { // when filter returns only 1 page
-                  document.querySelector("input[name='page']").value = 1          
+                  document.querySelector("input[name='page']").value = 1
                 }
 
                 localStorage.setItem('vaccination_request_filters', JSON.stringify(filter))

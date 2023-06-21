@@ -151,6 +151,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                 array_push($hidden_field_filters,
                     'procuring',
                     'preparing for delivery',
+                    'waiting for pickup',
                     'delivered',
                     'completed',
                 );
@@ -876,5 +877,10 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         }
 
         return $x;
+    }
+
+    public function completeTransaction(Request $request)
+    {
+        return Transaction::where('id', $request->tx_id)->update(['status' => 'completed']);
     }
 }

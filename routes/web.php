@@ -30,6 +30,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::group(['prefix' => 'transaction'], function () {
         Route::post('create', [TransactionController::class,'storeTx']);
         Route::post('billing', [TransactionController::class,'billing']);
+        Route::post('complete', [TransactionController::class,'completeTransaction']);
     });
 
     Route::group(['prefix' => 'cutting-list'], function () {
