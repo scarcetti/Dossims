@@ -33,9 +33,11 @@ $balance = $transaction->customer->balance !== null ? $transaction->customer->ba
             @foreach( $transaction->transactionItems as $products )
 
                 @if ($products->branchProduct->product->ready_made == false)
-                @if($products->linear_meters != null)
-                    {{ $lm = $products->linear_meters }}
-                @endif
+                    @if($products->linear_meters != null)
+                        @php
+                            $lm = $products->linear_meters
+                        @endphp
+                    @endif
                     <tr>
                         <td align="center">{{ $products->quantity }}</td>
                         <td align="center">{{ $lm }} {{ $products->branchProduct->product->measurementUnit->name }}</td>

@@ -30,7 +30,7 @@
                         <thead>
                             <tr>
                                 <th>From</th>
-                                <th>Referrer</th>
+                                {{-- <th>Referrer</th> --}}
                                 <th>Arrival date</th>
                                 <th>Action</th>
                             </tr>
@@ -39,9 +39,13 @@
                             @forelse($inbounds ?? '' as $item)
                                 <tr style="border-top: solid #5c5c5c29 1px">
                                     <td>{{ $item->sender->name ?? '---' }}</td>
-                                    <td>{{ $item->referrer }}</td>
-                                    <td>{{ $item->arrival_date }}</td>
-                                    <td></td>
+                                    {{-- <td>{{ $item->referrer }}</td> --}}
+                                    <td>{{ $item->arrival_date ?? '---' }}</td>
+                                    <td>
+                                        @if (is_null($item->arrival_date))
+                                            <span class="btn btn-success" @click="inboundArrival({{ $item }})">Confirm Arrival</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
@@ -64,22 +68,22 @@
                         <thead>
                             <tr>
                                 <th>To</th>
-                                <th>Referrer</th>
+                                {{-- <th>Referrer</th> --}}
                                 <th>Arrival date</th>
-                                <th>Action</th>
+                                {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($outbounds ?? '' as $item)
                                 <tr style="border-top: solid #5c5c5c29 1px">
                                     <td>{{ $item->receiver->name ?? '---' }}</td>
-                                    <td>{{ $item->referrer }}</td>
-                                    <td>{{ $item->arrival_date }}</td>
-                                    <td></td>
+                                    {{-- <td>{{ $item->referrer }}</td> --}}
+                                    {{-- <td>{{ $item->arrival_date }}</td> --}}
+                                    <td>{{ $item->arrival_date ?? '---' }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4">No record</td>
+                                    <td colspan="2">No record</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -273,7 +277,7 @@
                     const isInbound = direction == 'inbound'
                     const payload = {
                         direction: direction,
-                        arrival_date: new Date().toISOString(),
+                        arrival_date: isInbound ? new Date().toISOString() : null,
                         referrer: isInbound ? this.inboundsForm.referrer : this.outboundsForm.referrer,
                         referrer_contact: isInbound ? this.inboundsForm.referrer_contact : this.outboundsForm.referrer_contact,
                         distributor_id: isInbound ? null : null,
@@ -288,16 +292,18 @@
                             window.location.reload()
                         })
                         .catch(x => {
-                            // const y = Object.keys(x.response.data.errors)
-                            // for (let key of y) {
-                            //     alert(x.response.data.errors[key][0])
-                            //     break
-                            // }
                             alert('err')
                         })
                 },
-                branchSelected() {
-
+                inboundArrival(payload) {
+                    axios.post(`${window.location.origin}/admin/inventory/transfers/inbound/confirm`, payload)
+                        .then(response => {
+                            alert(`Inbounds Arrival Confirmed.`)
+                            window.location.reload()
+                        })
+                        .catch(x => {
+                            alert('err')
+                        })
                 },
             },
             created() {

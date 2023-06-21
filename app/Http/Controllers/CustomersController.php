@@ -451,6 +451,21 @@ class CustomersController extends \TCG\Voyager\Http\Controllers\VoyagerBaseContr
         // Check permission
         $this->authorize('add', app($dataType->model_name));
 
+        $existing = \App\Models\Customer::
+                        where('first_name', $request->first_name)
+                        ->where('last_name', $request->last_name)
+                        ->where('contact_no', $request->contact_no)
+                        ->first();
+
+        if(!is_null($existing)) {
+            $redirect = redirect()->route("voyager.{$dataType->slug}.create");
+
+            return $redirect->with([
+                'message'    => "Customer with similar records already exists.",
+                'alert-type' => 'error',
+            ]);
+        }
+
         // Validate fields with ajax
         $val = $this->validateBread($request->all(), $dataType->addRows)->validate();
         $data = $this->insertUpdateData($request, $slug, $dataType->addRows, new $dataType->model_name());

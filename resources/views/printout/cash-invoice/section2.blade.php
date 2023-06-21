@@ -36,7 +36,9 @@ $lm = 1;
             </tr>
             @foreach( $transaction->transactionItems as $products )
             @if($products->linear_meters != null)
-                {{ $lm = $products->linear_meters }}
+                @php
+                    $lm = $products->linear_meters
+                @endphp
             @endif
                 <tr>
                     <td align="center">{{ $products->quantity }}</td>

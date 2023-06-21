@@ -15,12 +15,12 @@
                 <div class="col-md-12">
                     <small class="rr">Destination Branch</small>
                     <input name="branch_id" v-model="activeBranch.id" hidden />
-                    <multiselect v-model="activeBranch" @input="branchSelected()"
+                    <multiselect v-model="activeBranch"
                         deselect-label="Can't remove this value" track-by="name" label="name"
                         placeholder="Select Branch" :options="branches" :searchable="false"
                         :allow-empty="false" />
                 </div>
-                <br><br><br>
+                {{-- <br><br><br>
                 <div class="col-md-6">
                     <small class="rr">Referrer</small>
                     <br v-if="confirmOutboundStatus">
@@ -34,7 +34,7 @@
                     <label v-if="confirmOutboundStatus" style="font-weight: bold">@{{ outboundsForm.referrer_contact }}</label>
                     <input v-model="outboundsForm.referrer_contact" class="form-control" placeholder="+639 ..." type="text" min="0"
                         style="margin: 0 0 6px 0">
-                </div>
+                </div> --}}
                 <br><br>
                 <div class="col-md-12" v-if="confirmOutboundStatus" style="height: 50vh; overflow: scroll;">
                     @include('voyager::inventory.transfers.outbounds.confirm-list')

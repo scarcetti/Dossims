@@ -129,8 +129,6 @@
 
                     axios.post(`${window.location.origin}/admin/balances/settle`, this.payload)
                         .then(response => {
-                            $transaction_items = json_decode($transaction_items, true);
-
                             alert('Transaction completed!')
                             location.href = `${location.origin}/admin/transactions`
                         })

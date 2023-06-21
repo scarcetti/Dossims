@@ -46,7 +46,9 @@ $lm = 1;
 
             @foreach( $transaction->transactionItems as $products )
                 @if($products->linear_meters != null)
-                    {{ $lm = $products->linear_meters }}
+                    @php
+                        $lm = $products->linear_meters
+                    @endphp
                 @endif
 
                 <tr>

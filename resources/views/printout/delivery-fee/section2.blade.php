@@ -35,8 +35,10 @@ $lm = 1;
                 <td>Amount</td>
             </tr>
             @foreach( $transaction->transactionItems as $products )
-            @if($products->linear_meters != null)
-                    {{ $lm = $products->linear_meters }}
+                @if($products->linear_meters != null)
+                    @php
+                        $lm = $products->linear_meters
+                    @endphp
                 @endif
                 <tr>
                     <td align="center">{{ $products->quantity }}</td>

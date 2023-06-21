@@ -81,8 +81,8 @@
     input[type="checkbox"] {}
 </style>
 <div class="row">
-	@include('salesreport.section1')
+	@include('printout.salesreport.section1')
 </div>
 <div class="row">
-	@include('salesreport.section2')
+	@include('printout.salesreport.section2')
 </div>

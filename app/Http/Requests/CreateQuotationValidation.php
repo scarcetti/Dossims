@@ -29,6 +29,7 @@ class CreateQuotationValidation extends FormRequest
             'employee_id'           => 'required',
             'cart.*.quantity'       => 'required|numeric|gt:0|lte:cart.*.selection.quantity',
             'cart.*.linear_meters'  => 'required|numeric|gt:0',
+            'cart.*.job_order_note'  => 'nullable',
         ];
     }
 

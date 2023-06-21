@@ -677,29 +677,6 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         }
     }
 
-    function otherTxnFields($txid)
-    {
-        $branch_id = $this->getBranch('id');
-
-        if($branch_id) {
-            \App\Models\Transaction::where('id', $txid)->update(['branch_id' => $branch_id]);
-        }
-    }
-
-    function createTx($request)
-    {
-        return \App\Models\Transaction::create([
-            'customer_id'               => $request->customer_id,
-            'employee_id'               => $request->employee_id,
-            'branch_id'                 => $this->getBranch('id'),
-            'transaction_payment_id'    => null,
-            'business_customer_id'      => $request->business_customer_id,
-            'status'                    => 'pending',
-            'transaction_placement'     => null,
-        ]);
-    }
-
-
     public function destroy(Request $request, $id)
     {
         $slug = $this->getSlug($request);
@@ -786,6 +763,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
                 'quantity'          => $item['quantity'],
                 'tbd'               => $item['tbd'],
                 'linear_meters'     => $item['linear_meters'] ?? null,
+                'job_order_note'     => $item['job_order_note'] ?? null,
             ];
         }
 
@@ -848,7 +826,8 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
         $is_downpayment = ($payment['payment_type_id'] == 1);
         $txn_payment = \App\Models\TransactionPayment::create([
-            'amount_paid' => $is_downpayment ? floatval($payment['amount_tendered']) : floatval($payment['grand_total']),
+            // 'amount_paid' => $is_downpayment ? floatval($payment['amount_tendered']) : floatval($payment['grand_total']),
+            'amount_paid' => $is_downpayment ? floatval($payment['downpayment_amount']) : floatval($payment['grand_total']),
             'payment_type_id' => $payment['payment_type_id'],
             'payment_method_id' => $payment['payment_method_id'],
         ]);

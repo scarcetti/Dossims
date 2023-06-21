@@ -171,19 +171,33 @@
                             delivery_fee: this.deliveryFees,
                         }
 
-                    axios.post(`${window.location.origin}/admin/transaction/billing`, payload)
-                        .then(response => {
-                            window.location.reload()
+                    if(this.downpaymentAmount == (parseFloat(this.productsTotal) * 2 + this.deliveryFees.shippingTotal)) {
+                        // Check the user's response
+                        if (confirm("Payment is the same as overall total, change to full payment instead?")) {
+                            this.paymentType = { "id": 2, "name": "Full payment" }
+                            const x = this.downpaymentAmount
+                            this.paymentTypeChanged()
+                            this.amountTendered = x
+                        }
+                    }
+                    else if(this.downpaymentAmount > (parseFloat(this.productsTotal) * 2 + this.deliveryFees.shippingTotal)) {
+                        alert("Downpayment amount exceeds full payment amount!")
+                    }
+                    else {
+                        axios.post(`${window.location.origin}/admin/transaction/billing`, payload)
+                            .then(response => {
+                                window.location.reload()
 
-                            alert('Payment completed!')
-                        })
-                        .catch(x => {
-                            const y = Object.keys(x.response.data.errors)
-                            for (let key of y) {
-                                alert(x.response.data.errors[key][0])
-                                break
-                            }
-                        })
+                                alert('Payment completed!')
+                            })
+                            .catch(x => {
+                                const y = Object.keys(x.response.data.errors)
+                                for (let key of y) {
+                                    alert(x.response.data.errors[key][0])
+                                    break
+                                }
+                            })
+                    }
                 },
                 customNameLabel({first_name, last_name, contact_no}) {
                     if(contact_no) {
