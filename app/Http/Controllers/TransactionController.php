@@ -438,7 +438,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
 
     function fetchPaymentMethods()
     {
-        return \App\Models\PaymentMethod::whereIn('name', ['Cash', 'Check'])->get();
+        return \App\Models\PaymentMethod::whereIn('name', ['Cash'])->get();
     }
 
     public function fetchTx($id)
