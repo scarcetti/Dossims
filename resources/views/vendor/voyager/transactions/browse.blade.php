@@ -252,6 +252,9 @@
                                                 @endif
                                             </td>
                                         @endforeach
+                                        @php
+                                            $item_count = \App\Models\TransactionItem::where('transaction_id', $data->id)->get()->count();
+                                        @endphp
                                         <td class="no-sort no-click bread-actions">
                                             {{-- {{ $data->id }} --}}
                                             {{-- @if( in_array( Auth::user()->role_id, [1]) )
@@ -264,19 +267,21 @@
                                             {{-- <a href="javascript:;" title="Delete" class="btn btn-sm btn-danger pull-right delete" data-id="{{ $data->id }}" id="delete-{{ $data->id }}">
                                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Delete</span>
                                             </a> --}}
-                                            @if( $data->status == 'waiting for payment' )
-                                                <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn btn-sm btn-success pull-right view">
-                                                    <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Add Payment</span>
-                                                </a>
-                                            @else
-                                                <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn outlinedBtn pull-right view">
-                                                    <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
-                                                </a>
-                                            @endif
-                                            @if($data->status == 'procuring')
-                                                <a href="{{ ENV('APP_URL') }}/admin/cutting-list/{{ $data->id }}" title="View" class="btn btn-sm btn-warning pull-right view" style="margin-right: 6px;">
-                                                    <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Cutting list</span>
-                                                </a>
+                                            @if($item_count > 0)
+                                                @if( $data->status == 'waiting for payment' )
+                                                    <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn btn-sm btn-success pull-right view">
+                                                        <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Add Payment</span>
+                                                    </a>
+                                                @else
+                                                    <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn outlinedBtn pull-right view">
+                                                        <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
+                                                    </a>
+                                                @endif
+                                                @if($data->status == 'procuring')
+                                                    <a href="{{ ENV('APP_URL') }}/admin/cutting-list/{{ $data->id }}" title="View" class="btn btn-sm btn-warning pull-right view" style="margin-right: 6px;">
+                                                        <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Cutting list</span>
+                                                    </a>
+                                                @endif
                                             @endif
                                         </td>
                                     </tr>
