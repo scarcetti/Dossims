@@ -211,7 +211,7 @@ class PrintoutController extends Controller
         $pdf->loadView('printout.salesreport.index', compact('month', 'year', 'branch_name', 'sum'));
         return env('APP_DEBUG', false) ?
                     $pdf->stream() :
-                    $pdf->download("$m_y-sales-report.pdf");
+                    $pdf->download("$request->m_y-sales-report.pdf");
     }
 
     public function test_dl()
