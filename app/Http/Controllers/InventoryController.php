@@ -50,6 +50,7 @@ class InventoryController extends Controller
         {
             $branch_products = BranchProduct::leftJoin('products', 'products.id', '=', 'branch_products.product_id')
                             ->where('branch_products.branch_id', $this->current_branch())
+                            ->where('branch_products.quantity', '>', 0)
                             ->orderBy('products.name', 'ASC')
                             ->with('product.measurementUnit', 'branch')
                             ->get();
