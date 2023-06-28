@@ -25,7 +25,7 @@
                         <div style="margin: 22px">
                             <label>Order by</label>
                             <input type="text" name="order_by" :value="order_by" hidden>
-                            <multiselect v-model="order_by" :options="['Most selling', 'Least selling']" :searchable="false"
+                            <multiselect v-model="order_by" :options="['Most selling', 'Most profitable', 'Least selling', 'Least profitable']" :searchable="false"
                                 @input="submitFilter()" :close-on-select="true" :show-labels="false"></multiselect>
                         </div>
                         <div style="margin: 22px; display: flex; flex-direction: column;">

@@ -38,17 +38,41 @@ class AnalyticsController extends Controller
             // 'Weekly', 'Monthly', 'Yearly', 'All-time'
 
             if( isset($request->order_by) ) {
-                $order = $request->order_by == 'Most selling' ? 'desc' : 'asc';
+                switch ($request->order_by) {
+                    case 'Most selling':
+                        $order = 'desc';
+                        $qty = true;
+                        break;
+                    case 'Least selling':
+                        $order = 'asc';
+                        $qty = true;
+                        break;
+                    case 'Most profitable':
+                        $order = 'desc';
+                        $qty = false;
+                        break;
+                    case 'Least profitable':
+                        $order = 'asc';
+                        $qty = false;
+                        break;
+                }
             }
             else {
                 $order = 'desc';
+                $qty = true;
             }
 
             $branch_id = $this->getBranch('id');
 
-            $top_items = TransactionItem::selectRaw('branch_product_id, count(id) as count_')
+            $top_items = TransactionItem::when($qty, function($q) use($order) {
+                            $q->selectRaw('branch_product_id, count(id) as count_')
+                                ->orderBy('count_', $order);
+                            })
+                            ->when(!$qty, function($q) use($order) {
+                                $q->selectRaw('branch_product_id, sum(price_at_purchase) as count_')
+                                    ->orderBy('count_', $order);
+                            })
                             ->groupBy('branch_product_id')
-                            ->orderBy('count_', $order)
                             ->with('branchProduct.product')
                             ->when($filter_by == 'Weekly', function($q) {
                                 $now = Carbon::now();
@@ -76,7 +100,7 @@ class AnalyticsController extends Controller
                             ->take(20)
                             ->get();
 
-            return $top_items;
+                            return $top_items;
         }
 
     public function chart($branch_product_id)
