@@ -121,24 +121,25 @@
                 },
                 addBilling() {
                     this.payload.grand_total = this.balance
-                    this.payload.cashier_id = this.cashier.value ? this.cashier.value.id : null
+                    this.payload.cashier_id = this.cashier.value ? this.cashier.value.employee_id : null
                     this.payload.balances_ = this.balances_
 
-                    // console.log(this.payload)
+                    console.log(this.payload)
+                    console.log(this.cashier)
                     // $transaction_items = json_decode($transaction_items, true);
 
-                    axios.post(`${window.location.origin}/admin/balances/settle`, this.payload)
-                        .then(response => {
-                            alert('Transaction completed!')
-                            location.href = `${location.origin}/admin/transactions`
-                        })
-                        .catch(x => {
-                            const y = Object.keys(x.response.data.errors)
-                            for (let key of y) {
-                                alert(x.response.data.errors[key][0])
-                                break
-                            }
-                        })
+                        axios.post(`${window.location.origin}/admin/balances/settle`, this.payload)
+                            .then(response => {
+                                alert('Transaction completed!')
+                                location.href = `${location.origin}/admin/transactions`
+                            })
+                            .catch(x => {
+                                const y = Object.keys(x.response.data.errors)
+                                for (let key of y) {
+                                    alert(x.response.data.errors[key][0])
+                                    break
+                                }
+                            })
                 },
                 customEmployeeLabel({employee}) {
                     // return employee

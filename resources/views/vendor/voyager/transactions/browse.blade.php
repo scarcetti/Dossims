@@ -270,6 +270,11 @@
                                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Delete</span>
                                             </a> --}}
                                             @if($item_count > 0)
+                                                {{-- @if($data->status == 'completed')
+                                                    <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn outlinedBtn pull-right view">
+                                                        <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
+                                                    </a>
+                                                @endif --}}
                                                 @if( $data->status == 'waiting for payment' )
                                                     <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn btn-sm btn-success pull-right view">
                                                         <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Add Payment</span>
@@ -286,6 +291,7 @@
                                                 @elseif(in_array($data->status, ['preparing for delivery', 'waiting for pickup']))
                                                     <button class="btn btn-info btn-lg" onclick="completeTx({{ $data->id }})">Complete transaction</button>
                                                 @endif
+
                                             @endif
                                         </td>
                                     </tr>

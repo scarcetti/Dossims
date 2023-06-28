@@ -474,7 +474,7 @@
                             const discountValue = parseFloat(item.discount.value);
                             return acc + discountValue;
                         } else if (item.price_at_purchase) {
-                            const priceAtPurchaseValue = parseFloat(item.price_at_purchase * item.quantity);
+                            const priceAtPurchaseValue = parseFloat(item.price_at_purchase * item.quantity)*parseFloat(item.linear_meters);
                             return acc + priceAtPurchaseValue;
                         }
                         return acc;

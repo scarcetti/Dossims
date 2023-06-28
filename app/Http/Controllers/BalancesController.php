@@ -97,7 +97,7 @@ class BalancesController extends Controller
         //     'txno' => $this->createTxno(),
         // ]);
 
-        $employee_id = Employee::findOrFail(Auth::user()->id)->id;
+        // $employee_id = Employee::findOrFail(Auth::user()->id)->id;
 
         $transaction_payment_id = TransactionPayment::whereHas('transaction.customer', function($q) use($request) {
                     $q->where('id', $request->balances_['customer_id']);
@@ -121,9 +121,9 @@ class BalancesController extends Controller
         $transaction = [
             'customer_id'               => $request->balances_['customer_id'] ?? null,
             'branch_id'                 => $this->getBranch('id'),
-            'employee_id'               => $employee_id,
+            'employee_id'               => $request->cashier_id,
             'status'                    => 'completed',
-            'cashier_id'                => $employee_id,
+            'cashier_id'                => $request->cashier_id,
             'txno'                      => $this->createTxno(),
         ];
 
