@@ -7,7 +7,7 @@
             <h4 style="margin: 0 0 10px 0">@{{ item.product_name }}</h4>
         </div>
         <div>
-            <small>Item price: </small>
+            <small>Item price: asd</small>
             <h4 style="margin: 0">₱ @{{ item.price_at_purchase }}</h4>
         </div>
     </div>
@@ -29,6 +29,10 @@
             <span v-if="item.pre_discount" style="display: flex;">
                 <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</s></h4>&nbsp;&nbsp;&nbsp;
                 <h4 class="subtotal" style="margin: 0">₱ @{{ item.discount_value }}</h4>
+            </span>
+            <span v-else-if="item.discount" style="display: flex;">
+                <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</s></h4>&nbsp;&nbsp;&nbsp;
+                <h4 class="subtotal" style="margin: 0">₱ @{{ item.discount.value }}</h4>
             </span>
             <span v-else style="display: flex;">
                 <h4 class="subtotal" style="margin: 0">₱ @{{ (item.price_at_purchase * item.quantity).toFixed(2) * (item.linear_meters ? item.linear_meters : 1) }}</h4>

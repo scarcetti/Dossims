@@ -309,6 +309,12 @@
                         document.querySelector('input.form-control[name="created_at"]').setAttribute("readonly", "readonly");
                     }
                 },
+                showTotal() {
+                    console.log(this.transaction)
+                    if(this.transaction.transaction_items) {
+                        this.getGrandTotal(this.transaction)
+                    }
+                },
                 discountDialogShow(id) {
                     $(`#discountDialog${id}`).modal({backdrop: 'static', keyboard: false});
                 },
@@ -458,12 +464,33 @@
                 viewBalance(x) {
                     console.log(x)
                     location.href = `${location.origin}/admin/balances/${x}`
+                },
+                getGrandTotal(transaction) {
+                    this.transaction = transaction
+                    let delivery_fee =  transaction.payment === null ? 0 : transaction.payment.delivery_fees.total;
+                    console.log("delivery_fee: ",delivery_fee);
+                    let itemTotal = transaction.transaction_items.reduce((acc, item) => {
+                        if (item.discount && item.discount.value) {
+                            const discountValue = parseFloat(item.discount.value);
+                            return acc + discountValue;
+                        } else if (item.price_at_purchase) {
+                            const priceAtPurchaseValue = parseFloat(item.price_at_purchase * item.quantity);
+                            return acc + priceAtPurchaseValue;
+                        }
+                        return acc;
+                    }, 0);
+
+                    console.log(this.transaction )
+                    console.log("item total: ",itemTotal);
+                    console.log("grand total: ", parseFloat(delivery_fee)+parseFloat(itemTotal));
+                    this.grandTotal = parseFloat(delivery_fee)+parseFloat(itemTotal)
                 }
             },
             created() {
                 this.disableSubmitOnFieldsEnter()
                 this.getUpdateValue()
                 this.getLoggedUser()
+                this.showTotal()
 
                 // this.hideElements()
                 // this.disableElements()

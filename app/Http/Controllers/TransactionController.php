@@ -643,7 +643,12 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         foreach ($branch_products as $key => $value) {
             $branch_products[$key]->product_name = $value->product->name;
         }
-        return $branch_products;
+        $collection = collect($branch_products);
+        // dd(json_encode($collection));
+        $sortedCollection = $collection->sortBy('product.name');
+        $branch_products = $sortedCollection->values()->all();
+
+        return json_encode($branch_products);
     }
 
     function saveProducts($request, $transaction_id)
