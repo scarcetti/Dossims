@@ -16,6 +16,7 @@ class InventoryTransfer extends Model
         'distributor_id',
         'receiver_branch_id',
         'sender_branch_id',
+        'employee_id',
     ];
 
     public function batch()
@@ -31,5 +32,10 @@ class InventoryTransfer extends Model
     public function receiver()
     {
         return $this->belongsTo(Branch::class, 'receiver_branch_id', 'id');
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
     }
 }

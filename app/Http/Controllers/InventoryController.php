@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\BranchProduct;
 use App\Models\InventoryTransfer;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -85,7 +86,7 @@ class InventoryController extends Controller
         function fetchInbound($request)
         {
             $inventory_transfer = InventoryTransfer::where('receiver_branch_id', $this->current_branch())
-                    ->with('sender', 'batch')
+                    ->with('sender', 'batch', 'employee')
                     ->paginate($perPage = 15, $columns = ['*'], $pageName = 'inbounds');
             return $inventory_transfer;
         }
@@ -93,7 +94,7 @@ class InventoryController extends Controller
         function fetchOutbound($request)
         {
             $inventory_transfer = InventoryTransfer::where('sender_branch_id', $this->current_branch())
-                    ->with('receiver', 'batch')
+                    ->with('receiver', 'batch', 'employee')
                     ->paginate($perPage = 15, $columns = ['*'], $pageName = 'outbounds');
             return $inventory_transfer;
         }
@@ -117,7 +118,10 @@ class InventoryController extends Controller
     public function stockArrivalConfirm(Request $request)
     {
         $this->addStocks($request->batch);
-        $inventory_transfer = InventoryTransfer::where('id', $request->id)->update(['arrival_date' => Carbon::now()]);
+        $inventory_transfer = InventoryTransfer::where('id', $request->id)->update([
+            'arrival_date' => Carbon::now(),
+            'employee_id' => Auth::user()->employee_id,
+        ]);
         return $inventory_transfer;
     }
 
