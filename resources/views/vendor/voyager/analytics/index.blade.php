@@ -151,13 +151,6 @@
                     this.selected = value
 
                     this.fetchPredictionData(value.branch_product_id)
-
-                    // setTimeout(() => {
-                    //     $(`#prediction_dialog`).modal({
-                    //         backdrop: 'static',
-                    //         keyboard: false
-                    //     });
-                    // }, 50)
                 },
                 getCharts() {
                     const list = document.querySelectorAll('[class^="graph"]')
@@ -165,20 +158,13 @@
                     setTimeout(() => {
                         list.forEach(element => {
                             console.log('element', element.attributes.branch_product_id.value)
-                            // this.initChart(element.attributes.branch_product_id.value)
                             this.fetchPredictionData(element.attributes.branch_product_id.value)
                         });
                     },100)
                 },
                 fetchPredictionData(branch_product_id) {
-                    // const a = $(`.graph-${branch_product_id}`)[0]
-                    // const a = document.querySelector(`.graph-${branch_product_id}`).classList.toggle('hide');
-                    // console.log(1123, a)
                     axios.get(`${window.location.origin}/admin/analytics/chart/${branch_product_id}`)
                         .then(response => {
-                            // alert('Quotation created!')
-                            // window.location.reload()
-                            // console.log(123, response.data)
                             this.option.vueChartOption = response.data
                             this.initChart(branch_product_id)
                         })

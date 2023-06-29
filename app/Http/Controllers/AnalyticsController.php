@@ -213,9 +213,11 @@ class AnalyticsController extends Controller
             array_unshift($figures, 'Real Figures');
             array_unshift($predictions, 'Prediction');
 
+            $next_stock = floor($x[0]);
             $vueChartOption = (object) array (
                 'title' => (object) [
                     'text' => $title,
+                    'subtext' => "Stocks for the next month must be greater or equal to $next_stock.",
                 ],
                 'legend' =>
                 array (
