@@ -151,9 +151,14 @@ class PredictionController extends Controller
             array_unshift($figures, 'Real Figures');
             array_unshift($predictions, 'Prediction');
 
+            $first_ = number_format(floor(array_reverse($predictions)[2]));
+            $second_ = number_format(floor(array_reverse($predictions)[1]));
+            $third_ = number_format(floor(array_reverse($predictions)[0]));
+
             $vueChartOption = (object) array (
                 'title' => (object) [
                     'text' => $title,
+                    'subtext' => "Predicted sales for the following months: ≥ ₱ $first_ for 1st month, ≥ ₱ $second_ for 2nd month, and ≥ ₱ $third_ for 3rd month.",
                 ],
                 'legend' =>
                 array (
