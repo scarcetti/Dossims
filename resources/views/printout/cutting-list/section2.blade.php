@@ -51,8 +51,8 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
                         <td align="center">{{ $products->quantity }}  </td>
                         <td align="center">{{ $products->branchProduct->product->measurementUnit->name }}</td>
                         <td align="center" colspan="2">{{ $lm }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
-                        <td align="center">₱{{ $products->branchProduct->price }}</td>
-                        <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)  }}</td>
+                        <td align="center">{{ '₱' . number_format($products->branchProduct->price, 2) }}</td>
+                        <td align="center">{{ '₱' . number_format(intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm), 2)  }}</td>
                     </tr>
                     @php
                         $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)
@@ -67,7 +67,7 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
         <tbody>
             <tr>
                 <td class="nob">Delivery Fee:</td>
-                <td  align="center" class="ob">₱{{ $deliveryFee }}</td>
+                <td  align="center" class="ob">{{ '₱' . number_format($deliveryFee, 2) }}</td>
             </tr>
             <tr>
                 <td class="nob">Laboratory Installation:</td>
@@ -75,7 +75,7 @@ $deliveryFee = $transaction->payment->delivery_fees !== null  ? $transaction->pa
             </tr>
             <tr>
                 <td class="nob">Grand Total:</td>
-                <td  align="center" class="ob">₱{{ $total }}</td>
+                <td  align="center" class="ob">{{ '₱' . number_format($total, 2) }}</td>
             </tr>
             <tr>
                 <td class="nob">Prepared by:</td>

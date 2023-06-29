@@ -44,8 +44,8 @@ $balance = $transaction->customer->balance !== null ? $transaction->customer->ba
                         @if ($products->branchProduct->product->ready_made == false)
                             <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
                         @endif
-                        <td align="center">₱{{ $products->price_at_purchase }}</td>
-                        <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)  }}</td>
+                        <td align="center">{{ '₱' . number_format($products->price_at_purchase, 2) }}</td>
+                        <td align="center">{{ '₱' . number_format(intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm), 2)  }}</td>
                         @php
                             $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)
                         @endphp
@@ -56,20 +56,20 @@ $balance = $transaction->customer->balance !== null ? $transaction->customer->ba
 
             <tr>
                 <td class="basta" colspan="5">Total </td>
-                <td class="basta" style="text-align: center">P{{$total}}</td>
+                <td class="basta" style="text-align: center">{{'₱' . number_format($total, 2)}}</td>
             </tr>
 
             <tr>
-                <td class="basta" colspan="5">AMOUNT ₱</td>
-        <td class="basta" style="text-align: center">{{ $transaction->payment->amount_paid }}</td>
+                <td class="basta" colspan="5">AMOUNT </td>
+        <td class="basta" style="text-align: center">{{ '₱' . number_format($transaction->payment->amount_paid, 2) }}</td>
             </tr>
             <tr>
-                <td class="basta" colspan="5">ADVANCE ₱</td>
-                <td class="basta" style="text-align: center">{{ $transaction->payment->amount_paid-$balance }}</td>
+                <td class="basta" colspan="5">ADVANCE </td>
+                <td class="basta" style="text-align: center">{{ '₱' . number_format($transaction->payment->amount_paid-$balance, 2) }}</td>
             </tr>
             <tr>
-                <td class="basta" colspan="5">BALANCE ₱</td>
-                <td class="basta" style="text-align: center">{{ $balance }}</td>
+                <td class="basta" colspan="5">BALANCE </td>
+                <td class="basta" style="text-align: center">{{ '₱' . number_format($balance, 2) }}</td>
             </tr>
 
         </tbody>

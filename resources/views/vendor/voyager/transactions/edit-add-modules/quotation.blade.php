@@ -50,8 +50,9 @@
             >
         </div>
         <div>
-            <small>Subtotal: </small>
+            <small>Subtotal:</small>
             <h4 :class="`subtotal item-${value[index].selection.id}`" style="margin: 0">₱ @{{ value[index].selection.price }}</h4>
+            {{-- <h4 :class="`subtotal item-${value[index].selection.id}`" style="margin: 0">₱ @{{ value[index].selection.price }}</h4> --}}
         </div>
     </div>
     <div class="col-md-2" v-if="value[index].selection">

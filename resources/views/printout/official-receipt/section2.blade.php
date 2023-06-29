@@ -77,7 +77,7 @@
             <tr>
                 <td class="nob">PESOS</td>
                 <td class="ob">
-                    ₱ {{ $transaction->payment->amount_paid }}
+                    {{ '₱' . number_format($transaction->payment->amount_paid, 2) }}
                 </td>
             </tr>
             <tr>
@@ -114,9 +114,6 @@
                 </tr>
             </thead>
         </table>
-        @foreach (range(1, 10) as $i)
-            &nbsp;
-        @endforeach
         <center>
             Cashier / Authorized Representative
         </center>

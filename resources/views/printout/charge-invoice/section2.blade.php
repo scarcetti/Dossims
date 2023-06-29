@@ -56,8 +56,8 @@ $lm = 1;
                     <td align="center">{{ $products->quantity }}</td>
                     <td align="center">{{ $products->linear_meters }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
                     <td align="center" colspan="2">{{ $products->branchProduct->product->name }}</td>
-                    <td align="center">₱{{ $products->price_at_purchase }}</td>
-                    <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm) }}</td>
+                    <td align="center">{{ '₱' . number_format($products->price_at_purchase, 2) }}</td>
+                    <td align="center">{{ '₱' . number_format(intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm), 2) }}</td>
                     @php
                         $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)
                     @endphp
@@ -100,7 +100,7 @@ $lm = 1;
             <tr>
                 <td colspan="3" style="padding-right: 10px" align="right">VAT Amount</td>
                 <td colspan="2" style="font-weight: bold;padding-right: 10px" align="right">TOTAL AMOUNT DUE</td>
-                <td align="center" style="font-weight: bold">P{{$total}}</td>
+                <td align="center" style="font-weight: bold">{{ '₱' . number_format($total, 2) }}</td>
             </tr>
         </tbody>
         {{-- {{ $transaction->transactionItems }} --}}
