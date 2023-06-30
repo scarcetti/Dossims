@@ -32,6 +32,7 @@
                                 <th>From</th>
                                 {{-- <th>Referrer</th> --}}
                                 <th>Arrival date</th>
+                                <th>Receiver</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -41,6 +42,7 @@
                                     <td>{{ $item->sender->name ?? '---' }}</td>
                                     {{-- <td>{{ $item->referrer }}</td> --}}
                                     <td>{{ $item->arrival_date ?? '---' }}</td>
+                                    <td>{{ $item->employee->full_name ?? '---' }}</td>
                                     <td>
                                         @if (is_null($item->arrival_date))
                                             <span class="btn btn-success" @click="inboundArrival({{ $item }})">Confirm Arrival</span>
@@ -70,7 +72,7 @@
                                 <th>To</th>
                                 {{-- <th>Referrer</th> --}}
                                 <th>Arrival date</th>
-                                {{-- <th>Action</th> --}}
+                                <th>Receiver</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,8 +80,8 @@
                                 <tr style="border-top: solid #5c5c5c29 1px">
                                     <td>{{ $item->receiver->name ?? '---' }}</td>
                                     {{-- <td>{{ $item->referrer }}</td> --}}
-                                    {{-- <td>{{ $item->arrival_date }}</td> --}}
                                     <td>{{ $item->arrival_date ?? '---' }}</td>
+                                    <td>{{ $item->employee->full_name ?? '---' }}</td>
                                 </tr>
                             @empty
                                 <tr>
