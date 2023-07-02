@@ -103,7 +103,7 @@
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js" integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    {{-- <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory.css') }}"> --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>`
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory-transfers.css') }}">
 
     <script>
