@@ -290,21 +290,56 @@
 
                     axios.post(`${window.location.origin}/admin/inventory/transfers/${direction}/create`, payload)
                         .then(response => {
-                            alert(`${direction == 'inbound' ? 'Inbounds' : 'Outbounds'} created!`)
-                            window.location.reload()
+                            Swal.fire({
+                                title: 'Success!',
+                                text: `${direction == 'inbound' ? 'Inbounds' : 'Outbounds'} created!`,
+                                icon: 'success',
+                                confirmButtonText: 'Ok'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload()
+                                }
+                            })
+                            // alert(`${direction == 'inbound' ? 'Inbounds' : 'Outbounds'} created!`)
                         })
                         .catch(x => {
-                            alert('err')
+                            const y = Object.keys(x.response.data.errors)
+                            for (let key of y) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text:  `${x.response.data.errors[key][0]}`,
+                                    icon: 'error',
+                                    confirmButtonText: 'Ok'
+                                })
+                                break
+                            }
                         })
                 },
                 inboundArrival(payload) {
                     axios.post(`${window.location.origin}/admin/inventory/transfers/inbound/confirm`, payload)
                         .then(response => {
-                            alert(`Inbounds Arrival Confirmed.`)
-                            window.location.reload()
+                            Swal.fire({
+                                title: 'Success!',
+                                text: `Inbounds Arrival Confirmed.`,
+                                icon: 'success',
+                                confirmButtonText: 'Ok'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.reload()
+                                }
+                            })
                         })
                         .catch(x => {
-                            alert('err')
+                            const y = Object.keys(x.response.data.errors)
+                            for (let key of y) {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text:  `${x.response.data.errors[key][0]}`,
+                                    icon: 'error',
+                                    confirmButtonText: 'Ok'
+                                })
+                                break
+                            }
                         })
                 },
             },

@@ -85,6 +85,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js" integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/transactions.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
         var app = new Vue({
@@ -120,25 +121,44 @@
                     return parseFloat(x).toFixed(2)
                 },
                 addBilling() {
+
                     this.payload.grand_total = this.balance
-                    this.payload.cashier_id = this.cashier.value ? this.cashier.value.id : null
+                    this.payload.cashier_id = this.cashier.value ? this.cashier.value.employee_id : null
                     this.payload.balances_ = this.balances_
 
-                    // console.log(this.payload)
+                    console.log(this.payload)
+                    console.log(this.cashier)
                     // $transaction_items = json_decode($transaction_items, true);
 
-                    axios.post(`${window.location.origin}/admin/balances/settle`, this.payload)
-                        .then(response => {
-                            alert('Transaction completed!')
-                            location.href = `${location.origin}/admin/transactions`
-                        })
-                        .catch(x => {
-                            const y = Object.keys(x.response.data.errors)
-                            for (let key of y) {
-                                alert(x.response.data.errors[key][0])
-                                break
-                            }
-                        })
+                        axios.post(`${window.location.origin}/admin/balances/settle`, this.payload)
+                            .then(response => {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Transaction completed!',
+                                    icon: 'success',
+                                    confirmButtonText: 'Ok'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        location.href = `${location.origin}/admin/transactions`
+                                    }
+                                })
+
+                                // alert('Transaction completed!')
+                            })
+                            .catch(x => {
+                                const y = Object.keys(x.response.data.errors)
+                                for (let key of y) {
+                                    const msg = x.response.data.errors[key][0]
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text:  `${msg}`,
+                                        icon: 'error',
+                                        confirmButtonText: 'Ok'
+                                    })
+                                    // alert(x.response.data.errors[key][0])
+                                    break
+                                }
+                            })
                 },
                 customEmployeeLabel({employee}) {
                     // return employee

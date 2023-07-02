@@ -1,5 +1,10 @@
 @extends('voyager::master')
 @section('content')
+    <style type="text/css">
+        .swal2-container.swal2-center.swal2-backdrop-show {
+            z-index: 9999999999 !important;
+        }
+    </style>
     <div id="app" style="margin: 0 15px;">
         <h1 class="page-title">
             <i class=""></i>
@@ -67,6 +72,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/transactions.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom-switch.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js" integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script type="module">
         var app = new Vue({
@@ -132,14 +138,30 @@
                     console.log(payload)
                     axios.post(`${window.location.origin}/admin/transaction/create`, payload)
                         .then(response => {
-                            alert('Quotation created!')
-                            location.href = `${location.origin}/admin/transactions`
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Quotation created!',
+                                icon: 'success',
+                                confirmButtonText: 'Ok'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    location.href = `${location.origin}/admin/transactions`
+                                }
+                            })
+                            // alert('Quotation created!')
+
                             // window.location.reload()
                         })
                         .catch(x => {
                             const y = Object.keys(x.response.data.errors)
                             for (let key of y) {
-                                alert(x.response.data.errors[key][0])
+                                const msg = x.response.data.errors[key][0]
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text:  `${msg}`,
+                                    icon: 'error',
+                                    confirmButtonText: 'Ok'
+                                })
                                 break
                             }
                         })
@@ -181,19 +203,42 @@
                         }
                     }
                     else if(this.downpaymentAmount > (parseFloat(this.productsTotal) * 2 + this.deliveryFees.shippingTotal)) {
-                        alert("Downpayment amount exceeds full payment amount!")
+                        Swal.fire({
+                            title: 'Warning!',
+                            text: 'Downpayment amount exceeds full payment amount!',
+                            icon: 'warning',
+                            confirmButtonText: 'Ok'
+                        })
+                        // alert("Downpayment amount exceeds full payment amount!")
                     }
                     else {
                         axios.post(`${window.location.origin}/admin/transaction/billing`, payload)
                             .then(response => {
-                                window.location.reload()
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Payment completed!',
+                                    icon: 'success',
+                                    confirmButtonText: 'Ok'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.reload()
+                                    }
+                                })
 
-                                alert('Payment completed!')
+                                // window.location.reload()
+
+                                // alert('Payment completed!')
                             })
                             .catch(x => {
                                 const y = Object.keys(x.response.data.errors)
                                 for (let key of y) {
-                                    alert(x.response.data.errors[key][0])
+                                    const msg = x.response.data.errors[key][0]
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text:  `${msg}`,
+                                        icon: 'error',
+                                        confirmButtonText: 'Ok'
+                                    })
                                     break
                                 }
                             })
@@ -309,6 +354,12 @@
                         document.querySelector('input.form-control[name="created_at"]').setAttribute("readonly", "readonly");
                     }
                 },
+                showTotal() {
+                    console.log(this.transaction)
+                    if(this.transaction.transaction_items) {
+                        this.getGrandTotal(this.transaction)
+                    }
+                },
                 discountDialogShow(id) {
                     $(`#discountDialog${id}`).modal({backdrop: 'static', keyboard: false});
                 },
@@ -327,8 +378,14 @@
                     }
 
                     this.getTotalValue()
+                    Swal.fire({
+                        title: 'Success!',
+                        text: `Discount applied.`,
+                        icon: 'success',
+                        confirmButtonText: 'Ok'
+                    })
 
-                    alert('Discount applied.')
+                    // alert('Discount applied.')
                 },
                 removeDiscount(item_id, cardIndex) {
                     const elements = document.querySelectorAll(`[name*="${item_id}-discount"]`)
@@ -337,8 +394,14 @@
                     this.value[cardIndex].discount_value = null
 
                     this.getTotalValue()
+                    Swal.fire({
+                        title: 'Success!',
+                        text: `Discount removed.`,
+                        icon: 'success',
+                        confirmButtonText: 'Ok'
+                    })
 
-                    alert('Discount removed.')
+                    // alert('Discount removed.')
                 },
                 discountsModified(cardValues, cardIndex) {
                     // const elements = document.querySelectorAll(`[name*="${cardValues.id}-discount"]`)
@@ -458,12 +521,36 @@
                 viewBalance(x) {
                     console.log(x)
                     location.href = `${location.origin}/admin/balances/${x}`
+                },
+                getGrandTotal(transaction) {
+                    this.transaction = transaction
+                    let delivery_fee =  transaction.payment === null ? 0 : transaction.payment.delivery_fees.total;
+                    console.log("delivery_fee: ",delivery_fee);
+                    let itemTotal = transaction.transaction_items.reduce((acc, item) => {
+                        if (item.discount && item.discount.value) {
+                            const discountValue = parseFloat(item.discount.value);
+                            return acc + discountValue;
+                        } else if (item.price_at_purchase) {
+                            const priceAtPurchaseValue = parseFloat(item.price_at_purchase * item.quantity)*parseFloat(item.linear_meters);
+                            return acc + priceAtPurchaseValue;
+                        }
+                        return acc;
+                    }, 0);
+
+                    console.log(this.transaction )
+                    console.log("item total: ",itemTotal);
+                    console.log("grand total: ", parseFloat(delivery_fee)+parseFloat(itemTotal));
+                    this.grandTotal = this.formatCurrency(parseFloat(delivery_fee)+parseFloat(itemTotal))
+                },
+                formatCurrency(x){
+                    return x.toLocaleString('en-PH', { style: 'currency', currency: 'PHP' });
                 }
             },
             created() {
                 this.disableSubmitOnFieldsEnter()
                 this.getUpdateValue()
                 this.getLoggedUser()
+                this.showTotal()
 
                 // this.hideElements()
                 // this.disableElements()
@@ -471,4 +558,5 @@
 
         })
     </script>
+
 @endsection

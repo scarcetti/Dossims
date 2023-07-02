@@ -44,13 +44,21 @@ $lm = 1;
                     <td align="center">{{ $products->quantity }}</td>
                     <td align="center">{{ $lm }} {{ $products->branchProduct->product->measurementUnit->name }}</td>
                     <td align="center">{{ $products->branchProduct->product->name }}</td>
-                    <td align="center">₱{{ $products->price_at_purchase }}</td>
-                    <td align="center">₱{{ intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm) }}</td>
+                    <td align="center">{{ '₱' . number_format($products->price_at_purchase, 2) }}</td>
+                    <td align="center">{{ '₱' . number_format(intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm), 2) }}</td>
                     @php
                         $total+=intval($products->quantity)*floatval($products->branchProduct->price)*intval($lm)
                     @endphp
                 </tr>
             @endforeach
+            <tr align="center">
+                <td colspan="4" style="font-weight: bold;padding-right: 10px" align="right">DELIVERY FEE</td>
+                <td>{{ '₱' . number_format($transaction->payment->delivery_fees->total, 2) }}</td>
+            </tr>
+            {{-- <tr style="font-weight: bold;" align="center">
+                <td colspan="4" style="font-weight: bold;padding-right: 10px" align="right">TOTAL</td>
+                <td>{{ '₱' . number_format($transaction->payment->delivery_fees->total, 2) }}</td>
+            </tr> --}}
         </tbody>
     </table>
 </div>

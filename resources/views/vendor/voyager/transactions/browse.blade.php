@@ -270,6 +270,11 @@
                                                 <i class="voyager-trash"></i> <span class="hidden-xs hidden-sm">Delete</span>
                                             </a> --}}
                                             @if($item_count > 0)
+                                                {{-- @if($data->status == 'completed')
+                                                    <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn outlinedBtn pull-right view">
+                                                        <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">View</span>
+                                                    </a>
+                                                @endif --}}
                                                 @if( $data->status == 'waiting for payment' )
                                                     <a href="{{ ENV('APP_URL') }}/admin/transactions/{{ $data->id }}/edit" title="View" class="btn btn-sm btn-success pull-right view">
                                                         <i class="voyager-eye"></i> <span class="hidden-xs hidden-sm">Add Payment</span>
@@ -286,6 +291,7 @@
                                                 @elseif(in_array($data->status, ['preparing for delivery', 'waiting for pickup']))
                                                     <button class="btn btn-info btn-lg" onclick="completeTx({{ $data->id }})">Complete transaction</button>
                                                 @endif
+
                                             @endif
                                         </td>
                                     </tr>
@@ -450,11 +456,30 @@
             if(confirmStatus) {
                 axios.post(`${window.location.origin}/admin/transaction/complete`, payload)
                     .then(response => {
-                        alert(`Completed Transaction`)
-                        window.location.reload()
+                        Swal.fire({
+                            title: 'Success!',
+                            text: `Completed Transaction`,
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload()
+                            }
+                        })
+                        // alert(`Completed Transaction`)
+                        // window.location.reload()
                     })
                     .catch(x => {
-                        alert('err')
+                        const y = Object.keys(x.response.data.errors)
+                        for (let key of y) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text:  `${x.response.data.errors[key][0]}`,
+                                icon: 'error',
+                                confirmButtonText: 'Ok'
+                            })
+                            break
+                        }
                     })
             }
         }
