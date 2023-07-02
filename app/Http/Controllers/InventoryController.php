@@ -102,7 +102,9 @@ class InventoryController extends Controller
     public function createInbound(Request $request)
     {
         $payload = $request->all();
+
         !is_null($payload['arrival_date']) && $this->addStocks($request->products);
+        $payload['employee_id'] = Auth::user()->employee_id;
         $inventory_transfer = InventoryTransfer::create($payload)->batch()->createMany($request->products);
         return response()->json(compact('inventory_transfer'));
     }
