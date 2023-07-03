@@ -540,7 +540,8 @@
                     console.log(this.transaction )
                     console.log("item total: ",itemTotal);
                     console.log("grand total: ", parseFloat(delivery_fee)+parseFloat(itemTotal));
-                    this.grandTotal = this.formatCurrency(parseFloat(delivery_fee)+parseFloat(itemTotal))
+                    this.grandTotal = parseFloat(delivery_fee)+parseFloat(itemTotal)
+                    // this.grandTotal = this.formatCurrency(parseFloat(delivery_fee)+parseFloat(itemTotal))
                 },
                 formatCurrency(x){
                     return x.toLocaleString('en-PH', { style: 'currency', currency: 'PHP' });

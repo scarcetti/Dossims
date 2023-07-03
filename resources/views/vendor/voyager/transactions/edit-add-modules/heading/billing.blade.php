@@ -3,9 +3,9 @@
     @if($transaction->customer)
         <div class="form-group  col-md-12" style="margin: 30px 0 15px 0;">
             @if( isset($transaction) && ($transaction->payment != null))
-                <h2 class="float-right" style="font-weight: bold;">Total: @{{ grandTotal }}</h2>
+                <h2 class="float-right" style="font-weight: bold;">Total: @{{ formatCurrency(grandTotal) }}</h2>
             @else
-                <h2 class="float-right" style="font-weight: bold;">Total: @{{ grandTotal }}</h2>
+                <h2 class="float-right" style="font-weight: bold;">Total: @{{ formatCurrency(grandTotal) }}</h2>
             @endif
             <label class="control-label" for="name">Customer</label>
             <h5>
