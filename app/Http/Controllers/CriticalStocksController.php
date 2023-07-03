@@ -86,12 +86,12 @@ class CriticalStocksController extends Controller
             $branch_products = BranchProduct::select('branch_products.*')
                 ->leftJoin('transaction_items', 'branch_products.id', '=', 'transaction_items.branch_product_id')
                 ->where('branch_products.branch_id', $this->getBranch('id'))
-                ->where('branch_products.quantity', '<', 10)
                 ->where('branch_products.quantity', '<', function ($query) use ($currentMonth, $previousTwoMonths) {
                     $query->select(DB::raw('SUM(transaction_items.quantity)'))
-                        ->from('transaction_items')
-                        ->whereBetween('transaction_items.created_at', [$previousTwoMonths, $currentMonth]);
+                    ->from('transaction_items')
+                    ->whereBetween('transaction_items.created_at', [$previousTwoMonths, $currentMonth]);
                 })
+                ->orWhere('branch_products.quantity', '<', 10)
                 ->with('product')
                 ->groupBy('branch_products.id')
                 ->orderBy('branch_products.quantity', 'desc')
