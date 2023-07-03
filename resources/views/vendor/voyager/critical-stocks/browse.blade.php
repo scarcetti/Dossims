@@ -7,20 +7,6 @@
             <div>
                 <form method="get" class="form-search">
                     <div style="display: flex">
-                        {{-- <div style="margin: 22px">
-                            <label>FIlter products</label>
-                            <input type="text" name="filter_value" :value="value" hidden>
-                            <multiselect v-model="value" :options="options" :searchable="false"
-                                @input="submitFilter()" :close-on-select="true" :show-labels="false"></multiselect>
-                        </div>
-                        <div style="margin: 22px">
-                            <label>Order by</label>
-                            <input type="text" name="order_by" :value="order_by" hidden>
-                            <multiselect v-model="order_by"
-                                :options="['Most selling', 'Most profitable', 'Least selling', 'Least profitable']"
-                                :searchable="false" @input="submitFilter()" :close-on-select="true"
-                                :show-labels="false"></multiselect>
-                        </div>- --}}
                     </div>
                 </form>
             </div>
@@ -30,7 +16,6 @@
                     <table style="width: 100%;">
                         <thead>
                             <tr>
-                                <th>Ranking</th>
                                 <th>Product</th>
                                 <th>Remaining Stock</th>
                             </tr>
@@ -38,9 +23,6 @@
                         <tbody>
                             @forelse($low_stocks ?? [] as $key => $value)
                                 <tr style="border-top: solid #5c5c5c29 1px" @click="rankingClicked({{ $value }})">
-                                    <td>
-                                        <p>#&nbsp;{{ $key + 1 }}</p>
-                                    </td>
                                     <td>
                                         {{ $value->product->name }}
                                     </td>
