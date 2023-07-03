@@ -41,7 +41,7 @@ class Inventory extends AbstractWidget
                 'link' => env('APP_URL') . '/admin/branch-products',
                 // 'link' => route('voyager.posts.index'),
             ],
-            'image' => '/widget-bg/steel-cuts',
+            'image' => '/widget-bg/steel-cuts.jpg',
         ]));
     }
 
@@ -56,7 +56,7 @@ class Inventory extends AbstractWidget
             return is_null($x) ? false : $x;
         }
         else {
-            return is_null($x) ? false : $x->$column;   
+            return is_null($x) ? false : $x->$column;
         }
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\BalancesController;
+use App\Http\Controllers\CriticalStocksController;
 use App\Http\Controllers\CuttingListController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PredictionController;
@@ -22,6 +23,22 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('voyager::login');
+});
+
+Route::get('testingggg', function() {
+    // Create a new mysqli object
+    $mysqli = new mysqli('128.199.68.178', 'root', 'FlH0@8$9EdA0YY%&9Q2E!@', 'thumbzupp_wp');
+
+    // Check the connection
+    if ($mysqli->connect_errno) {
+        echo 'Failed to connect to MySQL: ' . $mysqli->connect_error;
+    } else {
+        echo 'Connected to MySQL successfully!';
+    }
+
+    // Close the connection
+    $mysqli->close();
+    die();
 });
 
 Route::group(['prefix' => 'admin'], function () {
@@ -72,6 +89,10 @@ Route::group(['prefix' => 'admin'], function () {
 
     Route::group(['prefix' => 'reports'], function () {
         Route::get('/', [PrintoutController::class,'reports']);
+    });
+
+    Route::group(['prefix' => 'critical-stocks'], function () {
+        Route::get('/', [CriticalStocksController::class,'index']);
     });
 });
 

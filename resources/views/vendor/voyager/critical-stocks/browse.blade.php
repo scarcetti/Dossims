@@ -7,7 +7,7 @@
             <div>
                 <form method="get" class="form-search">
                     <div style="display: flex">
-                        <div style="margin: 22px">
+                        {{-- <div style="margin: 22px">
                             <label>FIlter products</label>
                             <input type="text" name="filter_value" :value="value" hidden>
                             <multiselect v-model="value" :options="options" :searchable="false"
@@ -20,18 +20,7 @@
                                 :options="['Most selling', 'Most profitable', 'Least selling', 'Least profitable']"
                                 :searchable="false" @input="submitFilter()" :close-on-select="true"
                                 :show-labels="false"></multiselect>
-                        </div>-
-                        <div style="margin: 22px; display: flex; flex-direction: column;">
-                            <label>Hide tables</label>
-                            <label class="switch">
-                                @if (isset(Request::all()['hide_tables']))
-                                    <input name="hide_tables" type="checkbox" checked onclick="submit()">
-                                @else
-                                    <input name="hide_tables" type="checkbox" onclick="submit()">
-                                @endif
-                                <div class="slider round"></div>
-                            </label>
-                        </div>
+                        </div>- --}}
                     </div>
                 </form>
             </div>
@@ -40,46 +29,25 @@
                 <div class="paginator_ containers_">
                     <table style="width: 100%;">
                         <thead>
-                            <tr />
-                            <th>Ranking</th>
-                            @if (isset(Request::all()['hide_tables']))
+                            <tr>
+                                <th>Ranking</th>
                                 <th>Product</th>
-                            @else
-                                <th>Predictions</th>
-                            @endif
+                                <th>Remaining Stock</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($top_products as $key => $value)
-                                @if (isset(Request::all()['hide_tables']))
-                                    <tr style="border-top: solid #5c5c5c29 1px"
-                                        @click="rankingClicked({{ $value }})">
-                                        <td>
-                                            <p>#&nbsp;{{ $key + 1 }}</p>
-                                        </td>
-                                        <td>
-                                            {{ $value->branchProduct->product->name }}
-                                        </td>
-                                    </tr>
-                                @else
-                                    <tr style="border-top: solid #5c5c5c29 1px"
-                                        @click="rankingClicked({{ $value }})">
-                                        <td>
-                                            <h3>#&nbsp;{{ $key + 1 }}</h3>
-                                        </td>
-                                    </tr>
-                                    <tr class="graph-{{ $value->branch_product_id }}"
-                                        branch_product_id={{ $value->branch_product_id }}>
-                                        <td colspan="2">
-                                            <div class="col-lg-11 col-md-11">
-                                                <div class="chart-container-width-basis"></div>
-                                                <figure class="chart-container">
-                                                    <div id="chart-{{ $value->branch_product_id }}" class="chart"></div>
-                                                </figure>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endif
+                            @forelse($low_stocks ?? [] as $key => $value)
+                                <tr style="border-top: solid #5c5c5c29 1px" @click="rankingClicked({{ $value }})">
+                                    <td>
+                                        <p>#&nbsp;{{ $key + 1 }}</p>
+                                    </td>
+                                    <td>
+                                        {{ $value->product->name }}
+                                    </td>
+                                    <td>
+                                        {{ $value->quantity }}
+                                    </td>
+                                </tr>
                             @empty
                                 <tr>
                                     <td colspan="2">No record</td>
@@ -88,7 +56,7 @@
                         </tbody>
                     </table>
                     <br><br>
-                    {{-- {{ $branch_products->links() }} --}}
+                    {{ $low_stocks->links() }}
                 </div>
                 <center>
                     <a class="btn btn-dark" href="{{ ENV('APP_URL') }}/admin/" readonly>Return to Dashboard</a>
@@ -101,11 +69,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.2/echarts.min.js"
         integrity="sha512-VdqgeoWrVJcsDXFlQEKqE5MyhaIgB9yXUVaiUa8DR2J4Lr1uWcFm+ZH/YnzV5WqgKf4GPyHQ64vVLgzqGIchyw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
+    {{-- <script src="https://unpkg.com/vue-multiselect@2.1.0"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"
         integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
+    {{-- <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css"> --}}
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/predictions.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom-switch.css') }}">
@@ -113,21 +81,15 @@
         var vm = new Vue({
             el: '#dashboard',
             components: {
-                Multiselect: window.VueMultiselect.default,
+                // Multiselect: window.VueMultiselect.default,
             },
             data: {
-                value: ['{{ Request::all()['filter_value'] ?? 'Weekly' }}'],
-                options: ['Weekly', 'Monthly', 'Yearly', 'All-time'],
-                selected: null,
-                option: {
-                    vueChart: "",
-                    vueChartOption: null,
-                },
-                order_by: ['{{ Request::all()['order_by'] ?? 'Most selling' }}'],
+                value: [],
+                order_by: [],
             },
             created() {
                 this.$nextTick(() => {})
-                this.getCharts()
+                // this.getCharts()
             },
             methods: {
                 reroute(x) {
@@ -163,9 +125,9 @@
                 initChart(branch_product_id) {
 
                     this.option.vueChart = echarts.init(document.getElementById(`chart-${branch_product_id}`),
-                    null, {
-                        renderer: 'svg'
-                    })
+                        null, {
+                            renderer: 'svg'
+                        })
                     this.option.vueChart.setOption(this.option.vueChartOption)
                 },
             }

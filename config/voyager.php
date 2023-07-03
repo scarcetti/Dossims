@@ -153,6 +153,7 @@ return [
             'App\\Widgets\\Predictions',
             'App\\Widgets\\Reports',
             'App\\Widgets\\StockAnalytics',
+            'App\\Widgets\\CriticalStocks',
             'App\\Widgets\\NewTransaction',
             'App\\Widgets\\Balances',
         ],
