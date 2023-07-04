@@ -12,6 +12,11 @@
 @endphp
 @extends('voyager::master')
 @section('content')
+    <style type="text/css">
+        .swal2-container.swal2-center.swal2-backdrop-show {
+            z-index: 9999999999 !important;
+        }
+    </style>
     <div id="app">
         <section>
             @include('voyager::inventory.transfers.inbounds.create')
@@ -20,11 +25,13 @@
             <div
                 style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; margin-top: 20px;">
                 <div class="col-md-6 col-xs-12 paginator_ containers_">
-                    <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin: 0 0 15px 15px;">
+                    <div
+                        style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin: 0 0 15px 15px;">
                         <h4>
                             Inbounds
                         </h4>
-                        <span class="btn btn-primary" @click="createInboundButtonClicked()" readonly style="margin-left: 10px;">Create Inbound</span>
+                        <span class="btn btn-primary" @click="createInboundButtonClicked()" readonly
+                            style="margin-left: 10px;">Create Inbound</span>
                     </div>
                     <table style="width: 100%;">
                         <thead>
@@ -45,7 +52,8 @@
                                     <td>{{ $item->employee->full_name ?? '---' }}</td>
                                     <td>
                                         @if (is_null($item->arrival_date))
-                                            <span class="btn btn-success" @click="inboundArrival({{ $item }})">Confirm Arrival</span>
+                                            <span class="btn btn-success"
+                                                @click="inboundArrival({{ $item }})">Confirm Arrival</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -60,11 +68,13 @@
                     {{ $inbounds->links() }}
                 </div>
                 <div class="col-md-6 col-xs-12 paginator_ containers_">
-                    <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin: 0 0 15px 15px;">
+                    <div
+                        style="display: flex; flex-direction: row; justify-content: space-between; width: 100%; margin: 0 0 15px 15px;">
                         <h4>
                             Outbounds
                         </h4>
-                        <span class="btn btn-primary" @click="createOutboundButtonClicked()" readonly style="margin-left: 10px;">Create Outbound</span>
+                        <span class="btn btn-primary" @click="createOutboundButtonClicked()" readonly
+                            style="margin-left: 10px;">Create Outbound</span>
                     </div>
                     <table style="width: 100%;">
                         <thead>
@@ -102,7 +112,9 @@
     <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js" integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"
+        integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>`
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/inventory-transfers.css') }}">
 
@@ -201,10 +213,13 @@
 
                         if (elements.length == 1) {
                             if (currentValue < minValue || currentValue > maxValue) {
-                                document.querySelector(`table.${tableClass} tr.qty_validate_${branchProductId}`).classList.add(
-                                    "error");
+                                document.querySelector(
+                                        `table.${tableClass} tr.qty_validate_${branchProductId}`).classList
+                                    .add(
+                                        "error");
                             } else {
-                                document.querySelector(`table.${tableClass} tr.qty_validate_${branchProductId}`).classList
+                                document.querySelector(
+                                        `table.${tableClass} tr.qty_validate_${branchProductId}`).classList
                                     .remove("error");
                             }
                         } else if (elements.length == 2) {
@@ -212,10 +227,13 @@
                             const y = parseInt(elements[1].value)
                             const total = x * y
                             if ((x < 0 || y < 0) || (total < minValue || total > maxValue)) {
-                                document.querySelector(`table.${tableClass} tr.qty_validate_${branchProductId}`).classList.add(
-                                    "error");
+                                document.querySelector(
+                                        `table.${tableClass} tr.qty_validate_${branchProductId}`).classList
+                                    .add(
+                                        "error");
                             } else {
-                                document.querySelector(`table.${tableClass} tr.qty_validate_${branchProductId}`).classList
+                                document.querySelector(
+                                        `table.${tableClass} tr.qty_validate_${branchProductId}`).classList
                                     .remove("error");
                             }
                         }
@@ -229,7 +247,8 @@
                 },
                 createInboundDialog() {
                     this.confirmInboundList = []
-                    const hasValues = this.inboundStocks_.filter(item => (item.hasOwnProperty('pcs') || item.hasOwnProperty('meters')) && item.pcs > 0)
+                    const hasValues = this.inboundStocks_.filter(item => (item.hasOwnProperty('pcs') || item
+                        .hasOwnProperty('meters')) && item.pcs > 0)
                     hasValues.forEach(item => {
                         this.confirmInboundList.push({
                             product_id: item.id,
@@ -247,10 +266,11 @@
                 },
                 createOutboundDialog() {
                     this.confirmOutboundList = []
-                    const hasValues = this.outboundStocks_.filter(item => (item.hasOwnProperty('pcs') || item.hasOwnProperty('meters') && Number(item.pcs) <= item.quantity))
+                    const hasValues = this.outboundStocks_.filter(item => (item.hasOwnProperty('pcs') || item
+                        .hasOwnProperty('meters') && Number(item.pcs) <= item.quantity))
                     hasValues.forEach(item => {
                         if (item.hasOwnProperty('meters')) {
-                            if((Number(item.meters) * Number(item.pcs)) <= item.quantity) {
+                            if ((Number(item.meters) * Number(item.pcs)) <= item.quantity) {
                                 this.confirmOutboundList.push({
                                     product_id: item.id,
                                     name: item.product.name,
@@ -258,8 +278,7 @@
                                     meters: item.meters ? item.meters : null,
                                 })
                             }
-                        }
-                        else {
+                        } else {
                             this.confirmOutboundList.push({
                                 product_id: item.id,
                                 name: item.product.name,
@@ -281,7 +300,8 @@
                         direction: direction,
                         arrival_date: isInbound ? new Date().toISOString() : null,
                         referrer: isInbound ? this.inboundsForm.referrer : this.outboundsForm.referrer,
-                        referrer_contact: isInbound ? this.inboundsForm.referrer_contact : this.outboundsForm.referrer_contact,
+                        referrer_contact: isInbound ? this.inboundsForm.referrer_contact : this.outboundsForm
+                            .referrer_contact,
                         distributor_id: isInbound ? null : null,
                         receiver_branch_id: isInbound ? {!! branch_() !!} : this.activeBranch.id,
                         sender_branch_id: isInbound ? null : {!! branch_() !!},
@@ -307,7 +327,7 @@
                             for (let key of y) {
                                 Swal.fire({
                                     title: 'Error!',
-                                    text:  `${x.response.data.errors[key][0]}`,
+                                    text: `${x.response.data.errors[key][0]}`,
                                     icon: 'error',
                                     confirmButtonText: 'Ok'
                                 })
@@ -334,7 +354,7 @@
                             for (let key of y) {
                                 Swal.fire({
                                     title: 'Error!',
-                                    text:  `${x.response.data.errors[key][0]}`,
+                                    text: `${x.response.data.errors[key][0]}`,
                                     icon: 'error',
                                     confirmButtonText: 'Ok'
                                 })
