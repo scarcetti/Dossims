@@ -519,14 +519,19 @@
                     return parseFloat(x).toFixed(2)
                 },
                 viewBalance(x) {
-                    console.log(x)
+                    // console.log(x)
                     location.href = `${location.origin}/admin/balances/${x}`
                 },
                 getGrandTotal(transaction) {
                     this.transaction = transaction
-                    let delivery_fee =  transaction.payment === null ? 0 : transaction.payment.delivery_fees.total;
-                    console.log("delivery_fee: ",delivery_fee);
+                    let delivery_fee =  transaction.payment === null ?
+                                            0 :
+                                            transaction.payment.delivery_fees ?
+                                                transaction.payment.delivery_fees.total :
+                                                0 ;
+                    // console.log("delivery_fee: ",delivery_fee);
                     let itemTotal = transaction.transaction_items.reduce((acc, item) => {
+                        console.log(12312, [acc, item])
                         if (item.discount && item.discount.value) {
                             const discountValue = parseFloat(item.discount.value);
                             return acc + discountValue;
@@ -537,9 +542,9 @@
                         return acc;
                     }, 0);
 
-                    console.log(this.transaction )
-                    console.log("item total: ",itemTotal);
-                    console.log("grand total: ", parseFloat(delivery_fee)+parseFloat(itemTotal));
+                    // console.log(this.transaction )
+                    // console.log("item total: ",itemTotal);
+                    // console.log("grand total: ", parseFloat(delivery_fee)+parseFloat(itemTotal));
                     this.grandTotal = parseFloat(delivery_fee)+parseFloat(itemTotal)
                     // this.grandTotal = this.formatCurrency(parseFloat(delivery_fee)+parseFloat(itemTotal))
                 },

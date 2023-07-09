@@ -113,7 +113,7 @@ class GenerateTransaction extends Command
                 'price_at_purchase' => $price_at_purchase,
                 'quantity'          => $quantity,
                 'tbd'               => 1,
-                'linear_meters'     => null,
+                'linear_meters'     => 1,
             ];
 
             $customer_purchases--;

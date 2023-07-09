@@ -638,6 +638,7 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
         $branch_products = \App\Models\BranchProduct::when($branch_id, function($q) use ($branch_id) {
                 return $q->where('branch_id', $branch_id);
             })
+            ->where('quantity', '>', 0)
             ->with('product.measurementUnit')
             ->get();
         foreach ($branch_products as $key => $value) {
