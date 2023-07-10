@@ -24,6 +24,11 @@ class PredictionController extends Controller
         }
     }
 
+    function checkIfSet($x, $key)
+    {
+        return isset($x->$key);
+    }
+
     function branches()
     {
         $role_id = Auth::user()->role->id;
@@ -39,6 +44,10 @@ class PredictionController extends Controller
 
     public function index()
     {
+        if(!$this->checkIfSet(Auth::user(), 'role')) {
+            return view('voyager::login');
+        }
+
         foreach($this->branches() as $item) {
             $sales = $this->monthly_sales($item->id);
 

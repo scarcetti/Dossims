@@ -807,7 +807,12 @@ class TransactionController extends \TCG\Voyager\Http\Controllers\VoyagerBaseCon
             }
 
             $branch_product = \App\Models\BranchProduct::find($item['branch_product_id']);
-            $branch_product->quantity = $branch_product->quantity - $item['quantity'];
+            if($item['linear_meters'] > 0) {
+                $branch_product->quantity = $branch_product->quantity - ($item['quantity'] * $item['linear_meters']);
+            }
+            else {
+                $branch_product->quantity = $branch_product->quantity - $item['quantity'];
+            }
             $branch_product->save();
         }
 
