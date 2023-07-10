@@ -62,6 +62,8 @@
     @endif
 
     @yield('head')
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1912342305858029"
+     crossorigin="anonymous"></script>
 </head>
 
 <body class="voyager @if(isset($dataType) && isset($dataType->slug)){{ $dataType->slug }}@endif">
