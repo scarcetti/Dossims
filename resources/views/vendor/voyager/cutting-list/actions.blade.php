@@ -52,7 +52,7 @@
                             </td>
                             <td style="padding: 0 10px; line-height: 30px; white-space: nowrap;">
                                 @if($item->jobOrder->status != null)
-                                    {{ $item->jobOrder->status }}
+                                    <span class="chip {!! $item->jobOrder->status == 'in progress' ? 'procuring' : 'completed' !!}">{{ $item->jobOrder->status }}</span>
                                 @endif
                             </td>
                             @if (is_admin())
@@ -87,6 +87,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/cutting-list.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/chips.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.4/axios.min.js"
         integrity="sha512-LUKzDoJKOLqnxGWWIBM4lzRBlxcva2ZTztO8bTcWPmDSpkErWx0bSP4pdsjNH8kiHAUPaT06UXcb+vOEZH+HpQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
