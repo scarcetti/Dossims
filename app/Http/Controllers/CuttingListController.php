@@ -6,11 +6,16 @@ use App\Models\JobOrder;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CuttingListController extends Controller
 {
     public function getOrders()
     {
+        if(!isset(Auth::user()->role)) {
+            return redirect('/');
+        }
+
         $orders = Transaction::
                         where('status', 'procuring')
                         ->with('customer', 'businessCustomer', 'transactionItems.jobOrder', 'transactionItems.branchProduct.product.measurementUnit')
@@ -21,6 +26,10 @@ class CuttingListController extends Controller
 
     public function cuttingList($id)
     {
+        if(!isset(Auth::user()->role)) {
+            return redirect('/');
+        }
+
         $tx_items = TransactionItem::where('transaction_id', $id)
                     ->with('jobOrder', 'branchProduct.product.measurementUnit')
                     ->whereHas('jobOrder')
