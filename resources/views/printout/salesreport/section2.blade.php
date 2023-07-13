@@ -5,7 +5,11 @@
                 <td colspan="3">
                     <p align="justify" style="padding: 10px;">
                         <b></b>
-                        Sales report for the month of {{ $month }} , {{ $year }} for {{ $branch_name }} branch:
+                        @if($start == $end)
+                            Sales report for the month of {{ \Carbon\Carbon::parse($start)->format('F d, Y') }} for {{ $branch_name }} branch:
+                        @else
+                            Sales report from {{ \Carbon\Carbon::parse($start)->format('F d, Y') }} until {{ \Carbon\Carbon::parse($end)->format('F d, Y') }} for {{ $branch_name }} branch:
+                        @endif
                         Total Gross Sales: ₱&nbsp;<b>{{ number_format($sum, 2, '.', ',') }}</b>
                     </p>
                 </td>

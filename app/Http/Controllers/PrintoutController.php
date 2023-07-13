@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use PDF;
-use Carbon\Carbon;
 use ZipArchive;
 
 class PrintoutController extends Controller
@@ -182,9 +182,15 @@ class PrintoutController extends Controller
 
     public function salesReport(Request $request)
     {
-        $date = Carbon::createFromFormat('Y-m', $request->m_y);
-        $month = $date->format('F');
-        $year = $date->format('Y');
+        // return $request;
+        $request = request();
+
+        $start = $request->m_y_start1;
+        $end = $request->m_y_end1;
+
+        $startDate = Carbon::parse($start.'-01')->format('Y-m-d');
+        $endDate = Carbon::parse($end)->endOfMonth()->format('Y-m-d');
+
         $branch_name = \App\Models\Branch::select('name')->find($request->branch_id)->name;
 
 
@@ -194,9 +200,8 @@ class PrintoutController extends Controller
             ->whereHas('transaction.branch', function($q) use($request) {
                 $q->where('id', $request->branch_id);
             })
-            ->whereHas('transaction', function($q) use($date) {
-                $q->whereMonth('created_at', $date->format('m'))
-                    ->whereYear('created_at', $date->format('Y'));
+            ->whereHas('transaction', function($q) use($startDate, $endDate) {
+                $q->whereBetween('created_at', [$startDate, $endDate]);
             })
             ->with('downpayment')
             ->get();
@@ -208,10 +213,13 @@ class PrintoutController extends Controller
         }
 
         $pdf = PDF::setPaper('a4', 'landscape')->setWarnings(false);
-        $pdf->loadView('printout.salesreport.index', compact('month', 'year', 'branch_name', 'sum'));
+        $pdf->loadView('printout.salesreport.index', compact('start', 'end', 'branch_name', 'sum'));
+
+        $filename = $start == $end ? $start : "$start-$end";
+
         return env('APP_DEBUG', false) ?
                     $pdf->stream() :
-                    $pdf->download("$request->m_y-sales-report.pdf");
+                    $pdf->download("$filename-sales-report.pdf");
     }
 
     public function test_dl()

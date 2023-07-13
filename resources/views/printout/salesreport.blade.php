@@ -24,8 +24,12 @@
                     </div>
                     <div style="display: flex;">
                         <span class="formField">
-                            <label for="monthYear1">Select Month and Year:</label>
-                            <input id="monthYear1" name="m_y" type="month" v-model="monthYear" style="height: 40px;">
+                            <label for="monthYear_start1">Starting month:</label>
+                            <input id="monthYear_start1" name="m_y_start1" type="month" v-model="monthYearStart1" style="height: 40px;">
+                        </span>
+                        <span class="formField">
+                            <label for="monthYear_end1">Ending month:</label>
+                            <input id="monthYear_end1" name="m_y_end1" type="month" v-model="monthYearEnd1" style="height: 40px;">
                         </span>
                         <span class="formField">
                             <label>Select Branch:</label>
@@ -45,7 +49,7 @@
                     </div>
 
                     <div>
-                        <button :disabled="monthYear && !branch.id" class="btn btn-sm btn-primary pull-left edit" type="submit" style="margin-top: 5px;">Generate PDF</button>
+                        <button :disabled="monthYearStart1 && monthYearEnd1 && !branch.id" class="btn btn-sm btn-primary pull-left edit" type="submit" style="margin-top: 5px;">Generate PDF</button>
                     </div>
                 </div>
             </form>
@@ -63,7 +67,8 @@
             },
             data () {
                 return {
-                    monthYear: '',
+                    monthYearStart1: '',
+                    monthYearEnd1: '',
                     branch: [],
                     branches: {!! $branches ?? '' !!},
                 }
@@ -73,7 +78,8 @@
                     var currentDate = new Date();
                     var currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
                     var currentYear = currentDate.getFullYear().toString();
-                    this.monthYear = currentYear + '-' + currentMonth
+                    this.monthYearStart1 = currentYear + '-' + currentMonth
+                    this.monthYearEnd1 = currentYear + '-' + currentMonth
                 },
 
             },
