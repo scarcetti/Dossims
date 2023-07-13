@@ -30,7 +30,7 @@
         </div>
         <div v-if="value[index].selection">
             <small>Item price: </small>
-            <h4 style="margin: 0">₱ @{{ value[index].selection.price }}</h4>
+            <h4 style="margin: 0">@{{ formatCurrency(value[index].selection.price *1)}}</h4>
         </div>
     </div>
     <div class="col-md-2" v-if="value[index].selection">
