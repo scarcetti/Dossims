@@ -53,6 +53,8 @@ class PredictionController extends Controller
 
             $branches[] = [
                 'branch' => strtolower(str_replace(' ', '_', $item->name)),
+                'raw_name' => $item->name,
+                'id' => $item->id,
                 'set' => $this->format_for_chart($sales, $item->name),
             ];
         }
