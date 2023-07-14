@@ -23,7 +23,7 @@
                                 {{ $item->customer->first_name . ' ' . $item->customer->last_name }}
                             </td>
                             <td>
-                                {{ $item->outstanding_balance }}
+                                {{ '₱' . number_format($item->outstanding_balance, 2) }}
                             </td>
                             <td>
                                 {{-- {{ $item }} --}}

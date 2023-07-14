@@ -462,7 +462,9 @@
 
                     this.productsTotal = total
                     // this.productsTotal = `₱ ${total.toFixed(2)}`
-                    this.grandTotal = `₱ ${(total + this.deliveryFees.shippingTotal).toFixed(2)}`
+                    // this.grandTotal = `₱ ${(total + this.deliveryFees.shippingTotal).toFixed(2)}`
+                    // this.grandTotal_ = `₱ ${(total + this.deliveryFees.shippingTotal).toFixed(2)}`
+                    this.grandTotal = (total + this.deliveryFees.shippingTotal).toFixed(2)
                     this.grandTotal_ = (total + this.deliveryFees.shippingTotal).toFixed(2)
                 },
                 disableSubmitOnFieldsEnter() {

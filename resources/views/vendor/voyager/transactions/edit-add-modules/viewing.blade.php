@@ -9,7 +9,7 @@
         <div>
             <small>Item price: </small>
             {{-- <h4 style="margin: 0">₱ @{{ item.price_at_purchase }}</h4> --}}
-            <h4 style="margin: 0">₱ @{{ formatCurrency(item.price_at_purchase) }}</h4>
+            <h4 style="margin: 0">@{{ formatCurrency((item.price_at_purchase*1)) }}</h4>
         </div>
     </div>
     <div class="col-md-2">
@@ -26,21 +26,21 @@
             >
         </div>
         <div>
-            <small>Subtotal: </small>
+            <small>Subtotal:</small>
             <span v-if="item.pre_discount" style="display: flex;">
                 {{-- <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>@{{ (item.price_at_purchase * item.quantity).toFixed(2) }}</s></h4>&nbsp;&nbsp;&nbsp; --}}
-                <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>@{{ formatCurrency((item.price_at_purchase * item.quantity).toFixed(2)) }}</s></h4>&nbsp;&nbsp;&nbsp;
+                <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>@{{ formatCurrency((item.price_at_purchase * item.quantity)) }}</s></h4>&nbsp;&nbsp;&nbsp;
                 {{-- <h4 class="subtotal" style="margin: 0">@{{ formatCurrency(item.discount_value) }}</h4> --}}
-                <h4 class="subtotal" style="margin: 0">@{{ item.discount_value }}</h4>
+                <h4 class="subtotal" style="margin: 0">@{{ formatCurrency(item.discount_value*1) }}</h4>
             </span>
             <span v-else-if="item.discount" style="display: flex;">
                 {{-- <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>@{{ item.price_at_purchase * item.quantity.toFixed(2) }}</s></h4>&nbsp;&nbsp;&nbsp; --}}
-                <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>@{{ formatCurrency((item.price_at_purchase * item.quantity).toFixed(2)) }}</s></h4>&nbsp;&nbsp;&nbsp;
+                <h4 class="subtotal" style="color:#d5d5d5; margin: 0"><s>@{{ formatCurrency((item.price_at_purchase * item.quantity)) }}</s></h4>&nbsp;&nbsp;&nbsp;
                 {{-- <h4 class="subtotal" style="margin: 0">@{{ item.discount.value }}</h4> --}}
-                <h4 class="subtotal" style="margin: 0">@{{ formatCurrency(item.discount.value) }}</h4>
+                <h4 class="subtotal" style="margin: 0">@{{ formatCurrency(item.discount.value*1) }}</h4>
             </span>
             <span v-else style="display: flex;">
-                <h4 class="subtotal" style="margin: 0">@{{ formatCurrency((item.price_at_purchase * item.quantity).toFixed(2) * (item.linear_meters ? item.linear_meters : 1)) }}</h4>
+                <h4 class="subtotal" style="margin: 0">@{{ formatCurrency((item.price_at_purchase * item.quantity) * (item.linear_meters ? item.linear_meters : 1)) }}</h4>
             </span>
         </div>
     </div>
