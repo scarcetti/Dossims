@@ -6,7 +6,7 @@
                     <p align="justify" style="padding: 10px;">
                         <b></b>
                         @if($start == $end)
-                            Sales report for the month of {{ \Carbon\Carbon::parse($start)->format('F d, Y') }} for {{ $branch_name }} branch:
+                            Sales report for the month of {{ \Carbon\Carbon::parse($start)->format('F, Y') }} for {{ $branch_name }} branch:
                         @else
                             Sales report from {{ \Carbon\Carbon::parse($start)->format('F d, Y') }} until {{ \Carbon\Carbon::parse($end)->format('F d, Y') }} for {{ $branch_name }} branch:
                         @endif
