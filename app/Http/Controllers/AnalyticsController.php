@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Branch;
 use App\Models\TransactionItem;
 use App\Models\BranchProduct;
 use Carbon\Carbon;
@@ -27,14 +28,100 @@ class AnalyticsController extends Controller
 
     public function index(Request $request)
     {
-        // return $this->test();
+        $branches = $this->branches();
         $top_products = $this->top_products($request);
 
-        return view('voyager::analytics.index', compact('top_products'));
+        return view('voyager::analytics.index', compact('branches','top_products'));
+    }
+    function branches()
+    {
+        $role_id = Auth::user()->role->id;
+        $current_branch = $this->getBranch('id');
+
+        return Branch::select('id','name')
+                ->orderBy('name', 'asc')
+                ->get();
     }
 
 
         function top_products($request)
+        {
+            $filter_by = (isset($request->filter_value) || !is_null($request->filter_value)) ? $request->filter_value : 'Weekly';
+            $branch = isset($request->branch);
+            // $filter_branch = (isset($request->branch) || !is_null($request->branch)) ? $request->branch : 3;
+            // 'Weekly', 'Monthly', 'Yearly', 'All-time'
+
+            if( isset($request->order_by) ) {
+                switch ($request->order_by) {
+                    case 'Most selling':
+                        $order = 'desc';
+                        $qty = true;
+                        break;
+                    case 'Least selling':
+                        $order = 'asc';
+                        $qty = true;
+                        break;
+                    case 'Most profitable':
+                        $order = 'desc';
+                        $qty = false;
+                        break;
+                    case 'Least profitable':
+                        $order = 'asc';
+                        $qty = false;
+                        break;
+                }
+            }
+            else {
+                $order = 'desc';
+                $qty = true;
+            }
+            if( isset($request->branch) ) {
+                 $dataObject = json_decode($filter_branch);
+                // $branch_id = $dataObject->id;
+            } else {
+                $branch_id = $this->getBranch('id');
+            }
+
+
+            $top_items = TransactionItem::when($qty, function($q) use($order) {
+                            $q->selectRaw('branch_product_id, count(id) as count_')
+                                ->orderBy('count_', $order);
+                            })
+                            ->when(!$qty, function($q) use($order) {
+                                $q->selectRaw('branch_product_id, sum(price_at_purchase) as count_')
+                                    ->orderBy('count_', $order);
+                            })
+                            ->groupBy('branch_product_id')
+                            ->with('branchProduct.product')
+                            ->when($filter_by == 'Weekly', function($q) {
+                                $now = Carbon::now();
+                                $start = $now->startOfWeek()->format('m-d-Y');
+                                $end = $now->endOfWeek()->format('m-d-Y');
+
+                                $q->whereBetween('created_at', [$start, $end]);
+                            })
+                            ->when($filter_by == 'Monthly', function($q) {
+                                $q->whereHas('transaction', function($w) {
+                                    $w->whereMonth('created_at', Carbon::now()->format('m'));
+                                });
+                            })
+                            ->when($filter_by == 'Yearly', function($q) {
+                                $q->whereHas('transaction', function($w) {
+                                    $w->whereYear('created_at', Carbon::now()->format('Y'));
+                                });
+                            })
+                            ->whereHas('branchProduct', function($q) use($branch_id) {
+                                $q->where('branch_id', $branch_id);
+                            })
+                            // ->when($filter_by != 'All-time', function($q) {
+                            //     $q->take(10);
+                            // })
+                            ->take(20)
+                            ->get();
+
+                            return $top_items;
+        }
+       /*  function top_products($request)
         {
             $filter_by = (isset($request->filter_value) || !is_null($request->filter_value)) ? $request->filter_value : 'Weekly';
             // 'Weekly', 'Monthly', 'Yearly', 'All-time'
@@ -103,7 +190,7 @@ class AnalyticsController extends Controller
                             ->get();
 
                             return $top_items;
-        }
+        } */
 
     public function chart($branch_product_id)
     {

@@ -3,9 +3,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <body>
-        {{$top_products}}
+        <span class="branches_content" hidden>
+            {!! json_encode($branches) ?? '' !!}
+        </span>
         <div id="dashboard" class="clearfix container-fluid row">
             <div>
+                {{-- {{$top_products}} --}}
+                {{$branches}}
+                @{{branch}}
                 <form method="get" class="form-search">
                     <div style="display: flex">
                         <div style="margin: 22px">
@@ -30,11 +35,9 @@
                                 track-by="name"
                                 label="name"
                                 placeholder="Select Branch"
-                                :options="branch"
+                                :options="branches"
                                 :searchable="false"
                                 :close-on-select="true"
-                                :show-labels="false"
-                                :allow-empty="true"
                                 style="min-width: 20vw;"
                             />
                         </div>-
@@ -136,11 +139,12 @@
                 value: ['{{ Request::all()['filter_value'] ?? 'Weekly' }}'],
                 options: ['Weekly', 'Monthly', 'Yearly', 'All-time'],
                 selected: null,
-                branch: [],
+                branches: {!! json_encode($branches) ?? '' !!},
                 option: {
                     vueChart: "",
                     vueChartOption: null,
                 },
+                branch: ['{{ Request::all()['branch'] ?? 3 }}'],
                 order_by: ['{{ Request::all()['order_by'] ?? 'Most selling' }}'],
             },
             created() {
@@ -162,6 +166,12 @@
                 },
                 getCharts() {
                     const list = document.querySelectorAll('[class^="graph"]')
+                    // const branches = document.querySelector('span.branches_content').innerHTML
+                    // const pattern = /^\s*$/g;
+
+                    // if (!pattern.test(branches)) {
+                    //     this.branches = JSON.parse(branches)
+                    // }
 
                     setTimeout(() => {
                         list.forEach(element => {
