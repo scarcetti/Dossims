@@ -3,6 +3,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <body>
+        {{$top_products}}
         <div id="dashboard" class="clearfix container-fluid row">
             <div>
                 <form method="get" class="form-search">
@@ -20,6 +21,22 @@
                                 :options="['Most selling', 'Most profitable', 'Least selling', 'Least profitable']"
                                 :searchable="false" @input="submitFilter()" :close-on-select="true"
                                 :show-labels="false"></multiselect>
+                        </div>-
+                        <div style="margin: 22px">
+                            <label>Filter branch</label>
+                            <input type="text" name="branch" :value="branch" hidden>
+                            <multiselect
+                                v-model="branch"
+                                track-by="name"
+                                label="name"
+                                placeholder="Select Branch"
+                                :options="branch"
+                                :searchable="false"
+                                :close-on-select="true"
+                                :show-labels="false"
+                                :allow-empty="true"
+                                style="min-width: 20vw;"
+                            />
                         </div>-
                         <div style="margin: 22px; display: flex; flex-direction: column;">
                             <label>Hide tables</label>
@@ -119,6 +136,7 @@
                 value: ['{{ Request::all()['filter_value'] ?? 'Weekly' }}'],
                 options: ['Weekly', 'Monthly', 'Yearly', 'All-time'],
                 selected: null,
+                branch: [],
                 option: {
                     vueChart: "",
                     vueChartOption: null,
@@ -140,7 +158,6 @@
                 },
                 rankingClicked(value) {
                     this.selected = value
-
                     this.fetchPredictionData(value.branch_product_id)
                 },
                 getCharts() {
@@ -155,9 +172,9 @@
                 },
                 fetchPredictionData(branch_product_id) {
                     axios.get(`${window.location.origin}/admin/analytics/chart/${branch_product_id}`)
-                        .then(response => {
-                            this.option.vueChartOption = response.data
-                            this.initChart(branch_product_id)
+                    .then(response => {
+                        this.option.vueChartOption = response.data
+                        this.initChart(branch_product_id)
                         })
                 },
                 initChart(branch_product_id) {
@@ -167,6 +184,7 @@
                         renderer: 'svg'
                     })
                     this.option.vueChart.setOption(this.option.vueChartOption)
+
                 },
             }
         })

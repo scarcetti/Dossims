@@ -32,6 +32,8 @@ class AnalyticsController extends Controller
 
         return view('voyager::analytics.index', compact('top_products'));
     }
+
+
         function top_products($request)
         {
             $filter_by = (isset($request->filter_value) || !is_null($request->filter_value)) ? $request->filter_value : 'Weekly';
