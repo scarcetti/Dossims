@@ -42,24 +42,42 @@ class PredictionController extends Controller
                 ->get();
     }
 
-    public function index()
+    public function index(Request $request)
     {
         if(!$this->checkIfSet(Auth::user(), 'role')) {
             return view('voyager::login');
         }
 
-        foreach($this->branches() as $item) {
-            $sales = $this->monthly_sales($item->id);
+        $filter_branch = Branch::where('name', $request->filter_value)->first('id');
 
-            $branches[] = [
-                'branch' => strtolower(str_replace(' ', '_', $item->name)),
-                'raw_name' => $item->name,
-                'id' => $item->id,
-                'set' => $this->format_for_chart($sales, $item->name),
-            ];
+        $branches_ = $this->branches();
+        foreach($branches_ as $item) {
+            $sales = $this->monthly_sales($item->id);
+            $set = $this->format_for_chart($sales, $item->name);
+
+            if(is_null($filter_branch)) {
+                $branches[] = [
+                    'branch' => strtolower(str_replace(' ', '_', $item->name)),
+                    'raw_name' => $item->name,
+                    'id' => $item->id,
+                    'set' => $set,
+                ];
+            }
+            elseif(!is_null($filter_branch) && $filter_branch->id == $item->id) {
+                $branches[] = [
+                    'branch' => strtolower(str_replace(' ', '_', $item->name)),
+                    'raw_name' => $item->name,
+                    'id' => $item->id,
+                    'set' => $set,
+                ];
+            }
+
+            if(!is_null($set)) {
+                $filter_branch_items[] = $item->name;
+            }
         }
 
-        return view('voyager::predictions.index', compact('branches'));
+        return view('voyager::predictions.index', compact('branches', 'filter_branch_items'));
     }
 
         function monthly_sales($branch_id=4)
