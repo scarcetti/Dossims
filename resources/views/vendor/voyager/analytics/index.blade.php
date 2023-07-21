@@ -6,15 +6,17 @@
         <span class="branches_content" hidden>
             {!! json_encode($branches) ?? '' !!}
         </span>
+        <span class="list_branch_options" hidden>
+            {!! json_encode($list_branch_options) ?? '' !!}
+        </span>
+        {{$top_products}}
         <div id="dashboard" class="clearfix container-fluid row">
             <div>
-                {{-- {{$top_products}} --}}
-                {{$branches}}
-                @{{branch}}
+                {{-- branch: {{$filter_branch}} --}}
                 <form method="get" class="form-search">
                     <div style="display: flex">
                         <div style="margin: 22px">
-                            <label>FIlter products</label>
+                            <label>Filter products</label>
                             <input type="text" name="filter_value" :value="value" hidden>
                             <multiselect v-model="value" :options="options" :searchable="false"
                                 @input="submitFilter()" :close-on-select="true" :show-labels="false"></multiselect>
@@ -29,13 +31,13 @@
                         </div>-
                         <div style="margin: 22px">
                             <label>Filter branch</label>
-                            <input type="text" name="branch" :value="branch" hidden>
+                            <input type="text" name="filter_branch" :value="branch_value" hidden>
                             <multiselect
-                                v-model="branch"
+                                v-model="branch_value"
                                 track-by="name"
-                                label="name"
-                                placeholder="Select Branch"
-                                :options="branches"
+                                @input="submitFilter()"
+                                placeholder="Show"
+                                :options="filterBranches"
                                 :searchable="false"
                                 :close-on-select="true"
                                 style="min-width: 20vw;"
@@ -144,8 +146,9 @@
                     vueChart: "",
                     vueChartOption: null,
                 },
-                branch: ['{{ Request::all()['branch'] ?? 3 }}'],
+                branch_value: ['{{ Request::all()['filter_branch'] ?? 'Show all' }}'],
                 order_by: ['{{ Request::all()['order_by'] ?? 'Most selling' }}'],
+                filterBranches:[],
             },
             created() {
                 this.$nextTick(() => {})
@@ -166,8 +169,16 @@
                 },
                 getCharts() {
                     const list = document.querySelectorAll('[class^="graph"]')
-                    // const branches = document.querySelector('span.branches_content').innerHTML
-                    // const pattern = /^\s*$/g;
+                    const filterBranches = document.querySelector('span.list_branch_options').innerHTML
+                    const pattern = /^\s*$/g;
+                    if (!pattern.test(filterBranches)) {
+                        this.filterBranches = JSON.parse(filterBranches)
+                        console.log('tset',filterBranches)
+
+                        setTimeout(() => {
+                            // this.initCharts()
+                        }, 50);
+                    }
 
                     // if (!pattern.test(branches)) {
                     //     this.branches = JSON.parse(branches)
@@ -175,7 +186,7 @@
 
                     setTimeout(() => {
                         list.forEach(element => {
-                            console.log('element', element.attributes.branch_product_id.value)
+                            // console.log('element', element.attributes.branch_product_id.value)
                             this.fetchPredictionData(element.attributes.branch_product_id.value)
                         });
                     }, 100)
