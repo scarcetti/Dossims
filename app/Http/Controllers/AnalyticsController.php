@@ -31,7 +31,7 @@ class AnalyticsController extends Controller
     {
         $branches = $this->branches();
         $top_products = $this->top_products($request);
-        // $storeFilter = $this->storeFilter($request);
+        $storeFilter = $this->storeFilter($request);
 
         // $filter_branch = $request->filter_branch;
         // $filter_branch = Branch::where('name', $request->filter_branch)->first('id');
@@ -41,7 +41,7 @@ class AnalyticsController extends Controller
             $list_branch_options[] = $item->name;
         }
 
-        return view('voyager::analytics.index', compact('branches','top_products','list_branch_options'));
+        return view('voyager::analytics.index', compact('branches','top_products','list_branch_options','storeFilter'));
     }
 
     function branches()
@@ -53,20 +53,30 @@ class AnalyticsController extends Controller
                 ->orderBy('name', 'asc')
                 ->get();
     }
-    // function storeFilter($request)
-    // {
-    //     $branch_data= Branch::where('name', $request->filter_branch)->first('id');
-    //     return $branch_data->id;
-    // }
+    function storeFilter($request)
+    {
+        $filter_branch= Branch::where('name', $request->filter_branch)->first('id');
+
+        $branches_ = $this->branches();
+        foreach($branches_ as $item) {
+            if(is_null($filter_branch)) {
+                $branch_id = $this->getBranch('id');
+            }
+            elseif(!is_null($filter_branch) && $filter_branch->id == $item->id) {
+                $branch_id= $item->id;
+            }
+        }
+        return $branch_id;
+    }
 
 
     function top_products($request)
     {
         $filter_by = (isset($request->filter_value) || !is_null($request->filter_value)) ? $request->filter_value : 'Weekly';
-        $filter_branch = Branch::where('name', $request->filter_branch)->first('id');
+        // $filter_branch = Branch::where('name', $request->filter_branch)->first('id');
         // $filter_branch = (isset($request->branch) || !is_null($request->branch)) ? $request->branch : 3;
         // 'Weekly', 'Monthly', 'Yearly', 'All-time'
-
+        $branch_id = $this->storeFilter($request);
         if( isset($request->order_by) ) {
             switch ($request->order_by) {
                 case 'Most selling':
@@ -90,14 +100,6 @@ class AnalyticsController extends Controller
         else {
             $order = 'desc';
             $qty = true;
-        }
-        if(!is_null($filter_branch)) {
-                // $dataObject = json_decode($filter_branch);
-            // $branch_id = $dataObject->id;
-            // $branch_id = $this->storeFilter($request);
-            $branch_id = $filter->id;
-        } else {
-            $branch_id = $this->getBranch('id');
         }
 
 
@@ -139,82 +141,12 @@ class AnalyticsController extends Controller
 
                         return $top_items;
     }
-       /*  function top_products($request)
-        {
-            $filter_by = (isset($request->filter_value) || !is_null($request->filter_value)) ? $request->filter_value : 'Weekly';
-            // 'Weekly', 'Monthly', 'Yearly', 'All-time'
 
-            if( isset($request->order_by) ) {
-                switch ($request->order_by) {
-                    case 'Most selling':
-                        $order = 'desc';
-                        $qty = true;
-                        break;
-                    case 'Least selling':
-                        $order = 'asc';
-                        $qty = true;
-                        break;
-                    case 'Most profitable':
-                        $order = 'desc';
-                        $qty = false;
-                        break;
-                    case 'Least profitable':
-                        $order = 'asc';
-                        $qty = false;
-                        break;
-                }
-            }
-            else {
-                $order = 'desc';
-                $qty = true;
-            }
-
-            $branch_id = $this->getBranch('id');
-
-            $top_items = TransactionItem::when($qty, function($q) use($order) {
-                            $q->selectRaw('branch_product_id, count(id) as count_')
-                                ->orderBy('count_', $order);
-                            })
-                            ->when(!$qty, function($q) use($order) {
-                                $q->selectRaw('branch_product_id, sum(price_at_purchase) as count_')
-                                    ->orderBy('count_', $order);
-                            })
-                            ->groupBy('branch_product_id')
-                            ->with('branchProduct.product')
-                            ->when($filter_by == 'Weekly', function($q) {
-                                $now = Carbon::now();
-                                $start = $now->startOfWeek()->format('m-d-Y');
-                                $end = $now->endOfWeek()->format('m-d-Y');
-
-                                $q->whereBetween('created_at', [$start, $end]);
-                            })
-                            ->when($filter_by == 'Monthly', function($q) {
-                                $q->whereHas('transaction', function($w) {
-                                    $w->whereMonth('created_at', Carbon::now()->format('m'));
-                                });
-                            })
-                            ->when($filter_by == 'Yearly', function($q) {
-                                $q->whereHas('transaction', function($w) {
-                                    $w->whereYear('created_at', Carbon::now()->format('Y'));
-                                });
-                            })
-                            ->whereHas('branchProduct', function($q) use($branch_id) {
-                                $q->where('branch_id', $branch_id);
-                            })
-                            // ->when($filter_by != 'All-time', function($q) {
-                            //     $q->take(10);
-                            // })
-                            ->take(20)
-                            ->get();
-
-                            return $top_items;
-        } */
-
-    public function chart($branch_product_id)
+    public function chart($branch_id, $branch_product_id)
     {
         $bp = BranchProduct::with('product')->find($branch_product_id);
 
-        $months = $this->monthly_sales($branch_product_id, $this->getBranch('id'));
+        $months = $this->monthly_sales($branch_product_id, $branch_id);
         $qty = $this->format_for_chart($months, $bp->product->name);
         return $qty;
     }

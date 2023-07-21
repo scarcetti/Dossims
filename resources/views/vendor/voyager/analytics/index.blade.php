@@ -9,7 +9,10 @@
         <span class="list_branch_options" hidden>
             {!! json_encode($list_branch_options) ?? '' !!}
         </span>
-        {{$top_products}}
+        <span class="storeFilter" hidden>
+            {!! json_encode($storeFilter) ?? '' !!}
+        </span>
+        {{-- {{$top_products}} --}}
         <div id="dashboard" class="clearfix container-fluid row">
             <div>
                 {{-- branch: {{$filter_branch}} --}}
@@ -34,7 +37,6 @@
                             <input type="text" name="filter_branch" :value="branch_value" hidden>
                             <multiselect
                                 v-model="branch_value"
-                                track-by="name"
                                 @input="submitFilter()"
                                 placeholder="Show"
                                 :options="filterBranches"
@@ -146,6 +148,7 @@
                     vueChart: "",
                     vueChartOption: null,
                 },
+                storeFilter: {!! json_encode($storeFilter) ?? '' !!},
                 branch_value: ['{{ Request::all()['filter_branch'] ?? 'Show all' }}'],
                 order_by: ['{{ Request::all()['order_by'] ?? 'Most selling' }}'],
                 filterBranches:[],
@@ -168,6 +171,7 @@
                     this.fetchPredictionData(value.branch_product_id)
                 },
                 getCharts() {
+                    console.log('id', this.storeFilter)
                     const list = document.querySelectorAll('[class^="graph"]')
                     const filterBranches = document.querySelector('span.list_branch_options').innerHTML
                     const pattern = /^\s*$/g;
@@ -180,10 +184,6 @@
                         }, 50);
                     }
 
-                    // if (!pattern.test(branches)) {
-                    //     this.branches = JSON.parse(branches)
-                    // }
-
                     setTimeout(() => {
                         list.forEach(element => {
                             // console.log('element', element.attributes.branch_product_id.value)
@@ -192,12 +192,20 @@
                     }, 100)
                 },
                 fetchPredictionData(branch_product_id) {
-                    axios.get(`${window.location.origin}/admin/analytics/chart/${branch_product_id}`)
+                    axios.get(`${window.location.origin}/admin/analytics/chart/${this.storeFilter}/${branch_product_id}`)
+                    // axios.get(`${window.location.origin}/admin/analytics/chart/${branch_product_id}`)
                     .then(response => {
                         this.option.vueChartOption = response.data
                         this.initChart(branch_product_id)
                         })
                 },
+                // fetchPredictionData(branch_product_id) {
+                //     axios.get(`${window.location.origin}/admin/analytics/chart/${branch_product_id}`)
+                //     .then(response => {
+                //         this.option.vueChartOption = response.data
+                //         this.initChart(branch_product_id)
+                //         })
+                // },
                 initChart(branch_product_id) {
 
                     this.option.vueChart = echarts.init(document.getElementById(`chart-${branch_product_id}`),
