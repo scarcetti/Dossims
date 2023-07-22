@@ -1,6 +1,7 @@
+## Docker Setup
 ## Requirements
--Git
--Docker [>=19.03.0]
+*Git
+*Docker [>=19.03.0]
 
 ## Installation
 
@@ -21,6 +22,39 @@ To keep track of your Laradock changes, between your projects and also keep Lara
 * project-b
 * laradock-b
 
+3 - Go to the Usage section.
+
+## Setup for Single Project - Don’t have a PHP project yet:
+
+1 - Clone this repository anywhere on your machine:
+
+    git clone https://github.com/laradock/laradock.git
+
+Your folder structure should look like this:
+
+* laradock
+* project-z
+
+2 - Edit your web server sites configuration.
+
+We’ll need to do step 1 of the Usage section now to make this happen.
+
+cp .env.example .env
+At the top, change the APP_CODE_PATH_HOST variable to your project path.
+
+    APP_CODE_PATH_HOST=../project-z/
+Make sure to replace project-z with your project folder name.
+
+3 - Go to the Usage section.
+
+## Usage
+
+Read Before starting:
+
+If you are using Docker Toolbox (VM), do one of the following:
+
+>Upgrade to Docker Desktop for Mac/Windows (Recommended). 
+>Use Laradock v3.*. Visit the Laradock-ToolBox branch. (outdated)
 
 ## Server setup configs
 
