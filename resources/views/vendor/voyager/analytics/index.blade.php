@@ -3,12 +3,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <body>
+        <span class="branches_content" hidden>
+            {!! json_encode($branches) ?? '' !!}
+        </span>
+        <span class="list_branch_options" hidden>
+            {!! json_encode($list_branch_options) ?? '' !!}
+        </span>
+        <span class="storeFilter" hidden>
+            {!! json_encode($storeFilter) ?? '' !!}
+        </span>
+        {{-- {{$top_products}} --}}
         <div id="dashboard" class="clearfix container-fluid row">
             <div>
+                {{-- branch: {{$filter_branch}} --}}
                 <form method="get" class="form-search">
                     <div style="display: flex">
                         <div style="margin: 22px">
-                            <label>FIlter products</label>
+                            <label>Filter products</label>
                             <input type="text" name="filter_value" :value="value" hidden>
                             <multiselect v-model="value" :options="options" :searchable="false"
                                 @input="submitFilter()" :close-on-select="true" :show-labels="false"></multiselect>
@@ -20,6 +31,19 @@
                                 :options="['Most selling', 'Most profitable', 'Least selling', 'Least profitable']"
                                 :searchable="false" @input="submitFilter()" :close-on-select="true"
                                 :show-labels="false"></multiselect>
+                        </div>-
+                        <div style="margin: 22px">
+                            <label>Filter branch</label>
+                            <input type="text" name="filter_branch" :value="branch_value" hidden>
+                            <multiselect
+                                v-model="branch_value"
+                                @input="submitFilter()"
+                                placeholder="Show"
+                                :options="filterBranches"
+                                :searchable="false"
+                                :close-on-select="true"
+                                style="min-width: 20vw;"
+                            />
                         </div>-
                         <div style="margin: 22px; display: flex; flex-direction: column;">
                             <label>Hide tables</label>
@@ -119,11 +143,15 @@
                 value: ['{{ Request::all()['filter_value'] ?? 'Weekly' }}'],
                 options: ['Weekly', 'Monthly', 'Yearly', 'All-time'],
                 selected: null,
+                branches: {!! json_encode($branches) ?? '' !!},
                 option: {
                     vueChart: "",
                     vueChartOption: null,
                 },
+                storeFilter: {!! json_encode($storeFilter) ?? '' !!},
+                branch_value: ['{{ Request::all()['filter_branch'] ?? 'Show all' }}'],
                 order_by: ['{{ Request::all()['order_by'] ?? 'Most selling' }}'],
+                filterBranches:[],
             },
             created() {
                 this.$nextTick(() => {})
@@ -140,26 +168,44 @@
                 },
                 rankingClicked(value) {
                     this.selected = value
-
                     this.fetchPredictionData(value.branch_product_id)
                 },
                 getCharts() {
+                    console.log('id', this.storeFilter)
                     const list = document.querySelectorAll('[class^="graph"]')
+                    const filterBranches = document.querySelector('span.list_branch_options').innerHTML
+                    const pattern = /^\s*$/g;
+                    if (!pattern.test(filterBranches)) {
+                        this.filterBranches = JSON.parse(filterBranches)
+                        console.log('tset',filterBranches)
+
+                        setTimeout(() => {
+                            // this.initCharts()
+                        }, 50);
+                    }
 
                     setTimeout(() => {
                         list.forEach(element => {
-                            console.log('element', element.attributes.branch_product_id.value)
+                            // console.log('element', element.attributes.branch_product_id.value)
                             this.fetchPredictionData(element.attributes.branch_product_id.value)
                         });
                     }, 100)
                 },
                 fetchPredictionData(branch_product_id) {
-                    axios.get(`${window.location.origin}/admin/analytics/chart/${branch_product_id}`)
-                        .then(response => {
-                            this.option.vueChartOption = response.data
-                            this.initChart(branch_product_id)
+                    axios.get(`${window.location.origin}/admin/analytics/chart/${this.storeFilter}/${branch_product_id}`)
+                    // axios.get(`${window.location.origin}/admin/analytics/chart/${branch_product_id}`)
+                    .then(response => {
+                        this.option.vueChartOption = response.data
+                        this.initChart(branch_product_id)
                         })
                 },
+                // fetchPredictionData(branch_product_id) {
+                //     axios.get(`${window.location.origin}/admin/analytics/chart/${branch_product_id}`)
+                //     .then(response => {
+                //         this.option.vueChartOption = response.data
+                //         this.initChart(branch_product_id)
+                //         })
+                // },
                 initChart(branch_product_id) {
 
                     this.option.vueChart = echarts.init(document.getElementById(`chart-${branch_product_id}`),
@@ -167,6 +213,7 @@
                         renderer: 'svg'
                     })
                     this.option.vueChart.setOption(this.option.vueChartOption)
+
                 },
             }
         })
