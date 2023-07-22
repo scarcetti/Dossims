@@ -1,3 +1,27 @@
+## Requirements
+-Git
+-Docker [>=19.03.0]
+
+## Installation
+
+## Setup for Single Project - Already have a PHP project:
+
+1 - Clone laradock on your project root directory:
+
+    git submodule add https://github.com/Laradock/laradock.git
+
+Note: If you are not using Git yet for your project, you can use git clone instead of git submodule.
+
+To keep track of your Laradock changes, between your projects and also keep Laradock updated check these docs
+
+2 - Make sure your folder structure should look like this:
+
+* project-a
+* laradock-a
+* project-b
+* laradock-b
+
+
 ## Server setup configs
 
 Change from laradock's `.env` file; `PHP_FPM_INSTALL_EXIF=true`
