@@ -1,17 +1,19 @@
 ## Intro
 
-**[Dossims](https://dossims.online)** is an online sales and inventory management system made for Domings Steel Trading located in Toril.
+**[DoSSIM](https://dossims.online)** (Doming's Sales and Inventory Management) is an advanced software solution tailored for Doming's Steel Trading, a company with 15 branches specializing in hardware and roofing products. Leveraging trend data analytics, DoSSIM allows for sales pattern observation and product restocking analysis, using AI algorithms to make data-driven decisions and predict sales trends accurately.
 
-## Dossims Setup
-### Requirements
+DoSSIM's standout feature is its progressive web application functionality, enabling easy installation on mobile devices without the need for app stores. This accessibility empowers sales representatives and inventory managers to access real-time data and perform essential tasks on the go, enhancing efficiency and customer service. The system ensures top-notch security through encryption and multi-factor authentication to safeguard sensitive information.
+
+With streamlined operations and automated restocking, DoSSIM empowers Doming's Steel Trading to excel in a competitive market. Its user-friendly interface and customer-focused approach make it a pivotal asset for the company's success, fostering growth and innovation in the industry.
+
+# **Dossims Setup**
+### **Requirements**
 
 * [Laradock](https://laradock.io/getting-started/) 
 * [Git Bash](https://git-scm.com/downloads)
 
-## Setup System Environment
-
-<i id="dossims"></i>
-### Dossims Configuration
+<!-- <i id="dossims"></i> -->
+### **Dossims Configuration**
 
 1. Install [Git Bash](https://git-scm.com/downloads).
 2. Open terminal on the folder where you want to put your project folder.
@@ -29,7 +31,7 @@ DB_PASSWORD=secret
 ```
 
 
-### Docker configuration
+### **Docker configuration**
 
 This documentation **assumes** that you followed the setup documentation of **[Laradock](https://laradock.io/getting-started/)**
 
@@ -56,9 +58,9 @@ server {
 ```
 >then change the `root` directory of the server to `root /var/www/dossims/public;`
 
-**Note**:  make sure the value of `listen` matches the [APP_URL](#dossims) port
+**Note**:  make sure the value of `listen` matches the [APP_URL](#dossims-configuration) port
 
-### Postgres configuration
+### **Postgres configuration**
 
 1. Open the terminal from the root directory of your Laradock folder.
 2. Run command `docker compose up -d nginx pgadmin`.
@@ -70,7 +72,7 @@ server {
 7. Run command `psql -U default [DB NAME] < [BACKUP FILE]`
 >*example:* `psql -U default dossimsdb < dossims_200223.psql`
 
-### Other configuration
+### **Other configuration**
 
 1. Open the terminal from the root directory of your Laradock folder.
 2. Run command `docker compose exec workspace bash`.
